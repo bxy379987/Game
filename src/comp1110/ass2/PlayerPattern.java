@@ -14,7 +14,7 @@ public class PlayerPattern extends Pattern {
         String remainingRuy=input.substring(5,2);
         this.remainingRugs = Integer.parseInt(remainingRuy);
         if(input.charAt(7)=='i')isplaying=true;
-    }
+    }//将一个 player string转化成player对象的构造器
 
     public boolean isIsplaying() {
         return isplaying;

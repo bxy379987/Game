@@ -1,21 +1,19 @@
 package comp1110.ass2;
 
 public class Assam {
-    public enum DIRECTION{
-        N,S,E,W
-    }
+
 //    When Assam is facing N, he is facing towards the top of the board
 //    When Assam is facing E, he is facing towards the right of the board
 //    When Assam is facing S, he is facing towards the bottom of the board
 //    When Assam is facing W, he is facing towards the left of the board
   private int xCoordinate;
     private int yCoordinate;
-    private DIRECTION direction;
+    private char direction;
 
-    public Assam(int xCoordinate, int yCoordinate, DIRECTION direction) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
-        this.direction = direction;
+    public Assam(String input) {
+        this.xCoordinate = (input.charAt(1));//char int transform automatically
+        this.yCoordinate = (input.charAt(2));
+        this.direction = (input.charAt(3));//老师说不要用字符存储方向,但是我不知道怎么弄
     }
 
     public int getxCoordinate() {
@@ -34,11 +32,11 @@ public class Assam {
         this.yCoordinate = yCoordinate;
     }
 
-    public DIRECTION getDirection() {
+    public char getDirection() {
         return direction;
     }
 
-    public void setDirection(DIRECTION direction) {
+    public void setDirection(char direction) {
         this.direction = direction;
     }
 }
