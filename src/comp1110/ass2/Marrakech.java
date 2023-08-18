@@ -1,5 +1,8 @@
 package comp1110.ass2;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Marrakech {
 
     /**
@@ -23,8 +26,14 @@ public class Marrakech {
      * @return true if the rug is valid, and false otherwise.
      */
     public static boolean isRugValid(String gameString, String rug) {
+        String regex="^[a-z][0-9]{6}$";//"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(rug);
+        if(matcher.matches()==false){return false;}//通过正则表达式判断传进来的rug字符串格式是否正确.注意,字母仅支持小写.并且没有判断两个毛毯格子是否相邻
+        String subrug=rug.substring(0,3);
+        if(gameString.contains(subrug)==true){return false;}//判断rug是否已经存在
         // FIXME: Task 4
-        return false;
+        return true;//如果两者都不成立则成功
     }
 
     /**
