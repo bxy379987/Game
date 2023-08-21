@@ -9,6 +9,8 @@ public class Assam {
   private int xCoordinate;
     private int yCoordinate;
     private char direction;
+    // 不用字符储存的方式: enum
+//    private Direction direction;
 
     public Assam(String input) {
         this.xCoordinate = (input.charAt(1));//char int transform automatically
