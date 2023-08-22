@@ -1,15 +1,21 @@
 package comp1110.ass2.gui;
 
+import com.sun.javafx.stage.EmbeddedWindow;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class Viewer extends Application {
 
@@ -17,6 +23,7 @@ public class Viewer extends Application {
     private static final int VIEWER_HEIGHT = 700;
 
     private final Group root = new Group();
+    //private final Group rootnewscene = new Group();
     private final Group controls = new Group();
     private TextField boardTextField;
 
@@ -26,8 +33,32 @@ public class Viewer extends Application {
      *
      * @param state an array of two strings, representing the current game state
      */
-    void displayState(String state) {
-       boardTextField.setText(state);
+    void displayState(String state)  {
+
+       root.getChildren().clear();
+       FXMLLoader loader = null;
+        loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
+        AnchorPane root1 = null;
+        try {
+            root1 = loader.load();
+        } catch (IOException e) {
+
+        }
+        Scene newscene = new Scene(root1, VIEWER_WIDTH, VIEWER_HEIGHT);
+       Stage stage1=new Stage();
+       stage1.setScene(newscene);
+       stage1.show();
+
+//        Parent root = FXMLLoader.load(getClass().getResource("viewerfxml"));
+//
+//        Scene scene = new Scene(root);
+//
+//        Stage stage1=new Stage();
+//        stage1.setScene(scene);
+//
+//        stage1.show();
+
+
 
 
     }
@@ -66,5 +97,11 @@ public class Viewer extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+//        FXMLLoader loader = null;
+//        loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
+//        AnchorPane root1 = loader.load();
+//        Scene newscene = new Scene(root1, VIEWER_WIDTH, VIEWER_HEIGHT);
     }
 }
