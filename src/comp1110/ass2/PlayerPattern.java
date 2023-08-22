@@ -1,6 +1,6 @@
 package comp1110.ass2;
 
-public class PlayerPattern extends Pattern {
+public class PlayerPattern  {
     private boolean isplaying=false;
     private char color;//"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色
 
@@ -48,11 +48,6 @@ public class PlayerPattern extends Pattern {
         this.remainingRugs = remainingRugs;
     }
 
-    @Override
-    public boolean match(Pattern otherpattern) {
-        PlayerPattern playerPattern=(PlayerPattern) otherpattern;
-        if(this.remainingRugs==playerPattern.remainingRugs&&this.dirhams==playerPattern.dirhams&&this.color==playerPattern.color)
-        return true;
-        else return false;
+
     }
-}
+

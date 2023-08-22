@@ -67,8 +67,21 @@ public class Marrakech {
      * @return true if the game is over, or false otherwise.
      */
     public static boolean isGameOver(String currentGame) {
+
+        String regex1="^P[a-z][0-9]{5}[a-z]$";
+        Pattern pattern1=Pattern.compile(regex1);
+        Matcher matcher = pattern1.matcher(currentGame);
+        if(!matcher.find())return false;
+        while(matcher.find()) {
+            String player = matcher.group(0);
+            if (player.charAt(5)==0&&player.charAt(6)==0) {
+                return false;
+            }
+        }
+
+return true;
         // FIXME: Task 8
-        return false;
+
     }
 
     /**
@@ -85,9 +98,32 @@ public class Marrakech {
      * rotation is illegal.
      */
     public static String rotateAssam(String currentAssam, int rotation) {
-        // FIXME: Task 9
-        return "";
+        if(rotation!=0&&rotation!=270&&rotation!=90)return currentAssam;
+        if(rotation==0)return currentAssam;
+        char currentdirection=currentAssam.charAt(3);
+        char changeddirection='A';
+        switch (currentdirection){
+            case 'N': if (rotation==90) changeddirection='E';
+                      else if(rotation==270)changeddirection='W';
+                      break;
+            case 'E': if (rotation==90)changeddirection='S';
+                      else if(rotation==270)changeddirection='N';
+                      break;
+            case 'S': if (rotation==90)changeddirection='W';
+                      else if(rotation==270)changeddirection='E';
+                      break;
+            case 'W': if (rotation==90)changeddirection='N';
+                      else if(rotation==270)changeddirection='S';
+                      break;
+            default:return currentAssam;
+
+
+
+
+
+        }return currentAssam.substring(0,3)+changeddirection;
     }
+
 
     /**
      * Determine whether a potential new placement is valid (i.e that it describes a legal way to place a rug).
