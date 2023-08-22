@@ -13,8 +13,8 @@ public class Assam {
 //    private Direction direction;
 
     public Assam(String input) {
-        this.xCoordinate = (input.charAt(1));//char int transform automatically
-        this.yCoordinate = (input.charAt(2));
+        this.xCoordinate = (input.charAt(1)-'0');//char int transform automatically
+        this.yCoordinate = (input.charAt(2)-'0');
         this.direction = (input.charAt(3));//老师说不要用字符存储方向,但是我不知道怎么弄
     }
 

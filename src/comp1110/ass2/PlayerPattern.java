@@ -9,9 +9,9 @@ public class PlayerPattern  {
 
     public PlayerPattern(String input) {
         this.color = input.charAt(1);
-        String dirham=input.substring(2,3);
+        String dirham=input.substring(2,5);
         this.dirhams = Integer.parseInt(dirham);
-        String remainingRuy=input.substring(5,2);
+        String remainingRuy=input.substring(5);
         this.remainingRugs = Integer.parseInt(remainingRuy);
         if(input.charAt(7)=='i')isplaying=true;
     }//将一个 player string转化成player对象的构造器
