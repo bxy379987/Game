@@ -5,6 +5,7 @@ public class Main {
         A a = new A();
         B b = new B();
         C c = new C();
+        C C1=new C();
 
     }
 }
