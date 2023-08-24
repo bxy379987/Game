@@ -206,8 +206,8 @@ public class Marrakech {
         // FIXME: Task 10
 
     }
-    public  static int  findsamecolor(char color,String[]substringGameStatearray,int x,int y) {
-        int count = 0;
+//    public  static int  findsamecolor(char color,String[]substringGameStatearray,int x,int y) {
+ //       int count = 0;
 
 //        int Sortnumber = x * 7 + y;
 //        if (Sortnumber > 0 && Sortnumber < substringGameStatearray.length) {
@@ -233,8 +233,8 @@ public class Marrakech {
 //            findsamecolor(color, substringGameStatearray, x, y + 1);
 //        }
 //    }
-        return count;
-    }
+ //       return count;
+   // }
 
     /**
      * Determine the amount of payment required should another player land on a square.
@@ -272,7 +272,7 @@ public class Marrakech {
 //
 //    // FIXME: Task 11
 //        return count;}
-          return 0;
+          return -1;
 }
 
     /**
