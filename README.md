@@ -12,6 +12,7 @@ Please read the ANU's [official position](http://academichonesty.anu.edu.au/) on
 
 Carefully review the statements of originality in the [admin](admin) folder which you must complete at each stage.  Edit the relevant statement and update it as you complete each stage of the assignment, ensuring that when you complete each stage, a truthful statement is committed and pushed to your repo.
 
+
 ## Purpose
 
 In this assignment you will *work as a group* to master a number of major themes of this course,
