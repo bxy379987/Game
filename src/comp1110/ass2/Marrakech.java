@@ -430,8 +430,57 @@ return max;//打平的情况还没判断test就过了...留给你们写吧,简�
      * or the input currentGame unchanged otherwise.
      */
     public static String makePlacement(String currentGame, String rug) {
+       if(isPlacementValid(currentGame,rug)==false){return currentGame;}
+        Rug rug1=new Rug(rug);
+        int x1=rug1.getCoordination1()[0];
+        int x2=rug1.getCoordination2()[0];
+        int y1=rug1.getCoordination1()[1];
+        int y2=rug1.getCoordination2()[1];
+        String substringGameState = currentGame.substring(21);
+        int substringGameStatelLength = substringGameState.length();//is 49^3
+        int substringcount = substringGameStatelLength / 3;//is 49
+        String[] substringGameStatearray = new String[substringcount];
+        for (int i = 0; i < substringcount; i++) {
+            int startIndex = i * 3;
+            int endIndex = startIndex + 3;
+            substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
+        }
+        int x=x1*7+y1;
+        int y=x2*7+y2;
+        substringGameStatearray[x]=rug.substring(0,3);
+        substringGameStatearray[y]=rug.substring(0,3);
+        String changedGame=new String();
+        for(int j=0;j<substringcount;j++){
+            changedGame=changedGame+substringGameStatearray[j];
+        }
+        changedGame=currentGame.substring(0,21)+changedGame;
+        char c=rug1.getColor();
+        String regex1 = "P[a-z][0-9]{5}[a-z]";
+        Pattern pattern1 = Pattern.compile(regex1);
+        Matcher matcher = pattern1.matcher(currentGame);
+        //if(!matcher.find())return false;
+        String[]player=new String[4];
+        int count1=0;
+        while (matcher.find()) {
+            String player2 = matcher.group(0);
+            player[count1++]=player2;
+        }
+        int count2=0;
+        for(String s:player){
+            if(s!=null){
+                if(s.charAt(1)!=c){
+                count2++;
+            }if(s.charAt(1)==c){break;}
+            }
+        }
+        char[]chararray=changedGame.toCharArray();
+        if(chararray[count2*8+6]!='0'){ chararray[count2*8+6]-=1;}
+        else if(chararray[count2*8+6]=='0'&&chararray[count2*8+5]=='1'){chararray[count2*8+6]='9';chararray[count2*8+5]='0';}
+        else return"玩尼玛没毛毯了";//else 再然后就是两个都是0,毛毯数量为0,那还玩个屁,直接return null?
+        changedGame=new String(chararray);
+
         // FIXME: Task 14
-        return "";
+        return changedGame;
     }
 
 }

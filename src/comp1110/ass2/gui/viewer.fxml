@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp1110.ass2.gui.Viewer">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp1110.ass2.gui.Viewer">
    <children>
       <GridPane gridLinesVisible="true" layoutX="276.0" layoutY="310.0" prefHeight="300.0" prefWidth="300.0">
         <columnConstraints>
