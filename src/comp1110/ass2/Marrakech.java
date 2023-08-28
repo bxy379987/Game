@@ -1,5 +1,6 @@
 package comp1110.ass2;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,16 +28,37 @@ public class Marrakech {
      * @return true if the rug is valid, and false otherwise.
      */
     public static boolean isRugValid(String gameString, String rug) {
-        String regex = "^[a-z][0-9]{6}$";//"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色
+        // FIXME: Task 4
+        System.out.println("=============[isRugValid]=============");
+        System.out.println(rug);
+        String boardString = gameString.split("B")[1];
+        System.out.println(boardString);
+        //"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色
+        String regex = "^[a-z][0-9]{6}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(rug);
-        if (!matcher.find()) {
-            return false;
-        }
-        String subrug = rug.substring(0, 3);
-        if (gameString.contains(subrug) == true) {
-            return false;
-        }// FIXME: Task 4
+        // CASE: Format not match
+        if (!matcher.find()) return false;
+        // CASE: Exist same ID [not valid]
+        // [DEBUG] have Case for PlayerString Py02 which "y02" contains Rug "y02" change gameString into boardString
+        if (boardString.contains(rug.substring(0, 3))) return false;
+        // CASE: Off the Board [not valid]
+        int[] coordinates = rug.substring(3).chars().map(Character::getNumericValue).toArray();
+        if (Arrays.stream(coordinates).anyMatch(coordinate -> coordinate > 6)) return false;
+        // CASE: is valid player
+        if (!"cyrp".contains(rug.substring(0,1))) return false;
+
+        // 他居然不需要检测摆放的位置颜色相同，先注释了
+//        // CASE: covered with two same color [not valid]
+//        System.out.println(boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3]);
+//        char color1 = boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3];
+//        char color2 = boardString.toCharArray()[((coordinates[2])*7+coordinates[3]) * 3];
+//        System.out.println(color1 + " " + color2);
+//        if (color1 == color2 & color1 != 'n') {
+//            System.out.println("IN CASE");
+//            return false;
+//        };
+
         return true;//如果两者都不成立则成功
     }
 
