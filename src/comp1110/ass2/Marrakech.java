@@ -95,22 +95,22 @@ public class Marrakech {
      * @return true if the game is over, or false otherwise.
      */
     public static boolean isGameOver(String currentGame) {
-
-        String regex1 = "P[a-z][0-9]{5}[a-z]";
-        Pattern pattern1 = Pattern.compile(regex1);
-        Matcher matcher = pattern1.matcher(currentGame);
+        // FIXME: Task 8
+        System.out.println("=============[isGameOver]=============");
+        String regex = "P[a-z][0-9]{5}[a-z]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(currentGame);
         //if(!matcher.find())return false;
 
         while (matcher.find()) {
             String player = matcher.group();//可以优化成把这个string赋给PlayerPattern构造器,建对象然后通过属性判断
-            if (player.charAt(5) == 0 && player.charAt(6) == 0) {
-                return true;//虽然能过test但是没优化好,因为我判断某人没毛毯就游戏结束,但是老师要求判断条件是到某人掷骰子时没毛毯才算结束
-            }
+            System.out.println(player);
+            // [DEBUG] == 0 改为 == '0', 且必须全部都为0才是game over
+            //虽然能过test但是没优化好,因为我判断某人没毛毯就游戏结束,但是老师要求判断条件是到某人掷骰子时没毛毯才算结束
+            if (!player.substring(5, 7).equals("00") && player.substring(7).equals("i")) return false;
         }
 
-        return false;
-        // FIXME: Task 8
-
+        return true;
     }
 
     /**
