@@ -1,0 +1,9 @@
+.root {
+    -fx-body-color: #171a1a;
+    -fx-outer-border: white;
+}
+
+/*.titled-panel > .title {*/
+/*    -fx-background-color: #191c1a;*/
+/*    -fx-text-fill: white;*/
+/*}*/

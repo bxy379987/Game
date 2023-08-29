@@ -180,6 +180,12 @@ public class Marrakech {
      */
     //写一个判断相邻的方法
     public static boolean isPlacementValid(String gameState, String rug) {
+        // FIXME: Task 10
+        System.out.println("=============[isPlacementValid]=============");
+        System.out.println(rug);
+        String boardString = gameState.split("B")[1];
+        System.out.println(boardString);
+
         String regex = "A[0-9]{2}[A-Z]";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(gameState);
@@ -225,7 +231,7 @@ public class Marrakech {
         //其中了,而isRugvalid方法中传入的gamestate和rug则需要判断rug是否被gamestate包含,被包含则返回false
 
 
-        // FIXME: Task 10
+
 
     }
 //    public  static int  findsamecolor(char color,String[]substringGameStatearray,int x,int y) {
