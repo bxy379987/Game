@@ -62,8 +62,9 @@ public class Viewer extends Application {
                 System.out.print(color + " ");
                 Rectangle node = new Rectangle(NODE_SIZE * 0.9, NODE_SIZE * 0.9);
                 // set node position
-                node.setLayoutX(BOARD_START_X + row * NODE_SIZE);
-                node.setLayoutY(BOARD_START_Y + col * NODE_SIZE);
+                // [DEBUG] swap the col & row coordinates to correct board
+                node.setLayoutX(BOARD_START_X + col * NODE_SIZE);
+                node.setLayoutY(BOARD_START_Y + row * NODE_SIZE);
                 // set node color
                 node.setFill(Color.WHITE);
                 switch (color) {
@@ -135,7 +136,7 @@ public class Viewer extends Application {
         // BACKGROUND
         Rectangle background = new Rectangle(VIEWER_WIDTH, VIEWER_HEIGHT);
         background.setFill(Color.web("#171a1a"));
-//        root.getChildren().add(background);
+        root.getChildren().add(background);
 
         root.getChildren().add(controls);
 

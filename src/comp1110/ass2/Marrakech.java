@@ -183,8 +183,9 @@ public class Marrakech {
         // FIXME: Task 10
         System.out.println("=============[isPlacementValid]=============");
         System.out.println(rug);
+        System.out.println(gameState);
         String boardString = gameState.split("B")[1];
-        System.out.println(boardString);
+
 
         String regex = "A[0-9]{2}[A-Z]";
         Pattern pattern = Pattern.compile(regex);
@@ -276,6 +277,13 @@ public class Marrakech {
      * @return The amount of payment due, as an integer.
      */
     public static int getPaymentAmount(String gameString) {
+        // FIXME: Task 11
+        System.out.println("=============[isPlacementValid]=============");
+//        System.out.println(gameString);
+        String boardString = gameString.split("B")[1];
+        System.out.println(boardString);
+        String assamString = gameString.split("B")[0].split("A")[1];
+        System.out.println(assamString);
 //        String substringGameState = gameString.substring(21);
 //        int substringGameStatelLength = substringGameState.length();//is 49^3
 //        int substringcount = substringGameStatelLength / 3;//is 49
@@ -298,7 +306,7 @@ public class Marrakech {
 //        char ColorofAssamRug=substringGameStatearray[acoor[0]*7+acoor[1]].charAt(0);
 //        int count=findsamecolor(ColorofAssamRug,substringGameStatearray,acoor[0],acoor[1]);
 //
-//    // FIXME: Task 11
+//
 //        return count;}
           return -1;
 }
