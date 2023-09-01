@@ -1,10 +1,16 @@
 package comp1110.ass2;
 
+import comp1110.ass2.gui.Viewer;
+
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Marrakech {
+    private static final int BOARD_INDEX_WIDTH = 7;
+    private static final int BOARD_INDEX_HEIGHT = 7;
 
     /**
      * Determine whether a rug String is valid.
@@ -284,6 +290,66 @@ public class Marrakech {
         System.out.println(boardString);
         String assamString = gameString.split("B")[0].split("A")[1];
         System.out.println(assamString);
+        int[] assamPos = {assamString.toCharArray()[0] - '0', assamString.toCharArray()[1] - '0'};
+
+        // [INIT] new board
+        Board board = new Board(boardString);
+        String[][] boardColor = board.getBoardColor();
+        String currentColor = boardColor[assamPos[0]][assamPos[1]];
+        System.out.println("MAPPING COLOR: " + currentColor);
+
+        // Start calculate costs by BFS
+        System.out.println("START BFS");
+        //                    up      right   down     left
+        int[][] directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+        Queue<int[]> searchList = new LinkedList<>();
+        // [INIT] first positions
+        searchList.offer(assamPos);
+        // [INIT] mark
+        int mark = 0;
+        while (!searchList.isEmpty()) {
+            int[] currentPos = searchList.peek();
+            System.out.println("Current pos: [" + currentPos[0] + ", " + currentPos[1] + "]");
+            // every search step 1 mark
+            mark += 1;
+            String[] nearbyColors = board.getColorsNearby(currentPos[0], currentPos[1]);
+            for (int i = 0; i < nearbyColors.length; i++) {
+                // out of border
+                if (nearbyColors[i].equals("")) continue;
+                // find matching color
+                int[] nextPos = {currentPos[0] + directions[i][0], currentPos[1] + directions[i][1]};
+                if (nearbyColors[i].equals(currentColor) && !searchList.contains(nextPos)) {
+                    searchList.offer(nextPos);
+                }
+            }
+            // delete position has searched surround
+            searchList.poll();
+            boardColor[currentPos[0]][currentPos[1]] = "x";
+
+            // [DEBUG] check board color state
+            for (int row = 0; row < boardColor.length; row++) {
+                for (int col = 0; col < boardColor[0].length; col++) {
+                    System.out.print(boardColor[row][col] + " ");
+                }
+                System.out.println();
+            }
+        }
+        System.out.println("MARK: " + mark);
+        return mark;
+        /**
+         * TEST ERROR AT:
+         * org.opentest4j.AssertionFailedError: Expected payment of 0 for game state Pc00004oPy06604iPp01604iPr03805iA60WBc23c23y23r12r12n00n00n00r22y23y19y19p19n00c05p14y18y18r09p19n00p11p11y06c16n00y10r03y04n00c24r10c19c19r13y04p21c24r23p20p10n00y01y21y24r18r18c21c21 ==>
+         * Expected :0
+         * Actual   :5
+         *
+         * org.opentest4j.AssertionFailedError: Expected payment of 10 for game state Pc02909iPy04209iPp01709iPr03210iA33EBy02n00n00y07p11c07r06y02r11r11y12p11n00r06n00y05r07y12r12r12n00c10c10y13y13y06n00n00y00c00y08y04y06p06n00n00p04r03y04n00p06y03n00p04n00n00n00n00y03 ==>
+         * Expected :10
+         * Actual   :12
+         *
+         * org.opentest4j.AssertionFailedError: Expected payment of 2 for game state Pc03802iPy00003oPp00003oPr08203iA50SBp20r17r14r02r02c09n00r20p23r14y23y23c18n00r20p23n00c17c23r22n00r15y17c19c19y06r19r19r21p11p16y07c05n00r06r21c14p16c25y25p22p22n00y13y13p10y25c10r08 ==>
+         * Expected :2
+         * Actual   :5
+         */
 //        String substringGameState = gameString.substring(21);
 //        int substringGameStatelLength = substringGameState.length();//is 49^3
 //        int substringcount = substringGameStatelLength / 3;//is 49
@@ -308,7 +374,7 @@ public class Marrakech {
 //
 //
 //        return count;}
-          return -1;
+//          return -1;
 }
 
     /**
