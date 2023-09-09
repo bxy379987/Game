@@ -42,7 +42,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="label13" layoutX="921.0" layoutY="94.0" prefHeight="85.0" prefWidth="150.0" text="assum begin">
+      <Label fx:id="label13" layoutX="878.0" layoutY="106.0" prefHeight="34.0" prefWidth="177.0" text="assum begin">
          <font>
             <Font size="15.0" />
          </font>
@@ -63,5 +63,6 @@
             <Label fx:id="label12" prefHeight="33.0" prefWidth="134.0" text="12" />
          </children>
       </HBox>
+      <Label fx:id="label14" layoutX="873.0" layoutY="152.0" prefHeight="27.0" prefWidth="117.0" text="Label" />
    </children>
 </AnchorPane>
