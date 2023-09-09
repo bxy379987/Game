@@ -282,7 +282,9 @@ public class Marrakech {
      * @param gameString A String representation of the current state of the game.
      * @return The amount of payment due, as an integer.
      */
+
     public static int getPaymentAmount(String gameString) {
+
         // FIXME: Task 11
         System.out.println("=============[isPlacementValid]=============");
 //        System.out.println(gameString);
@@ -318,7 +320,7 @@ public class Marrakech {
                 if (nearbyColors[i].equals("")) continue;
                 // find matching color
                 int[] nextPos = {currentPos[0] + directions[i][0], currentPos[1] + directions[i][1]};
-                if (nearbyColors[i].equals(currentColor) && !searchList.contains(nextPos)) {
+                if (nearbyColors[i].equals(currentColor) && !listHasPosition(searchList, nextPos)) {
                     searchList.offer(nextPos);
                 }
             }
@@ -341,11 +343,9 @@ public class Marrakech {
          * org.opentest4j.AssertionFailedError: Expected payment of 0 for game state Pc00004oPy06604iPp01604iPr03805iA60WBc23c23y23r12r12n00n00n00r22y23y19y19p19n00c05p14y18y18r09p19n00p11p11y06c16n00y10r03y04n00c24r10c19c19r13y04p21c24r23p20p10n00y01y21y24r18r18c21c21 ==>
          * Expected :0
          * Actual   :5
-         *
-         * org.opentest4j.AssertionFailedError: Expected payment of 10 for game state Pc02909iPy04209iPp01709iPr03210iA33EBy02n00n00y07p11c07r06y02r11r11y12p11n00r06n00y05r07y12r12r12n00c10c10y13y13y06n00n00y00c00y08y04y06p06n00n00p04r03y04n00p06y03n00p04n00n00n00n00y03 ==>
-         * Expected :10
-         * Actual   :12
-         *
+         * org.opentest4j.AssertionFailedError: Expected payment of 5 for game state Pc00006oPy09806iPp00706iPr01506iA24WBy02n00n00y07p11c07r06c20r18r18y12c17c17r06c20y05c16y16y15y17n00p18c10y13y16y06y17n00y00c00y08y04r21r21n00y21y21r03p21n00r20y03n00p04n00p21n00r20p17 ==>
+         * Expected :5
+         * Actual   :11
          * org.opentest4j.AssertionFailedError: Expected payment of 2 for game state Pc03802iPy00003oPp00003oPr08203iA50SBp20r17r14r02r02c09n00r20p23r14y23y23c18n00r20p23n00c17c23r22n00r15y17c19c19y06r19r19r21p11p16y07c05n00r06r21c14p16c25y25p22p22n00y13y13p10y25c10r08 ==>
          * Expected :2
          * Actual   :5
@@ -376,7 +376,14 @@ public class Marrakech {
 //        return count;}
 //          return -1;
 }
-
+    private static boolean listHasPosition(Queue<int[]> list, int[] pos) {
+        assert pos.length == 2;
+        for (int[] listPos: list) {
+            assert listPos.length == pos.length;
+            if (listPos[0] == pos[0] && listPos[1] == pos[1]) return true;
+        }
+        return false;
+    }
     /**
      * Determine the winner of a game of Marrakech.
      * For this task, you will be provided with a game state string and have to return a char representing the colour
