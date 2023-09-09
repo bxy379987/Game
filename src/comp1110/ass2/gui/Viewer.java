@@ -53,8 +53,8 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     private TextField boardTextField;
     // set initial x y of board
-    private static final int BOARD_START_X = 100;
-    private static final int BOARD_START_Y = 100;
+    private static final int BOARD_START_X = 250;
+    private static final int BOARD_START_Y = 280;
     private static final int BOARD_INDEX_WIDTH = 7;
     private static final int BOARD_INDEX_HEIGHT = 7;
     private static final int NODE_SIZE = 50;
@@ -65,13 +65,14 @@ public class Viewer extends Application {
      *
      * @param state an array of two strings, representing the current game state
      */
-    void displayState(String state)  {
+    void displayState(String state) throws IOException {
 
 
         System.out.println(state);
 
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
+        root.getChildren().addAll((Node) loader.load());
         Viewer controller=loader.getController();
         PlayerPattern player1=new PlayerPattern(state.substring(0,8));
         PlayerPattern player2=new PlayerPattern(state.substring(8,16));
@@ -169,7 +170,11 @@ public class Viewer extends Application {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                displayState(boardTextField.getText());
+                try {
+                    displayState(boardTextField.getText());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         HBox hb = new HBox();
