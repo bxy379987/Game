@@ -79,7 +79,7 @@ public class Viewer extends Application {
         PlayerPattern player4=new PlayerPattern(state.substring(24,32));
         Assam aassam=new Assam(state.substring(32,36));
 
-        controller.label1.setText(player1.isIsplaying()+"");
+        if(controller!=null){controller.label1.setText(player1.isIsplaying()+"");
         controller.label2.setText(player2.isIsplaying()+"");
         controller.label3.setText(player3.isIsplaying()+"");
         controller.label4.setText(player4.isIsplaying()+"");
@@ -91,12 +91,13 @@ public class Viewer extends Application {
         controller.label10.setText(player2.getRemainingRugs()+"");
         controller.label11.setText(player3.getRemainingRugs()+"");
         controller.label12.setText(player4.getRemainingRugs()+"");
-        controller.label13.setText("assam direction and location"+aassam.getDirection()+aassam.getxCoordinate()+aassam.getyCoordinate());
+        controller.label13.setText("assam direction and location"+aassam.getDirection()+aassam.getxCoordinate()+aassam.getyCoordinate());}else
+            System.out.println(1);
         try {
             root.getChildren().addAll((Node) loader.load());
         } catch (IOException ignored) {
         }
-      
+
 
         System.out.println("=============[displayState]=============");
         System.out.println(state);
