@@ -1,11 +1,15 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.Assam;
+import comp1110.ass2.PlayerPattern;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,6 +25,27 @@ import java.io.IOException;
 
 
 public class Viewer extends Application {
+    @FXML
+    public Label label1;
+    public Label label2;
+    public Label label3;
+    public Label label4;
+    public Label label5;
+    public Label label6;
+    public Label label7;
+    public Label label8;
+    public Label label9;
+    public Label label10;
+    public Label label11;
+    public Label label12;
+    public Label label13;
+
+
+
+
+
+
+
 
     private static final int VIEWER_WIDTH = 1200;
     private static final int VIEWER_HEIGHT = 700;
@@ -41,6 +66,38 @@ public class Viewer extends Application {
      * @param state an array of two strings, representing the current game state
      */
     void displayState(String state)  {
+
+
+        System.out.println(state);
+
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
+        Viewer controller=loader.getController();
+        PlayerPattern player1=new PlayerPattern(state.substring(0,8));
+        PlayerPattern player2=new PlayerPattern(state.substring(8,16));
+        PlayerPattern player3=new PlayerPattern(state.substring(16,24));
+        PlayerPattern player4=new PlayerPattern(state.substring(24,32));
+        Assam aassam=new Assam(state.substring(32,36));
+
+        controller.label1.setText(player1.isIsplaying()+"");
+        controller.label2.setText(player2.isIsplaying()+"");
+        controller.label3.setText(player3.isIsplaying()+"");
+        controller.label4.setText(player4.isIsplaying()+"");
+        controller.label5.setText(player1.getDirhams()+"");
+        controller.label6.setText(player2.getDirhams()+"");
+        controller.label7.setText(player3.getDirhams()+"");
+        controller.label8.setText(player4.getDirhams()+"");
+        controller.label9.setText(player1.getRemainingRugs()+"");
+        controller.label10.setText(player2.getRemainingRugs()+"");
+        controller.label11.setText(player3.getRemainingRugs()+"");
+        controller.label12.setText(player4.getRemainingRugs()+"");
+        controller.label13.setText("assam direction and location"+aassam.getDirection()+aassam.getxCoordinate()+aassam.getyCoordinate());
+        try {
+            root.getChildren().addAll((Node) loader.load());
+        } catch (IOException ignored) {
+        }
+      
+
         System.out.println("=============[displayState]=============");
         System.out.println(state);
         String boardState = state.split("B")[1];
@@ -78,6 +135,7 @@ public class Viewer extends Application {
             }
             System.out.println();
         }
+
         root.getChildren().addAll(board);
 
         // ASSAM
@@ -94,14 +152,7 @@ public class Viewer extends Application {
             case 'W' -> assam.setRotate(270);
         }
         root.getChildren().add(assam);
-//
-//        FXMLLoader loader = null;
-//        loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
-//        try {
-//            root.getChildren().addAll((Node) loader.load());
-//        } catch (IOException ignored) {
-//
-//        }
+
 
 
     }
@@ -135,7 +186,7 @@ public class Viewer extends Application {
         Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT);
         // BACKGROUND
         Rectangle background = new Rectangle(VIEWER_WIDTH, VIEWER_HEIGHT);
-        background.setFill(Color.web("#171a1a"));
+        background.setFill(Color.web("F5F5F5"));
         root.getChildren().add(background);
 
         root.getChildren().add(controls);
