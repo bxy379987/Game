@@ -53,8 +53,8 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     private TextField boardTextField;
     // set initial x y of board
-    private static final int BOARD_START_X = 100;
-    private static final int BOARD_START_Y = 100;
+    private static final int BOARD_START_X = 250;
+    private static final int BOARD_START_Y = 280;
     private static final int BOARD_INDEX_WIDTH = 7;
     private static final int BOARD_INDEX_HEIGHT = 7;
     private static final int NODE_SIZE = 50;
