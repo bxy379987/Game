@@ -39,6 +39,7 @@ public class Viewer extends Application {
     public Label label11;
     public Label label12;
     public Label label13;
+    public Label label14;
 
 
 
@@ -92,7 +93,11 @@ public class Viewer extends Application {
         controller.label10.setText(player2.getRemainingRugs()+"");
         controller.label11.setText(player3.getRemainingRugs()+"");
         controller.label12.setText(player4.getRemainingRugs()+"");
-        controller.label13.setText("assam direction and location"+aassam.getDirection()+aassam.getxCoordinate()+aassam.getyCoordinate());}else
+        controller.label13.setText(aassam.getxCoordinate()+"  "+aassam.getyCoordinate());
+        controller.label14.setText((aassam.getDirection())+"");
+        }
+
+        else
             System.out.println(1);
         try {
             root.getChildren().addAll((Node) loader.load());
