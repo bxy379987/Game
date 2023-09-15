@@ -197,7 +197,7 @@ public class Marrakech {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(gameState);
         while (matcher.find()) {
-            Assam assam = new Assam(matcher.group(0));
+            Assam assam = Assam.fromGameString(gameState);
             int x = assam.getxCoordinate();
             int y = assam.getyCoordinate();
             int[] acoor = new int[2];

@@ -79,7 +79,7 @@ public class Viewer extends Application {
         PlayerPattern player2=new PlayerPattern(state.substring(8,16));
         PlayerPattern player3=new PlayerPattern(state.substring(16,24));
         PlayerPattern player4=new PlayerPattern(state.substring(24,32));
-        Assam aassam=new Assam(state.substring(32,36));
+        Assam aassam = Assam.fromGameString(state);
 
         if(controller!=null){controller.label1.setText(player1.isIsplaying()+"");
         controller.label2.setText(player2.isIsplaying()+"");

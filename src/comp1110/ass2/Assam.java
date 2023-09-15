@@ -1,21 +1,50 @@
 package comp1110.ass2;
 
 public class Assam {
-
-//    When Assam is facing N, he is facing towards the top of the board
-//    When Assam is facing E, he is facing towards the right of the board
-//    When Assam is facing S, he is facing towards the bottom of the board
-//    When Assam is facing W, he is facing towards the left of the board
-  private int xCoordinate;
+    // Coordinates of Assam on the board
+    private int xCoordinate;
     private int yCoordinate;
-    private char direction;
-    // 不用字符储存的方式: enum
-//    private Direction direction;
 
-    public Assam(String input) {
-        this.xCoordinate = (input.charAt(1)-'0');//char int transform automatically
-        this.yCoordinate = (input.charAt(2)-'0');
-        this.direction = (input.charAt(3));//老师说不要用字符存储方向,但是我不知道怎么弄
+    // Direction Assam is facing
+    // When Assam is facing N, he is facing towards the top of the board
+    // When Assam is facing E, he is facing towards the right of the board
+    // When Assam is facing S, he is facing towards the bottom of the board
+    // When Assam is facing W, he is facing towards the left of the board
+    private Direction direction;
+
+    // Constructor to initialize Assam with coordinates and direction
+    public Assam (int xCoordinate, int yCoordinate, Direction direction){
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.direction = direction;
+    }
+
+    // Parse Assam information from an Assam string representation e.g."A51W"
+    public static Assam fromString(String assamString) {
+        // Validate the length of the string
+        if (assamString.length() != 4){
+            throw new IllegalArgumentException("Invalid Assam String: " + assamString);
+        }
+        else {
+            // Extract x and y coordinates from the string
+            int xCoordinate = (assamString.charAt(1) - '0');//char int transform automatically
+            int yCoordinate = (assamString.charAt(2) - '0');
+
+            // Parse direction using the Direction enum
+            Direction direction = Direction.fromSymbol(assamString.charAt(3));
+
+            // Create a new Assam object with the parsed values
+            return new Assam(xCoordinate, yCoordinate, direction);
+        }
+    }
+
+    // Parse Assam information from a game state string representation
+    public static Assam fromGameString(String gameString){
+        // Extract Assam string from the game string
+        String assamString = gameString.substring(32,36);
+
+        // Parse Assam information using fromString method
+        return fromString(assamString);
     }
 
     public int getxCoordinate() {
@@ -34,11 +63,11 @@ public class Assam {
         this.yCoordinate = yCoordinate;
     }
 
-    public char getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
-    public void setDirection(char direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 }
