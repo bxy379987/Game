@@ -1,7 +1,5 @@
 package comp1110.ass2;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class Board {
     int BOARD_WIDTH = 7;
@@ -16,7 +14,7 @@ public class Board {
         }
     }
 
-    Board(String boardState) {
+    public Board(String boardState) {
         boardColor = new String[BOARD_WIDTH][BOARD_HEIGHT];
         for (int row = 0; row < BOARD_HEIGHT; row++) {
             for (int col = 0; col < BOARD_WIDTH; col++) {

@@ -19,7 +19,19 @@ public class Assam {
         this.direction = direction;
     }
 
-    // Parse Assam information from an Assam string representation e.g."A51W"
+    public Assam (String gameString){
+        Assam assam = fromGameString(gameString);
+        this.xCoordinate = assam.xCoordinate;
+        this.yCoordinate = assam.yCoordinate;
+        this.direction = assam.direction;
+    }
+
+    /**
+     *  Parse Assam information from an Assam string representation
+     *
+     * @param assamString Assam string contains 4 characters. e.g."A51W"
+     * @return An Assam object created from the given assam string
+     */
     public static Assam fromString(String assamString) {
         // Validate the length of the string
         if (assamString.length() != 4){
@@ -27,8 +39,8 @@ public class Assam {
         }
         else {
             // Extract x and y coordinates from the string
-            int xCoordinate = (assamString.charAt(1) - '0');//char int transform automatically
-            int yCoordinate = (assamString.charAt(2) - '0');
+            int xCoordinate = (assamString.charAt(2) - '0');//char int transform automatically
+            int yCoordinate = (assamString.charAt(1) - '0');
 
             // Parse direction using the Direction enum
             Direction direction = Direction.fromSymbol(assamString.charAt(3));
@@ -38,7 +50,12 @@ public class Assam {
         }
     }
 
-    // Parse Assam information from a game state string representation
+    /**
+     *  Parse Assam information from a game state string representation
+     *
+     * @param gameString gameString contains different parts of objects
+     * @return An Assam object created from the given gameString string
+     */
     public static Assam fromGameString(String gameString){
         // Extract Assam string from the game string
         String assamString = gameString.substring(32,36);
