@@ -1,28 +1,75 @@
 package comp1110.ass2;
 
 public class PlayerPattern  {
-    private boolean isplaying=false;
-    private char color;//"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色
+    private boolean isPlaying = false;
+    private char color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
+    private int dirhams; // the number of dirhams
+    private int remainingRugs; // the number of remain rugs
 
-    private int dirhams; // 迪拉姆数量
-    private int remainingRugs; // 剩余要放置的地毯数量
+    /**
+     *
+     * @param isPlaying Represents if the player is currently playing
+     * @param color Represents the color of the player
+     * @param dirhams The number of dirhams the player has
+     * @param remainingRugs The number of remaining rugs the player has
+     */
 
-    public PlayerPattern(String input) {
-        this.color = input.charAt(1);
-        String dirham=input.substring(2,5);
-        System.out.println(dirham);
-        this.dirhams = Integer.parseInt(dirham);
-        String remainingRuy=input.substring(5,7);
-        this.remainingRugs = Integer.parseInt(remainingRuy);
-        if(input.charAt(7)=='i')isplaying=true;
-    }//将一个 player string转化成player对象的构造器
+    public PlayerPattern(boolean isPlaying, char color, int dirhams, int remainingRugs){
+        this.isPlaying = isPlaying;
+        this.color = color;
+        this.dirhams = dirhams;
+        this.remainingRugs = remainingRugs;
+    }
+
+    /**
+     * Parses a player string and creates a PlayerPattern object from it.
+     *
+     * @param playerString The player string to parse
+     * @return A PlayerPattern object created from the given player string
+     * @throws IllegalArgumentException If the player string is invalid
+     */
+    public static PlayerPattern fromString(String playerString) {
+        if (playerString.length() != 8){
+            throw new IllegalArgumentException("Invalid Player String: " + playerString);
+        }
+        else {
+            boolean isPlaying = playerString.charAt(7) == 'i';
+            char color = playerString.charAt(1);
+            String dirhamsStr = playerString.substring(2, 5);
+            int dirhams = Integer.parseInt(dirhamsStr);
+            String remainingRugsStr = playerString.substring(5, 7);
+            int remainingRugs = Integer.parseInt(remainingRugsStr);
+            return new PlayerPattern(isPlaying, color, dirhams, remainingRugs);
+        }
+    }//
+
+    /**
+     * Parses the player information from a game state string and creates an array of PlayerPattern objects.
+     *
+     * @param gameString
+     * @return An array of PlayerPattern objects representing the players in the game
+     */
+    public static PlayerPattern[] fromGameString(String gameString) {
+        String[] playersString = gameString.split("A")[0].split("P");
+
+        PlayerPattern[] playerPatterns = new PlayerPattern[playersString.length - 1];
+
+        for (int i = 1; i < playersString.length; i++) {
+            String playerStr = playersString[i];
+            if (playerStr.equals("")) continue;
+
+            PlayerPattern playerPattern = PlayerPattern.fromString('P' + playerStr);
+            playerPatterns[i-1] = playerPattern;
+        }
+        return playerPatterns;
+    }
 
     public boolean isIsplaying() {
-        return isplaying;
+        return isPlaying;
     }
 
     public void setIsplaying(boolean isplaying) {
-        this.isplaying = isplaying;
+        this.isPlaying = isplaying;
     }
 
     public char getColor() {
@@ -49,6 +96,5 @@ public class PlayerPattern  {
         this.remainingRugs = remainingRugs;
     }
 
-
-    }
+}
 
