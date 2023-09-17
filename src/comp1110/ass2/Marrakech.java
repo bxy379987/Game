@@ -286,7 +286,7 @@ public class Marrakech {
     public static int getPaymentAmount(String gameString) {
 
         // FIXME: Task 11
-        System.out.println("=============[isPlacementValid]=============");
+        System.out.println("=============[getPaymentAmount]=============");
 //        System.out.println(gameString);
         String boardString = gameString.split("B")[1];
         System.out.println(boardString);
