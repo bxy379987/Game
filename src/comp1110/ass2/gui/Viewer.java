@@ -7,11 +7,7 @@ import comp1110.ass2.PlayerPattern;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,22 +21,6 @@ import java.io.IOException;
 
 
 public class Viewer extends Application {
-//    @FXML
-//    public Label label1;
-//    public Label label2;
-//    public Label label3;
-//    public Label label4;
-//    public Label label5;
-//    public Label label6;
-//    public Label label7;
-//    public Label label8;
-//    public Label label9;
-//    public Label label10;
-//    public Label label11;
-//    public Label label12;
-//    public Label label13;
-//    public Label label14;
-
     private static final int VIEWER_WIDTH = 1200;
     private static final int VIEWER_HEIGHT = 700;
     private final Group root = new Group();
@@ -67,52 +47,6 @@ public class Viewer extends Application {
      * @param state an array of two strings, representing the current game state
      */
     void displayState(String state) throws IOException {
-
-
-//        System.out.println(state);
-//
-//
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
-//        root.getChildren().addAll((Node) loader.load());
-//        Viewer controller=loader.getController();
-//        PlayerPattern player1=new PlayerPattern(state.substring(0,8));
-//        PlayerPattern player2=new PlayerPattern(state.substring(8,16));
-//        PlayerPattern player3=new PlayerPattern(state.substring(16,24));
-//        PlayerPattern player4=new PlayerPattern(state.substring(24,32));
-//        Assam aassam = Assam.fromGameString(state);
-//
-//        if(controller!=null){controller.label1.setText(player1.isIsplaying()+"");
-//        controller.label2.setText(player2.isIsplaying()+"");
-//        controller.label3.setText(player3.isIsplaying()+"");
-//        controller.label4.setText(player4.isIsplaying()+"");
-//        controller.label5.setText(player1.getDirhams()+"");
-//        controller.label6.setText(player2.getDirhams()+"");
-//        controller.label7.setText(player3.getDirhams()+"");
-//        controller.label8.setText(player4.getDirhams()+"");
-//        controller.label9.setText(player1.getRemainingRugs()+"");
-//        controller.label10.setText(player2.getRemainingRugs()+"");
-//        controller.label11.setText(player3.getRemainingRugs()+"");
-//        controller.label12.setText(player4.getRemainingRugs()+"");
-//        controller.label13.setText(aassam.getxCoordinate()+"  "+aassam.getyCoordinate());
-//        controller.label14.setText((aassam.getDirection())+"");
-//        }
-//
-//        else
-//            System.out.println(1);
-//        try {
-//            root.getChildren().addAll((Node) loader.load());
-//        } catch (IOException ignored) {
-//        }
-//
-
-//        System.out.println("=============[displayState]=============");
-//        System.out.println(state);
-//        String boardState = state.split("B")[1];
-//        System.out.println(boardState);
-//        String[] playersState = state.split("B")[0].split("A")[0].split("P");
-//        System.out.println(playersState[0]);
-
-
         String boardState = state.split("B")[1]; // Extract the board string
 
         // Display the player information, board and Assam
