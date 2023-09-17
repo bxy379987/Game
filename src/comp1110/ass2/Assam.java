@@ -42,8 +42,9 @@ public class Assam {
         }
         else {
             // Extract x and y coordinates from the string
-            int xCoordinate = (assamString.charAt(2) - '0');//char int transform automatically
-            int yCoordinate = (assamString.charAt(1) - '0');
+            // [DEBUG] swap the col & row coordinates to correct board in Viewer
+            int xCoordinate = (assamString.charAt(1) - '0');//char int transform automatically
+            int yCoordinate = (assamString.charAt(2) - '0');
 
             // Parse direction using the Direction enum
             Direction direction = Direction.fromSymbol(assamString.charAt(3));

@@ -94,6 +94,7 @@ public class Board {
     }
 
     public Assam getAssamViaTunnel(Assam assam) {
+        if (!tunnels.containsKey(assam.toString())) return assam;
         return Assam.fromString(tunnels.get(assam.toString()));
     }
 }
