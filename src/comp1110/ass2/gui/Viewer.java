@@ -126,16 +126,16 @@ public class Viewer extends Application {
     // Display the board based on the provided board object
     public void displayBoard(Board board){
         String[][] boardcolors = board.getBoardColor();
-        for (int row = 0; row < BOARD_INDEX_WIDTH; row++) {
-            for (int col = 0; col < BOARD_INDEX_HEIGHT; col++) {
+        for (int col = 0; col < BOARD_INDEX_WIDTH; col++) {
+            for (int row = 0; row < BOARD_INDEX_HEIGHT; row++) {
                 Rectangle node = new Rectangle(NODE_SIZE * 0.9, NODE_SIZE * 0.9);
                 // set node position
                 // [DEBUG] swap the col & row coordinates to correct board
-                node.setLayoutX(BOARD_START_X + row * NODE_SIZE);
-                node.setLayoutY(BOARD_START_Y + col * NODE_SIZE);
+                node.setLayoutX(BOARD_START_X + col * NODE_SIZE);
+                node.setLayoutY(BOARD_START_Y + row * NODE_SIZE);
                 // set node color
                 node.setFill(Color.WHITE);
-                switch (boardcolors[row][col]) {
+                switch (boardcolors[col][row]) {
                     case "c" -> node.setFill(Color.CYAN);
                     case "y" -> node.setFill(Color.YELLOW);
                     case "p" -> node.setFill(Color.PURPLE);

@@ -46,22 +46,23 @@ public class Board {
     }
 
     Board() {
-        boardColor = new String[BOARD_WIDTH][BOARD_HEIGHT];
-        for (int row = 0; row < BOARD_HEIGHT; row++) {
-            for (int col = 0; col < BOARD_WIDTH; col++) {
-                boardColor[row][col] = "n";
+        boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
+        for (int col = 0; col < BOARD_WIDTH; col++) {
+            for (int row = 0; row < BOARD_HEIGHT; row++) {
+                boardColor[col][row] = "n";
             }
+//            System.out.println();
         }
         initTunnels();
     }
 
     public Board(String boardState) {
-        boardColor = new String[BOARD_WIDTH][BOARD_HEIGHT];
-        for (int row = 0; row < BOARD_HEIGHT; row++) {
-            for (int col = 0; col < BOARD_WIDTH; col++) {
-                char color = boardState.toCharArray()[(row * BOARD_WIDTH + col) * 3];
+        boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
+        for (int col = 0; col < BOARD_WIDTH; col++) {
+            for (int row = 0; row < BOARD_HEIGHT; row++) {
+                char color = boardState.toCharArray()[(col * BOARD_WIDTH + row) * 3];
 //                System.out.print(color + " ");
-                boardColor[row][col] = String.valueOf(color);
+                boardColor[col][row] = String.valueOf(color);
             }
 //            System.out.println();
         }
