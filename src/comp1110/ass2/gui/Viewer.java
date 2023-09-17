@@ -119,7 +119,8 @@ public class Viewer extends Application {
         displayPlayers(PlayerPattern.fromGameString(state));
         displayBoard(new Board(boardState));
         displayAssam(new Assam(state));
-
+        // [DEBUG] Test get next assam via tunnel
+        System.out.println(new Board(boardState).getAssamViaTunnel(new Assam(state)).toString());
     }
 
     // Display the board based on the provided board object
@@ -130,8 +131,8 @@ public class Viewer extends Application {
                 Rectangle node = new Rectangle(NODE_SIZE * 0.9, NODE_SIZE * 0.9);
                 // set node position
                 // [DEBUG] swap the col & row coordinates to correct board
-                node.setLayoutX(BOARD_START_X + col * NODE_SIZE);
-                node.setLayoutY(BOARD_START_Y + row * NODE_SIZE);
+                node.setLayoutX(BOARD_START_X + row * NODE_SIZE);
+                node.setLayoutY(BOARD_START_Y + col * NODE_SIZE);
                 // set node color
                 node.setFill(Color.WHITE);
                 switch (boardcolors[row][col]) {

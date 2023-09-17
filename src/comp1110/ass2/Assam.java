@@ -12,6 +12,9 @@ public class Assam {
     // When Assam is facing W, he is facing towards the left of the board
     private Direction direction;
 
+    public Assam () {
+
+    }
     // Constructor to initialize Assam with coordinates and direction
     public Assam (int xCoordinate, int yCoordinate, Direction direction){
         this.xCoordinate = xCoordinate;
@@ -39,8 +42,9 @@ public class Assam {
         }
         else {
             // Extract x and y coordinates from the string
-            int xCoordinate = (assamString.charAt(2) - '0');//char int transform automatically
-            int yCoordinate = (assamString.charAt(1) - '0');
+            // [DEBUG] swap the col & row coordinates to correct board in Viewer
+            int xCoordinate = (assamString.charAt(1) - '0');//char int transform automatically
+            int yCoordinate = (assamString.charAt(2) - '0');
 
             // Parse direction using the Direction enum
             Direction direction = Direction.fromSymbol(assamString.charAt(3));
@@ -86,5 +90,10 @@ public class Assam {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return "A"+xCoordinate+yCoordinate+direction.getSymbol();
     }
 }
