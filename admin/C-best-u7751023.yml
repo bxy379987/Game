@@ -19,7 +19,7 @@ declaration: >-
 # Add as many "name+comment" entries as necessary
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
-  - name:
+ - name: Yusi ZHONG
     comment: >-
 
 # Use this to list any code that you used that you did not write,
@@ -29,7 +29,11 @@ collaboration:
 #
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external code)
-code:
+code:FXMLLoader loader = new FXMLLoader(getClass().getResource("viewer.fxml"));
+  //        root.getChildren().addAll((Node) loader.load());
+  //        Viewer controller=loader.getController();
+  <HBox layoutX="122.0" layoutY="55.0" prefHeight="34.0" prefWidth="582.0">
+  <AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp1110.ass2.gui.Viewer">
   - comment:
     url:
     licence:
@@ -43,9 +47,22 @@ class:
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - 
+   - public static PlayerPattern fromString(String playerString) {
+     if (playerString.length() != 8){
+     throw new IllegalArgumentException("Invalid Player String: " + playerString);
+}
+  else {
+  boolean isPlaying = playerString.charAt(7) == 'i';
+  char color = playerString.charAt(1);
+  String dirhamsStr = playerString.substring(2, 5);
+  int dirhams = Integer.parseInt(dirhamsStr);
+  String remainingRugsStr = playerString.substring(5, 7);
+  int remainingRugs = Integer.parseInt(remainingRugsStr);
+  return new PlayerPattern(isPlaying, color, dirhams, remainingRugs);
+}
+}//
    - 
 
 # sign *your* name and uid here
-name:
-uid:
+name:Xiangyu Bao
+uid:u7751023

@@ -119,7 +119,8 @@ public class Viewer extends Application {
         displayPlayers(PlayerPattern.fromGameString(state));
         displayBoard(new Board(boardState));
         displayAssam(new Assam(state));
-
+        // [DEBUG] Test get next assam via tunnel
+        System.out.println(new Board(boardState).getAssamViaTunnel(new Assam(state)).toString());
     }
 
     // Display the board based on the provided board object
