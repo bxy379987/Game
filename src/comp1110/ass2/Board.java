@@ -1,10 +1,50 @@
 package comp1110.ass2;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Board {
     int BOARD_WIDTH = 7;
     int BOARD_HEIGHT = 7;
     String[][] boardColor;
+    Map<String, String> tunnels = new HashMap<>();
+    private void initTunnels() {
+        // upper line
+        tunnels.put("A00N", "A10S");
+        tunnels.put("A10N", "A00S");
+        tunnels.put("A20N", "A30S");
+        tunnels.put("A30N", "A20S");
+        tunnels.put("A40N", "A50S");
+        tunnels.put("A50N", "A40S");
+        // upper right corner
+        tunnels.put("A60N", "A60W");
+        tunnels.put("A60E", "A60S");
+        // right line
+        tunnels.put("A61E", "A62W");
+        tunnels.put("A62E", "A61W");
+        tunnels.put("A63E", "A64W");
+        tunnels.put("A64E", "A63W");
+        tunnels.put("A65E", "A66W");
+        tunnels.put("A66E", "A65W");
+        // bottom line
+        tunnels.put("A66S", "A56N");
+        tunnels.put("A56S", "A66N");
+        tunnels.put("A46S", "A36N");
+        tunnels.put("A36S", "A46N");
+        tunnels.put("A26S", "A16N");
+        tunnels.put("A16S", "A26N");
+        // bottom left corner
+        tunnels.put("A06S", "A06E");
+        // left line
+        tunnels.put("A05W", "A04E");
+        tunnels.put("A04W", "A05E");
+        tunnels.put("A03W", "A02E");
+        tunnels.put("A02W", "A03E");
+        tunnels.put("A01W", "A00E");
+        tunnels.put("A00W", "A01E");
+    }
+
     Board() {
         boardColor = new String[BOARD_WIDTH][BOARD_HEIGHT];
         for (int row = 0; row < BOARD_HEIGHT; row++) {
@@ -12,6 +52,7 @@ public class Board {
                 boardColor[row][col] = "n";
             }
         }
+        initTunnels();
     }
 
     public Board(String boardState) {
@@ -24,6 +65,7 @@ public class Board {
             }
 //            System.out.println();
         }
+        initTunnels();
     }
     public String[] getColorsNearby(int x, int y) {
         assert x >= 0 && x < BOARD_WIDTH;
@@ -49,5 +91,9 @@ public class Board {
 
     public String getColorByCoordinate(int x, int y) {
         return boardColor[x][y];
+    }
+
+    public Assam getAssamViaTunnel(Assam assam) {
+        return Assam.fromString(tunnels.get(assam.toString()));
     }
 }

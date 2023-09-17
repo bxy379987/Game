@@ -12,6 +12,9 @@ public class Assam {
     // When Assam is facing W, he is facing towards the left of the board
     private Direction direction;
 
+    public Assam () {
+
+    }
     // Constructor to initialize Assam with coordinates and direction
     public Assam (int xCoordinate, int yCoordinate, Direction direction){
         this.xCoordinate = xCoordinate;
@@ -86,5 +89,10 @@ public class Assam {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return "A"+xCoordinate+yCoordinate+direction.getSymbol();
     }
 }
