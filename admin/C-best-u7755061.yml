@@ -32,7 +32,7 @@ collaboration:
 code:
   - comment: Instantiate the corresponding object from a game string, and then display the required information.
     url: https://gitlab.cecs.anu.edu.au/u7751023/comp1110-ass2/-/blob/main/src/comp1110/ass2/gui/Viewer.java#L49-165
-    licence:
+    licence: Copyright (c) 2023 Hongjun-Xu
 
 # I wish to submit the following classes as entirely my own (remove this if
 # you want to just submit methods):
