@@ -96,5 +96,9 @@ public class PlayerPattern  {
         this.remainingRugs = remainingRugs;
     }
 
+    @Override
+    public String toString() {
+        return 'P'+""+this.getColor()+""+'0'+""+this.getDirhams()+""+this.getRemainingRugs()+(isPlaying?'i':'o');
+    }
 }
 

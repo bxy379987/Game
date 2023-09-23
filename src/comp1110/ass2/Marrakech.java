@@ -446,7 +446,7 @@ public class Marrakech {
             max='p';
         }
 
-return max;//打平的情况还没判断test就过了...留给你们写吧,简单的.
+return max;//打平的情况还没判断test就过了...
 
 
         // FIXME: Task 12
@@ -465,9 +465,12 @@ return max;//打平的情况还没判断test就过了...留给你们写吧,简�
      * @return A String representing Assam's state after the movement.
      */
     public static String moveAssam(String currentAssam, int dieResult){
-        char direction=currentAssam.charAt(3);
-        int x=currentAssam.charAt(1)-'0';
-        int y=currentAssam.charAt(2)-'0';
+        System.out.println(currentAssam+" "+dieResult);
+        Assam assam=new Assam();
+       assam=Assam.fromString(currentAssam);
+        char direction=assam.getDirection().getSymbol();
+        int x=assam.getxCoordinate();
+        int y=assam.getyCoordinate();
         switch(currentAssam.charAt(3)){
             case 'N':
                 if(y-dieResult>=0){y-=dieResult;}
@@ -504,7 +507,7 @@ return max;//打平的情况还没判断test就过了...留给你们写吧,简�
                     if(y%2==1)y+=1;else y-=1;
                 }
                 else if(x+dieResult>6&&y==0){
-                    y=13-x-dieResult;
+                    y=x+dieResult-7;
                     x=6;
                     direction='S';
                 }
@@ -516,7 +519,7 @@ return max;//打平的情况还没判断test就过了...留给你们写吧,简�
                     x=dieResult-1-x;
                     if(y%2==0)y+=1;else y-=1;
                 }else if(x-dieResult<0&&y==6){
-                    y=x+dieResult-7;
+                    y=x-dieResult+7;
                     x=0;
                     direction='N';
                 }break;
@@ -545,51 +548,76 @@ return max;//打平的情况还没判断test就过了...留给你们写吧,简�
         int x2=rug1.getCoordination2()[0];
         int y1=rug1.getCoordination1()[1];
         int y2=rug1.getCoordination2()[1];
-        String substringGameState = currentGame.substring(21);
-        int substringGameStatelLength = substringGameState.length();//is 49^3
-        int substringcount = substringGameStatelLength / 3;//is 49
-        String[] substringGameStatearray = new String[substringcount];
-        for (int i = 0; i < substringcount; i++) {
-            int startIndex = i * 3;
-            int endIndex = startIndex + 3;
-            substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
-        }
         int x=x1*7+y1;
         int y=x2*7+y2;
-        substringGameStatearray[x]=rug.substring(0,3);
-        substringGameStatearray[y]=rug.substring(0,3);
-        String changedGame=new String();
-        for(int j=0;j<substringcount;j++){
-            changedGame=changedGame+substringGameStatearray[j];
-        }
-        changedGame=currentGame.substring(0,21)+changedGame;
-        char c=rug1.getColor();
-        String regex1 = "P[a-z][0-9]{5}[a-z]";
-        Pattern pattern1 = Pattern.compile(regex1);
-        Matcher matcher = pattern1.matcher(currentGame);
-        //if(!matcher.find())return false;
-        String[]player=new String[4];
-        int count1=0;
-        while (matcher.find()) {
-            String player2 = matcher.group(0);
-            player[count1++]=player2;
-        }
-        int count2=0;
-        for(String s:player){
-            if(s!=null){
-                if(s.charAt(1)!=c){
-                count2++;
-            }if(s.charAt(1)==c){break;}
-            }
-        }
-        char[]chararray=changedGame.toCharArray();
-        if(chararray[count2*8+6]!='0'){ chararray[count2*8+6]-=1;}
-        else if(chararray[count2*8+6]=='0'&&chararray[count2*8+5]=='1'){chararray[count2*8+6]='9';chararray[count2*8+5]='0';}
-        else return"玩尼玛没毛毯了";//else 再然后就是两个都是0,毛毯数量为0,那还玩个屁,直接return null?
-        changedGame=new String(chararray);
+//        String substringGameState = currentGame.substring(21);
 
-        // FIXME: Task 14
-        return changedGame;
+        PlayerPattern playerPattern1=PlayerPattern.fromString(currentGame.substring(0,8));
+        PlayerPattern playerPattern2=PlayerPattern.fromString(currentGame.substring(8,16));
+        PlayerPattern playerPattern3=PlayerPattern.fromString(currentGame.substring(16,24));
+        PlayerPattern playerPattern4=PlayerPattern.fromString(currentGame.substring(24,32));
+        Assam assam1=Assam.fromString(currentGame.substring(32,36));
+//        Board board=new Board(currentGame.substring(36));
+        if(rug1.getColor()==playerPattern1.getColor()){playerPattern1.setRemainingRugs(playerPattern1.getRemainingRugs()-1);}
+        if(rug1.getColor()==playerPattern2.getColor()){playerPattern2.setRemainingRugs(playerPattern2.getRemainingRugs()-1);}
+        if(rug1.getColor()==playerPattern3.getColor()){playerPattern3.setRemainingRugs(playerPattern3.getRemainingRugs()-1);}
+        if(rug1.getColor()==playerPattern4.getColor()){playerPattern4.setRemainingRugs(playerPattern4.getRemainingRugs()-1);}
+//        board.setColorByCoordinate(x,y,rug1.getColor()+"");//为什么color是字符串?
+        String Boardstring=currentGame.substring(36);
+        char[] Board=Boardstring.toCharArray();
+        Board[x*3+1]=rug1.getColor();
+        Board[y*3+1]=rug1.getColor();
+        System.out.println(playerPattern1.toString());
+        System.out.println(Board);
+//        System.out.println("board"+board);
+        String changedgamestate=new String(playerPattern1.toString()+playerPattern2.toString()+playerPattern3+playerPattern4+assam1+new String(Board));
+        System.out.println("state"+changedgamestate);
+        return changedgamestate;
+//        int substringGameStatelLength = substringGameState.length();//is 49^3
+//        int substringcount = substringGameStatelLength / 3;//is 49
+//        String[] substringGameStatearray = new String[substringcount];
+//        for (int i = 0; i < substringcount; i++) {
+//            int startIndex = i * 3;
+//            int endIndex = startIndex + 3;
+//            substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
+//        }
+//        int x=x1*7+y1;
+//        int y=x2*7+y2;
+//        substringGameStatearray[x]=rug.substring(0,3);
+//        substringGameStatearray[y]=rug.substring(0,3);
+//        String changedGame=new String();
+//        for(int j=0;j<substringcount;j++){
+//            changedGame=changedGame+substringGameStatearray[j];
+//        }
+//        changedGame=currentGame.substring(0,21)+changedGame;
+//        char c=rug1.getColor();
+//        String regex1 = "P[a-z][0-9]{5}[a-z]";
+//        Pattern pattern1 = Pattern.compile(regex1);
+//        Matcher matcher = pattern1.matcher(currentGame);
+//        //if(!matcher.find())return false;
+//        String[]player=new String[4];
+//        int count1=0;
+//        while (matcher.find()) {
+//            String player2 = matcher.group(0);
+//            player[count1++]=player2;
+//        }
+//        int count2=0;
+//        for(String s:player){
+//            if(s!=null){
+//                if(s.charAt(1)!=c){
+//                count2++;
+//            }if(s.charAt(1)==c){break;}
+//            }
+//        }
+//        char[]chararray=changedGame.toCharArray();
+//        if(chararray[count2*8+6]!='0'){ chararray[count2*8+6]-=1;}
+//        else if(chararray[count2*8+6]=='0'&&chararray[count2*8+5]=='1'){chararray[count2*8+6]='9';chararray[count2*8+5]='0';}
+//        else return"";
+//
+//        changedGame=new String(chararray)+currentGame.charAt(currentGame.length()-1);
+//
+//        // FIXME: Task 14
+//        return changedGame;
     }
 
 }
