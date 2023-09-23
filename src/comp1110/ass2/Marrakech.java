@@ -286,7 +286,7 @@ public class Marrakech {
     public static int getPaymentAmount(String gameString) {
 
         // FIXME: Task 11
-        System.out.println("=============[isPlacementValid]=============");
+        System.out.println("=============[getPaymentAmount]=============");
 //        System.out.println(gameString);
         String boardString = gameString.split("B")[1];
         System.out.println(boardString);
@@ -331,7 +331,7 @@ public class Marrakech {
             // [DEBUG] check board color state
             for (int row = 0; row < boardColor.length; row++) {
                 for (int col = 0; col < boardColor[0].length; col++) {
-                    System.out.print(boardColor[row][col] + " ");
+                    System.out.print(boardColor[col][row] + " ");
                 }
                 System.out.println();
             }
