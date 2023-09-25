@@ -1,7 +1,5 @@
 package comp1110.ass2;
 
-import comp1110.ass2.gui.Viewer;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -191,7 +189,10 @@ public class Marrakech {
         System.out.println(rug);
         System.out.println(gameState);
         String boardString = gameState.split("B")[1];
-
+        Board boardEntity = new Board(boardString);
+        System.out.println(boardEntity);
+        Rug rugEntity = new Rug(rug);
+        System.out.println(rugEntity);
 
         String regex = "A[0-9]{2}[A-Z]";
         Pattern pattern = Pattern.compile(regex);
@@ -206,8 +207,8 @@ public class Marrakech {
             acoor[0] = x;
             acoor[1] = y;
             Rug rugRug = new Rug(rug);//抽象命名哈哈哈哈.请问每个rug分别代表什么
-            rug1 = rugRug.getCoordination1();
-            rug2 = rugRug.getCoordination2();
+            rug1 = rugRug.getFirstCoordinate();
+            rug2 = rugRug.getSecondCoordinate();
             if (!NextTo(rug1, acoor) && !NextTo(rug2, acoor)) return false;
             else if (NextTo(rug1, acoor) && rug2[0] == acoor[0] && acoor[1] == rug2[1]) return false;
             else if (NextTo(rug2, acoor) && rug1[0] == acoor[0] && acoor[1] == rug1[1]) return false;
@@ -546,10 +547,10 @@ return max;//打平的情况还没判断test就过了...
     public static String makePlacement(String currentGame, String rug) {
        if(isPlacementValid(currentGame,rug)==false){return currentGame;}
         Rug rug1=new Rug(rug);
-        int x1=rug1.getCoordination1()[0];
-        int x2=rug1.getCoordination2()[0];
-        int y1=rug1.getCoordination1()[1];
-        int y2=rug1.getCoordination2()[1];
+        int x1=rug1.getFirstCoordinate()[0];
+        int x2=rug1.getSecondCoordinate()[0];
+        int y1=rug1.getFirstCoordinate()[1];
+        int y2=rug1.getSecondCoordinate()[1];
         int x=x1*7+y1;
         int y=x2*7+y2;
 //        String substringGameState = currentGame.substring(21);

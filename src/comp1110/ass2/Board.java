@@ -72,7 +72,7 @@ public class Board {
      */
     public Board(String boardState) {
         String[] boardStateArray = boardState.split("");
-        if (boardStateArray.length != 0) throw new IllegalArgumentException("Incomplete board state string is not acceptable");
+        if (boardStateArray.length != BOARD_WIDTH * BOARD_HEIGHT * 3) throw new IllegalArgumentException("Incomplete board state string is not acceptable");
         boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
         for (int col = 0; col < BOARD_WIDTH; col++) {
             for (int row = 0; row < BOARD_HEIGHT; row++) {
@@ -140,7 +140,9 @@ public class Board {
      * @return assam after entered the tunnel
      */
     public Assam getAssamViaTunnel(Assam assam) {
+        // CASE: do not enter tunnels
         if (!tunnels.containsKey(assam.toString())) return assam;
+        // CASE: enter tunnels, find Mapping tunnel
         return Assam.fromString(tunnels.get(assam.toString()));
     }
 
