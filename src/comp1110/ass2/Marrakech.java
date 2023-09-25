@@ -298,6 +298,8 @@ public class Marrakech {
         Board board = new Board(boardString);
         String[][] boardColor = board.getBoardColor();
         String currentColor = boardColor[assamPos[0]][assamPos[1]];
+        // CASE: no color
+        if (currentColor.equals("n")) return 0;
         System.out.println("MAPPING COLOR: " + currentColor);
 
         // Start calculate costs by BFS
