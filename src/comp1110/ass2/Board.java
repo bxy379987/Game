@@ -7,6 +7,7 @@ public class Board {
     int BOARD_WIDTH = 7;
     int BOARD_HEIGHT = 7;
     String[][] boardColor;
+    int[][] subID;
     Map<String, String> tunnels = new HashMap<>();
 
 //    ArrayList<ArrayList<Stack<Rug>>> boardHistoryRug = new ArrayList<>();
@@ -58,9 +59,11 @@ public class Board {
      */
     Board() {
         boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
+        subID = new int[BOARD_HEIGHT][BOARD_WIDTH];
         for (int col = 0; col < BOARD_WIDTH; col++) {
             for (int row = 0; row < BOARD_HEIGHT; row++) {
                 boardColor[col][row] = "n";
+                subID[col][row] = 0;
             }
 //            System.out.println();
         }
@@ -72,14 +75,19 @@ public class Board {
      */
     public Board(String boardState) {
         String[] boardStateArray = boardState.split("");
-        if (boardStateArray.length != BOARD_WIDTH * BOARD_HEIGHT * 3) throw new IllegalArgumentException("Incomplete board state string is not acceptable");
+        if (boardStateArray.length != BOARD_WIDTH * BOARD_HEIGHT * 3)
+            throw new IllegalArgumentException("Incomplete board state string is not acceptable");
         boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
+        subID = new int[BOARD_HEIGHT][BOARD_WIDTH];
         for (int col = 0; col < BOARD_WIDTH; col++) {
             for (int row = 0; row < BOARD_HEIGHT; row++) {
-                String color = boardStateArray[(col * BOARD_WIDTH + row) * 3];
+                int flattenIdx = (col * BOARD_WIDTH + row) * 3;
+                String color = boardStateArray[flattenIdx];
+                int id = Integer.parseInt(boardStateArray[flattenIdx + 1] + boardStateArray[flattenIdx + 2]);
                 if (!"cyrpn".contains(color)) throw new IllegalArgumentException("Only accept \"cyrpn\" as color");
 //                System.out.print(color + " ");
                 boardColor[col][row] = color;
+                subID[col][row] = id;
             }
 //            System.out.println();
         }
@@ -123,9 +131,17 @@ public class Board {
      * @param y coordinate
      * @param color of corresponding coordinate
      */
-    public void setColorByCoordinate(int x, int y, String color) {
+    // DISCARD?
+//    public void setColorByCoordinate(int x, int y, String color) {
+//        if (!"cyrpn".contains(color)) throw new IllegalArgumentException("Only accept \"cyrpn\" as color");
+//        boardColor[x][y] = color;
+//    }
+
+    public void setColorByCoordinate(int x, int y, String color, int id) {
         if (!"cyrpn".contains(color)) throw new IllegalArgumentException("Only accept \"cyrpn\" as color");
+        if (id < 0) throw new IllegalArgumentException("Only accept rug ID");
         boardColor[x][y] = color;
+        subID[x][y] = id;
     }
 
     public String getColorByCoordinate(int x, int y) {
@@ -178,9 +194,18 @@ public class Board {
         StringBuilder boardString = new StringBuilder();
         for (int col = 0; col < BOARD_WIDTH; col++) {
             for (int row = 0; row < BOARD_HEIGHT; row++) {
-                boardString.append(boardColor[col][row]).append("00");
+                boardString.append(boardColor[col][row]).append(String.format("%02d", subID[col][row]));
             }
         }
         return boardString.toString();
+    }
+
+    public void showBoardColorInMatrix() {
+        for (int row = 0; row < boardColor.length; row++) {
+            for (int col = 0; col < boardColor[0].length; col++) {
+                System.out.print(boardColor[col][row] + " ");
+            }
+            System.out.println();
+        }
     }
 }
