@@ -555,25 +555,29 @@ return max;//打平的情况还没判断test就过了...
         int y=x2*7+y2;
 //        String substringGameState = currentGame.substring(21);
 
-        PlayerPattern playerPattern1=PlayerPattern.fromString(currentGame.substring(0,8));
-        PlayerPattern playerPattern2=PlayerPattern.fromString(currentGame.substring(8,16));
-        PlayerPattern playerPattern3=PlayerPattern.fromString(currentGame.substring(16,24));
-        PlayerPattern playerPattern4=PlayerPattern.fromString(currentGame.substring(24,32));
+        Player player1 = Player.fromString(currentGame.substring(0,8));
+        Player player2 = Player.fromString(currentGame.substring(8,16));
+        Player player3 = Player.fromString(currentGame.substring(16,24));
+        Player player4 = Player.fromString(currentGame.substring(24,32));
         Assam assam1=Assam.fromString(currentGame.substring(32,36));
 //        Board board=new Board(currentGame.substring(36));
-        if(rug1.getColor()==playerPattern1.getColor()){playerPattern1.setRemainingRugs(playerPattern1.getRemainingRugs()-1);}
-        if(rug1.getColor()==playerPattern2.getColor()){playerPattern2.setRemainingRugs(playerPattern2.getRemainingRugs()-1);}
-        if(rug1.getColor()==playerPattern3.getColor()){playerPattern3.setRemainingRugs(playerPattern3.getRemainingRugs()-1);}
-        if(rug1.getColor()==playerPattern4.getColor()){playerPattern4.setRemainingRugs(playerPattern4.getRemainingRugs()-1);}
+        if(rug1.getColor()== player1.getColor()){
+            player1.setRemainingRugs(player1.getRemainingRugs()-1);}
+        if(rug1.getColor()== player2.getColor()){
+            player2.setRemainingRugs(player2.getRemainingRugs()-1);}
+        if(rug1.getColor()== player3.getColor()){
+            player3.setRemainingRugs(player3.getRemainingRugs()-1);}
+        if(rug1.getColor()== player4.getColor()){
+            player4.setRemainingRugs(player4.getRemainingRugs()-1);}
 //        board.setColorByCoordinate(x,y,rug1.getColor()+"");//为什么color是字符串?
         String Boardstring=currentGame.substring(36);
         char[] Board=Boardstring.toCharArray();
         Board[x*3+1]=rug1.getColor();
         Board[y*3+1]=rug1.getColor();
-        System.out.println(playerPattern1.toString());
+        System.out.println(player1.toString());
         System.out.println(Board);
 //        System.out.println("board"+board);
-        String changedgamestate=new String(playerPattern1.toString()+playerPattern2.toString()+playerPattern3+playerPattern4+assam1+new String(Board));
+        String changedgamestate=new String(player1.toString()+ player2.toString()+ player3 + player4 +assam1+new String(Board));
         System.out.println("state"+changedgamestate);
         return changedgamestate;
 //        int substringGameStatelLength = substringGameState.length();//is 49^3

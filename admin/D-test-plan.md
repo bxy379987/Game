@@ -11,3 +11,111 @@
 
 Do **not** include in your test plan the `Marrakech` class or the predefined
 static methods for which we have already provided unit tests.
+
+---
+
+
+
+Assam
+
+-   [ ] ​    fromString()
+
+-   [ ] ​    fromGameString()
+
+-   [ ] ​    getxCoordinate()
+
+-   [ ] ​    setxCoordinate()
+
+-   [ ] ​    getyCoordinate()
+
+-   [ ] ​    setyCoordinate()
+
+-   [ ] ​    getDirection()
+
+-   [ ] ​    setDirection()
+
+-   [ ] ​    testToString()
+
+BiMap [DISCARD]
+
+Board
+
+-   [ ]   getColorsNearby()
+
+-   [ ]   getBoardColor()
+
+-   [ ]   setColorByCoordinate()
+
+-   [ ]   getColorByCoordinate()
+
+-   [ ]   getAssamViaTunnel()
+
+-   [ ]   placeRug()
+
+-   [ ]   disusePlayer()
+
+-   [ ]   testToString()
+
+-   [ ]   showBoardColorInMatrix()
+
+Direction
+
+-   [ ]   getSymbol()
+
+-   [ ]   testToString()
+
+-   [ ]   getDescription()
+
+-   [ ]   fromSymbol()
+
+
+Marrakech [DONE]
+
+Player
+
+-   [ ]   fromString()
+
+-   [ ]   fromGameString()
+
+-   [ ]   isIsplaying()
+
+-   [ ]   setIsplaying()
+
+-   [ ]   getColor()
+
+-   [ ]   setColor()
+
+-   [ ]   getDirhams()
+
+-   [ ]   setDirhams()
+
+-   [ ]   getRemainingRugs()
+
+-   [ ]   setRemainingRugs()
+
+-   [ ]   testToString()
+
+
+Rug
+
+-   [ ]   isCovered()
+
+-   [ ]   setCovered()
+
+-   [ ]   getColor()
+
+-   [ ]   setColor()
+
+-   [ ]   getID()
+
+-   [ ]   setID()
+
+-   [ ]   getFirstCoordinate()
+
+-   [ ]   setFirstCoordinate()
+
+-   [ ]   getSecondCoordinate()
+
+-   [ ]   setSecondCoordinate()
+
+-   [ ]   testToString()

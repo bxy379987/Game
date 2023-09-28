@@ -3,7 +3,7 @@ package comp1110.ass2.gui;
 import comp1110.ass2.Assam;
 import comp1110.ass2.Board;
 import comp1110.ass2.Direction;
-import comp1110.ass2.PlayerPattern;
+import comp1110.ass2.Player;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,7 +50,7 @@ public class Viewer extends Application {
         String boardState = state.split("B")[1]; // Extract the board string
 
         // Display the player information, board and Assam
-        displayPlayers(PlayerPattern.fromGameString(state));
+        displayPlayers(Player.fromGameString(state));
         displayBoard(new Board(boardState));
         displayAssam(new Assam(state));
         // [DEBUG] Test get next assam via tunnel
@@ -114,7 +114,7 @@ public class Viewer extends Application {
     }
 
     // Display player information based on the provided player object
-    public void displayPlayers(PlayerPattern[] playerPatterns){
+    public void displayPlayers(Player[] players){
         textGroup.getChildren().clear(); // Clear previous text to display updated player information
         int startY = 70;
 
@@ -140,15 +140,15 @@ public class Viewer extends Application {
         textGroup.getChildren().add(titleisIsplaying);
 
         // Display each player's information in a row
-        for (PlayerPattern playerPattern : playerPatterns) {
-            String playerInfo = playerPattern.getColor() +
-                    "\t\t\t\t\t\t" + playerPattern.getDirhams() +
-                    "\t\t\t\t\t\t" + playerPattern.getRemainingRugs() +
-                    "\t\t\t\t\t\t" + playerPattern.isIsplaying();
+        for (Player player : players) {
+            String playerInfo = player.getColor() +
+                    "\t\t\t\t\t\t" + player.getDirhams() +
+                    "\t\t\t\t\t\t" + player.getRemainingRugs() +
+                    "\t\t\t\t\t\t" + player.isIsplaying();
             Label playerLabel = new Label(playerInfo);
 
             // Set the color of the player information label based on the player's color
-            switch (playerPattern.getColor()){
+            switch (player.getColor()){
                 case 'c' -> playerLabel.setTextFill(Color.CYAN);
                 case 'y' -> playerLabel.setTextFill(Color.YELLOW);
                 case 'p' -> playerLabel.setTextFill(Color.PURPLE);

@@ -183,7 +183,7 @@ public class Board {
      * @param player to disuse
      * @return is disuse valid
      */
-    public boolean disusePlayer(PlayerPattern player) {
+    public boolean disusePlayer(Player player) {
         // TODO: disuse the player
         return false;
     }

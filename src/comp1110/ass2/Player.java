@@ -1,6 +1,6 @@
 package comp1110.ass2;
 
-public class PlayerPattern  {
+public class Player {
     private boolean isPlaying = false;
     private char color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
@@ -14,7 +14,7 @@ public class PlayerPattern  {
      * @param remainingRugs The number of remaining rugs the player has
      */
 
-    public PlayerPattern(boolean isPlaying, char color, int dirhams, int remainingRugs){
+    public Player(boolean isPlaying, char color, int dirhams, int remainingRugs){
         this.isPlaying = isPlaying;
         this.color = color;
         this.dirhams = dirhams;
@@ -28,7 +28,7 @@ public class PlayerPattern  {
      * @return A PlayerPattern object created from the given player string
      * @throws IllegalArgumentException If the player string is invalid
      */
-    public static PlayerPattern fromString(String playerString) {
+    public static Player fromString(String playerString) {
         if (playerString.length() != 8){
             throw new IllegalArgumentException("Invalid Player String: " + playerString);
         }
@@ -39,7 +39,7 @@ public class PlayerPattern  {
             int dirhams = Integer.parseInt(dirhamsStr);
             String remainingRugsStr = playerString.substring(5, 7);
             int remainingRugs = Integer.parseInt(remainingRugsStr);
-            return new PlayerPattern(isPlaying, color, dirhams, remainingRugs);
+            return new Player(isPlaying, color, dirhams, remainingRugs);
         }
     }//
 
@@ -49,19 +49,19 @@ public class PlayerPattern  {
      * @param gameString
      * @return An array of PlayerPattern objects representing the players in the game
      */
-    public static PlayerPattern[] fromGameString(String gameString) {
+    public static Player[] fromGameString(String gameString) {
         String[] playersString = gameString.split("A")[0].split("P");
 
-        PlayerPattern[] playerPatterns = new PlayerPattern[playersString.length - 1];
+        Player[] players = new Player[playersString.length - 1];
 
         for (int i = 1; i < playersString.length; i++) {
             String playerStr = playersString[i];
             if (playerStr.equals("")) continue;
 
-            PlayerPattern playerPattern = PlayerPattern.fromString('P' + playerStr);
-            playerPatterns[i-1] = playerPattern;
+            Player player = Player.fromString('P' + playerStr);
+            players[i-1] = player;
         }
-        return playerPatterns;
+        return players;
     }
 
     public boolean isIsplaying() {
