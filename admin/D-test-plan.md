@@ -19,26 +19,30 @@ static methods for which we have already provided unit tests.
 Assam
 
 -   [ ] ​    fromString()
-
+-  test if string input fit the class Assam init method
+-  length error "A25WW"
+-  argument error: "B25W"
+-
 -   [ ] ​    fromGameString()
-
+   test if string input fit the class Assam init method
+-  length error "XXXXA25WWXXXX"
+-  argument error: "XXXXB25WXXXX"
 -   [ ] ​    getxCoordinate()
-
--   [ ] ​    setxCoordinate()
+-  test if the assam is still in the board
+-  outboundException:x=7
 
 -   [ ] ​    getyCoordinate()
-
--   [ ] ​    setyCoordinate()
-
--   [ ] ​    getDirection()
-
--   [ ] ​    setDirection()
+- - test if the assam is still in the board
+-   outboundException: y=7
 
 -   [ ] ​    testToString()
-
+-   test when we use return method, assam return its Coordinate,direction by using the outputstring
+    error: return assam hashcode
 -   [ ] ​    rotateClockwise()
+-   test if the assam can rotate correctly
+-   
 
--   [ ] ​    rotateCounterClockwise()
+
 
     Note: After calling rotateClockwise() and rotateCounterClockwise(), Assam object's direction has been changed. Within the tests, we validate whether the direction of Assam object after rotation aligns with expectation. For example, if the initial direction of Assam is 'North', and we call rotateClockWise(2) to represent a clockwise rotation of two steps, we expect the direction to become 'South'.
 

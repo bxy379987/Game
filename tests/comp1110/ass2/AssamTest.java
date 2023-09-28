@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-class AssamStringValidTest {
+class AssamTest {
     String assam ="A41W";
     @Test
     public void TestFirstCharacter(){
