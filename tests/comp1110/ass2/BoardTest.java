@@ -169,7 +169,7 @@ class BoardTest {
         }
 
         try {
-            board.setColorByCoordinate(3, 5, "x", -2);
+            board.setColorByCoordinate(3, 5, "y", -2);
             Assertions.fail("should accept IllegalArgumentException()");
         } catch (Exception e) {
             Assertions.assertEquals(e.getClass(), IllegalArgumentException.class);
@@ -189,6 +189,12 @@ class BoardTest {
         Assertions.assertEquals(board.getColorByCoordinate(0, 0), "y");
         Assertions.assertEquals(board.getColorByCoordinate(1, 1), "r");
         Assertions.assertEquals(board.getColorByCoordinate(4, 5), "r");
+        try {
+            board.getColorByCoordinate(-3, -5);
+            Assertions.fail("should accept IllegalArgumentException()");
+        } catch (Exception e) {
+            Assertions.assertEquals(e.getClass(), ArrayIndexOutOfBoundsException.class);
+        }
     }
 
     @Test
