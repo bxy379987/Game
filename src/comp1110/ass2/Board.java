@@ -171,7 +171,14 @@ public class Board {
      */
     public boolean placeRug(Rug rug) {
         // TODO: place rug into board
-        return false;
+        String firstPartColor = getColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1]);
+        String secondPartColor = getColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1]);
+        // CASE: invalid
+        if (firstPartColor.equals(secondPartColor) && !firstPartColor.equals("n")) return false;
+        // CASE: valid
+        setColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1], String.valueOf(rug.getColor()), rug.getID());
+        setColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1], String.valueOf(rug.getColor()), rug.getID());
+        return true;
     }
 
     /**
@@ -188,7 +195,22 @@ public class Board {
         return false;
     }
 
-
+    public int[] countColors() {
+        // represent the amount of [c y p r n]
+        int[] colorsAmount = new int[5];
+        for (int row = 0; row < BOARD_HEIGHT; row++) {
+            for (int col = 0; col < BOARD_WIDTH; col++) {
+                switch (boardColor[col][row]) {
+                    case "c" -> colorsAmount[0] += 1;
+                    case "y" -> colorsAmount[1] += 1;
+                    case "p" -> colorsAmount[2] += 1;
+                    case "r" -> colorsAmount[3] += 1;
+                    case "n" -> colorsAmount[4] += 1;
+                }
+            }
+        }
+        return colorsAmount;
+    }
     @Override
     public String toString() {
         StringBuilder boardString = new StringBuilder();

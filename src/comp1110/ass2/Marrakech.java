@@ -2,9 +2,11 @@ package comp1110.ass2;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.OptionalInt;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class Marrakech {
     private static final int BOARD_INDEX_WIDTH = 7;
@@ -167,91 +169,16 @@ public class Marrakech {
     public static boolean isPlacementValid(String gameState, String rug) {
         // FIXME: Task 10
         System.out.println("=============[isPlacementValid]=============");
-        System.out.println(rug);
         System.out.println(gameState);
         String boardString = gameState.split("B")[1];
         Board boardEntity = new Board(boardString);
-        System.out.println(boardEntity);
+//        System.out.println(boardEntity);
+        boardEntity.showBoardColorInMatrix();
         Rug rugEntity = new Rug(rug);
         System.out.println(rugEntity);
-
-        String regex = "A[0-9]{2}[A-Z]";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(gameState);
-        while (matcher.find()) {
-            Assam assam = Assam.fromGameString(gameState);
-            int x = assam.getxCoordinate();
-            int y = assam.getyCoordinate();
-            int[] acoor = new int[2];
-            int[] rug1;
-            int[] rug2;
-            acoor[0] = x;
-            acoor[1] = y;
-            Rug rugRug = new Rug(rug);//抽象命名哈哈哈哈.请问每个rug分别代表什么
-            rug1 = rugRug.getFirstCoordinate();
-            rug2 = rugRug.getSecondCoordinate();
-            if (!NextTo(rug1, acoor) && !NextTo(rug2, acoor)) return false;
-            else if (NextTo(rug1, acoor) && rug2[0] == acoor[0] && acoor[1] == rug2[1]) return false;
-            else if (NextTo(rug2, acoor) && rug1[0] == acoor[0] && acoor[1] == rug1[1]) return false;
-
-            String substringGameState = gameState.substring(21);
-            int substringGameStatelLength = substringGameState.length();//is 49^3
-            int substringcount = substringGameStatelLength / 3;//is 49
-            String[] substringGameStatearray = new String[substringcount];
-            for (int i = 0; i < substringcount; i++) {
-                int startIndex = i * 3;
-                int endIndex = startIndex + 3;
-                substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
-            }
-            int CoordinationIndex1ofRug = rug1[0] * 7 + rug1[1];
-            int CoordinationIndex2ofRug = rug2[0] * 7 + rug2[1];
-            String subrug = rug.substring(0, 3);
-            if (!(substringGameStatearray[CoordinationIndex1ofRug].equals("n00"))
-                    && !(substringGameStatearray[CoordinationIndex2ofRug].equals("n00")) &&
-                    substringGameStatearray[CoordinationIndex1ofRug].equals(substringGameStatearray[CoordinationIndex2ofRug])) {
-                return false;
-            }
-            //判断覆盖真的很难写,
-            else return true;
-
-
-        }
-        return false;//该方法需要和isRugvalid配合使用,但是不能一起使用,在isPlacementValid方法中传入的 string gamestate已经将string rug放置在
-        //其中了,而isRugvalid方法中传入的gamestate和rug则需要判断rug是否被gamestate包含,被包含则返回false
-
-
-
-
+        return boardEntity.placeRug(rugEntity);
     }
-//    public  static int  findsamecolor(char color,String[]substringGameStatearray,int x,int y) {
- //       int count = 0;
 
-//        int Sortnumber = x * 7 + y;
-//        if (Sortnumber > 0 && Sortnumber < substringGameStatearray.length) {
-//            if (substringGameStatearray[Sortnumber - 1].charAt(0) == color && Sortnumber % 7 != 0) {
-//                count++;
-//
-//                findsamecolor(color, substringGameStatearray, x - 1, y);
-//            }
-//
-//        if (substringGameStatearray[Sortnumber + 1].charAt(0) == color && (Sortnumber + 1) % 7 != 0) {
-//            count++;
-//
-//            findsamecolor(color, substringGameStatearray, x + 1, y);
-//        }
-//        if (Sortnumber > 6 && substringGameStatearray[Sortnumber - 7].charAt(0) == color) {
-//            count++;
-//
-//            findsamecolor(color, substringGameStatearray, x, y - 1);
-//        }
-//        if (Sortnumber < 49 && substringGameStatearray[Sortnumber + 7].charAt(0) == color) {
-//            count++;
-//
-//            findsamecolor(color, substringGameStatearray, x, y + 1);
-//        }
-//    }
- //       return count;
-   // }
 
     /**
      * Determine the amount of payment required should another player land on a square.
@@ -334,32 +261,7 @@ public class Marrakech {
          * Expected :2
          * Actual   :5
          */
-//        String substringGameState = gameString.substring(21);
-//        int substringGameStatelLength = substringGameState.length();//is 49^3
-//        int substringcount = substringGameStatelLength / 3;//is 49
-//        String[] substringGameStatearray = new String[substringcount];
-//        for (int i = 0; i < substringcount; i++) {
-//            int startIndex = i * 3;
-//            int endIndex = startIndex + 3;
-//            substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
-//        }
-//        String regex = "A[0-9]{2}[A-Z]";
-//        Pattern pattern = Pattern.compile(regex);
-//        Matcher matcher = pattern.matcher(gameString);
-//          while(matcher.find()){
-//
-//        int x = matcher.group(0).charAt(1);
-//        int y = matcher.group(0).charAt(2);
-//        int[] acoor = new int[2];
-//        acoor[0] = x;
-//        acoor[1] = y;
-//        char ColorofAssamRug=substringGameStatearray[acoor[0]*7+acoor[1]].charAt(0);
-//        int count=findsamecolor(ColorofAssamRug,substringGameStatearray,acoor[0],acoor[1]);
-//
-//
-//        return count;}
-//          return -1;
-}
+    }
     private static boolean listHasPosition(Queue<int[]> list, int[] pos) {
         assert pos.length == 2;
         for (int[] listPos: list) {
@@ -383,58 +285,94 @@ public class Marrakech {
      * @return A char representing the winner of the game as described above.
      */
     public static char getWinner(String gameState) {
-        if(isGameOver(gameState)==false){return'n';}
-        String regex1 = "P[a-z][0-9]{5}[a-z]";
-        Pattern pattern1 = Pattern.compile(regex1);
-        Matcher matcher = pattern1.matcher(gameState);
-        String substringGameState = gameState.substring(21);
-        int substringGameStatelLength = substringGameState.length();//is 49^3
-        int substringcount = substringGameStatelLength / 3;//is 49
-        String[] substringGameStatearray = new String[substringcount];
-        for (int i = 0; i < substringcount; i++) {
-            int startIndex = i * 3;
-            int endIndex = startIndex + 3;
-            substringGameStatearray[i] = substringGameState.substring(startIndex, endIndex);
-        }
-        int c=0;int r=0;int p=0;int y=0;
-        for(String s:substringGameStatearray){
-            if(s.charAt(0)=='c')c++;
-            else if (s.charAt(0)=='r')r++;
-            else if(s.charAt(0)=='p')p++;
-            else if(s.charAt(0)=='y')y++;
-        }
-//        int[]playerdirhams=new int[4];
-//        int[]playerrugs=new int[4];
-//        int i=0;
-//        int j=0;
-        while(matcher.find()){
-//            playerdirhams[i++]=Integer.parseInt(matcher.group(0).substring(2,5));
-//            playerrugs[j++]=Integer.parseInt(matcher.group(0).substring(5,7));
-            if(matcher.group(0).charAt(1)=='c')c+=Integer.parseInt(matcher.group(0).substring(2,5));
-            if(matcher.group(0).charAt(1)=='r')r+=Integer.parseInt(matcher.group(0).substring(2,5));
-            if(matcher.group(0).charAt(1)=='p')p+=Integer.parseInt(matcher.group(0).substring(2,5));
-            if(matcher.group(0).charAt(1)=='y')y+=Integer.parseInt(matcher.group(0).substring(2,5));
-        }
-
-        int MAX=c;char max='c';
-        if(r>MAX){
-            MAX=r;
-            max='r';
-        }
-        if(y>MAX){
-            MAX=y;
-            max='y';
-        }
-        if(p>MAX){
-            MAX=p;
-            max='p';
-        }
-
-return max;//打平的情况还没判断test就过了...
-
-
         // FIXME: Task 12
+        System.out.println("=============[getWinner]=============");
+        // CASE: If the game is not yet over
+        if(!isGameOver(gameState)) return 'n';
+        // [INIT]
+        String boardString = gameState.split("B")[1];
+        Board board = new Board(boardString);
+        int[] numSquaresOnBoard = board.countColors();
+        System.out.println("C Y P R N on board: " + Arrays.toString(numSquaresOnBoard));
+        // from 1 to 4 NOT 0 to 3
+        // Sequence c y p r
+        String[] playerStrings = gameState.split("A")[0].split("P");
+        Player[] players = new Player[4];
+        int[] totalScore = new int[4];
+        for (int idx = 0; idx < players.length; idx++) {
+            players[idx] = Player.fromString("P" + playerStrings[idx + 1]);
+            if (players[idx].isIsplaying()) {
+                // total score is the sum of their number of dirhams and the number of squares showing on the
+                // board that are of their colour
+                totalScore[idx] = players[idx].getDirhams() + numSquaresOnBoard[idx];
+            } else {
+                //  that a player who is out of the game cannot win
+                totalScore[idx] = -1;
+            }
+//            System.out.println(players[idx].toString());
+        }
+        System.out.println("Total score: " + Arrays.toString(totalScore));
+        // COUNT MAX
+        int max = -1; // max num
+        int countMax = 0; // amount of max
+        int[] maxIdxList = {-1, -1, -1, -1}; // index of max num
+        for (int idx = 0; idx < totalScore.length; idx++) {
+            if (max == totalScore[idx]) {
+                countMax += 1;
+                maxIdxList[countMax - 1] = idx;
+            }
+            if (max < totalScore[idx]) {
+                maxIdxList = new int[]{-1, -1, -1, -1};
+                countMax = 1;
+                max = totalScore[idx];
+                maxIdxList[countMax - 1] = idx;
+            }
+        }
+        if (countMax == 1) return players[maxIdxList[0]].getColor();
 
+        // same total score, the player with the largest number of dirhams wins.
+        max = -1;
+        int maxIdx = -1;
+        for (int idx = 0; idx < maxIdxList.length; idx++) {
+            if (maxIdxList[idx] == -1) break;
+            // If multiple players have the same total core and number of dirhams, then the game is a tie.
+            if (max == players[maxIdxList[idx]].getDirhams()) return 't';
+            // the largest number of dirhams wins.
+            if (max < players[maxIdxList[idx]].getDirhams()) {
+                max = players[maxIdxList[idx]].getDirhams();
+                maxIdx = maxIdxList[idx];
+            }
+        }
+        return players[maxIdx].getColor();
+        /**
+         * Test Error At
+         * =============[getWinner]=============
+         * =============[isGameOver]=============
+         * Pc02000i
+         * Py04000i
+         * Pp04100i
+         * Pr01900i
+         * C Y P R N on board: [9, 9, 8, 17, 6]
+         * Total score: [29, 49, 49, 36]
+         * Expected :t
+         * Actual   :p
+         *
+         * BUT p041 > y040 should be p wins
+         * =============[getWinner]=============
+         * =============[isGameOver]=============
+         * Pc06000i
+         * Py00000o
+         * Pp00900i
+         * Pr05100i
+         * C Y P R N on board: [11, 5, 10, 20, 3]
+         * Total score: [71, -1, 19, 71]
+         * Expected :t
+         * Actual   :c
+         *
+         * BUT c060 > r051 should be c wins
+         *
+         * if ignore dirhams count test will pass
+         */
     }
 
     /**
