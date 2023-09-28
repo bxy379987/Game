@@ -108,9 +108,12 @@ Marrakech [DONE]
 Player
 
 -   [ ]   fromString()
-
+  -  test if string input fit the class Player init method
+  -  length error ""Pr001803i"
+  -  argument error: "Ar01803i"
 -   [ ]   fromGameString()
-
+  - Testing split of game string
+  - identity error: "A25W"
 -   [ ]   isIsplaying()
 
 -   [ ]   setIsplaying()
