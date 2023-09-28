@@ -36,6 +36,12 @@ Assam
 
 -   [ ] ​    testToString()
 
+-   [ ] ​    rotateClockwise()
+
+-   [ ] ​    rotateCounterClockwise()
+
+    Note: After calling rotateClockwise() and rotateCounterClockwise(), Assam object's direction has been changed. Within the tests, we validate whether the direction of Assam object after rotation aligns with expectation. For example, if the initial direction of Assam is 'North', and we call rotateClockWise(2) to represent a clockwise rotation of two steps, we expect the direction to become 'South'.
+
 BiMap [DISCARD]
 
 Board
