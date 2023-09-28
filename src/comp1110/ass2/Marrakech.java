@@ -132,33 +132,14 @@ public class Marrakech {
      * rotation is illegal.
      */
     public static String rotateAssam(String currentAssam, int rotation) {
-        if (rotation != 0 && rotation != 270 && rotation != 90) return currentAssam;
-        if (rotation == 0) return currentAssam;
-        char currentdirection = currentAssam.charAt(3);
-        char changeddirection = 'A';
-        switch (currentdirection) {
-            case 'N':
-                if (rotation == 90) changeddirection = 'E';
-                else if (rotation == 270) changeddirection = 'W';
-                break;
-            case 'E':
-                if (rotation == 90) changeddirection = 'S';
-                else if (rotation == 270) changeddirection = 'N';
-                break;
-            case 'S':
-                if (rotation == 90) changeddirection = 'W';
-                else if (rotation == 270) changeddirection = 'E';
-                break;
-            case 'W':
-                if (rotation == 90) changeddirection = 'N';
-                else if (rotation == 270) changeddirection = 'S';
-                break;
-            default:
-                return currentAssam;
-
-
-        }
-        return currentAssam.substring(0, 3) + changeddirection;
+        System.out.println("=============[rotateAssam]=============");
+        System.out.println(currentAssam);
+        System.out.println(rotation);
+        if (rotation % 90 != 0) return currentAssam;
+        if (rotation == 180) return currentAssam;
+        Assam assam = new Assam(currentAssam);
+        assam.rotateClockwise(rotation / 90);
+        return assam.toString();
     }
 
     //写一个判断相邻的方法

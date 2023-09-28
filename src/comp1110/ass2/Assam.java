@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.Arrays;
+
 public class Assam {
     // Coordinates of Assam on the board
     private int xCoordinate;
@@ -23,7 +25,12 @@ public class Assam {
     }
 
     public Assam (String gameString){
-        Assam assam = fromGameString(gameString);
+        Assam assam;
+        if (gameString.length() != 4) {
+            assam = fromGameString(gameString);
+        } else {
+            assam = fromString(gameString);
+        }
         this.xCoordinate = assam.xCoordinate;
         this.yCoordinate = assam.yCoordinate;
         this.direction = assam.direction;
@@ -90,6 +97,34 @@ public class Assam {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    /**
+     * Each step is equal to 90 degrees rotation
+     * @param steps
+     */
+    public void rotateClockwise(int steps) {
+        Direction[] clockwiseSequence = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+        int directionIdx = -1;
+        for (int idx = 0; idx < clockwiseSequence.length; idx++) {
+            if (clockwiseSequence[idx] == direction) {
+                directionIdx = idx;
+                break;
+            }
+        }
+        direction = clockwiseSequence[(directionIdx + steps) % 4];
+    }
+
+    public void rotateCounterClockwise(int steps) {
+        Direction[] counterClockwiseSequence = {Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST};
+        int directionIdx = -1;
+        for (int idx = 0; idx < counterClockwiseSequence.length; idx++) {
+            if (counterClockwiseSequence[idx] == direction) {
+                directionIdx = idx;
+                break;
+            }
+        }
+        direction = counterClockwiseSequence[(directionIdx + steps) % 4];
     }
 
     @Override
