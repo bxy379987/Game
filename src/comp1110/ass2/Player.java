@@ -46,7 +46,7 @@ public class Player {
     /**
      * Parses the player information from a game state string and creates an array of PlayerPattern objects.
      *
-     * @param gameString
+     * @param gameString A gameString contains playerString and others
      * @return An array of PlayerPattern objects representing the players in the game
      */
     public static Player[] fromGameString(String gameString) {
@@ -98,7 +98,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return 'P'+""+this.getColor()+""+'0'+""+this.getDirhams()+""+this.getRemainingRugs()+(isPlaying?'i':'o');
+        return "P" + this.getColor() +String.format("%03d",this.getDirhams())+ String.format("%02d",this.getRemainingRugs())+(isPlaying?'i':'o');
     }
 }
 
