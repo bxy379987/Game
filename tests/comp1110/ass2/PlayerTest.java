@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 
 
-public class PlayerPatternTest {
+public class PlayerTest {
     /**
      * Generate a random playerString for testing
      *
@@ -22,13 +22,13 @@ public class PlayerPatternTest {
     }
 
     /**
-     * Test the fromString method of PlayerPattern. It checks if the fromString method correctly constructs a PlayPattern object from a playerString
+     * Test the fromString method of Player. It checks if the fromString method correctly constructs a PlayPattern object from a playerString
      */
     @Test
     public void testFromStringTest() {
         for (int i = 1; i < 10; i++) {
             String playerString = playerStringRandom();
-            PlayerPattern playerPattern = PlayerPattern.fromString(playerString);
+            Player playerPattern = Player.fromString(playerString);
 
             // Check if properties are correctly set
             Assertions.assertEquals(playerString.charAt(1), playerPattern.getColor());
@@ -39,13 +39,13 @@ public class PlayerPatternTest {
     }
 
     /**
-     *Test the toString method of PlayerPattern. It checks if the toString method correctly converts a PlayPattern object to a playerString
+     *Test the toString method of Player. It checks if the toString method correctly converts a PlayPattern object to a playerString
      */
     @Test
     public void testToString() {
         for (int i = 1; i < 10; i++) {
             String expectedPlayerString = playerStringRandom();
-            PlayerPattern playerPattern = PlayerPattern.fromString(expectedPlayerString);
+            Player playerPattern = Player.fromString(expectedPlayerString);
             String actualPlayerString = playerPattern.toString();
 
             // Check if the generated playerString matches the expected playerString
@@ -56,18 +56,18 @@ public class PlayerPatternTest {
 
 
     /**
-     * Test the fromGameString method of PlayerPattern. It checks if the fromGameString method correctly parses a playerString and creates an array of PlayPattern objects
+     * Test the fromGameString method of Player. It checks if the fromGameString method correctly parses a playerString and creates an array of PlayPattern objects
      */
     @Test
     public void  testFromGameString(){
         //Set a testing case
         String gameString = "Pc03013iPy02613iPp03013iPr03413oA51WBy02n00n00n00n00n00n00y02n00r02n00n00n00n00n00n00r02n00n00n00n00y00c00p01n00n00n00n00y00c00p01y04n00n00n00n00r03r03y04n00n00y03n00n00n00n00n00n00y03";
 
-        PlayerPattern[] playerPatterns = PlayerPattern.fromGameString(gameString);
+        Player[] playerPatterns = Player.fromGameString(gameString);
 
         String expectedPlayerString = gameString.split("A")[0];
         StringBuilder actualPlayerString = new StringBuilder();
-        for (PlayerPattern playerPattern : playerPatterns) {
+        for (Player playerPattern : playerPatterns) {
             actualPlayerString.append(playerPattern.toString());
         }
 
