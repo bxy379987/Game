@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AssamTest {
     String assam ="A41W";
+
     @Test
     public void TestFirstCharacter(){
         assertTrue(assam.charAt(0)=='A');
