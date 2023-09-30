@@ -178,6 +178,9 @@ public class Marrakech {
         System.out.println(rugEntity);
         return boardEntity.placeRug(rugEntity);
     }
+    /**
+     * Testdata Bug: 385
+     */
 
 
     /**
@@ -191,16 +194,15 @@ public class Marrakech {
      * @param gameString A String representation of the current state of the game.
      * @return The amount of payment due, as an integer.
      */
-
     public static int getPaymentAmount(String gameString) {
-
+        boolean DEBUG = false;
         // FIXME: Task 11
-        System.out.println("=============[getPaymentAmount]=============");
-//        System.out.println(gameString);
+        if (DEBUG) System.out.println("=============[getPaymentAmount]=============");
+//        if (DEBUG) System.out.println(gameString);
         String boardString = gameString.split("B")[1];
-        System.out.println(boardString);
+        if (DEBUG) System.out.println(boardString);
         String assamString = gameString.split("B")[0].split("A")[1];
-        System.out.println(assamString);
+        if (DEBUG) System.out.println(assamString);
         int[] assamPos = {assamString.toCharArray()[0] - '0', assamString.toCharArray()[1] - '0'};
 
         // [INIT] new board
@@ -209,10 +211,10 @@ public class Marrakech {
         String currentColor = boardColor[assamPos[0]][assamPos[1]];
         // CASE: no color
         if (currentColor.equals("n")) return 0;
-        System.out.println("MAPPING COLOR: " + currentColor);
+        if (DEBUG) System.out.println("MAPPING COLOR: " + currentColor);
 
         // Start calculate costs by BFS
-        System.out.println("START BFS");
+        if (DEBUG) System.out.println("START BFS");
         //                    up      right   down     left
         int[][] directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         Queue<int[]> searchList = new LinkedList<>();
@@ -222,7 +224,7 @@ public class Marrakech {
         int mark = 0;
         while (!searchList.isEmpty()) {
             int[] currentPos = searchList.peek();
-            System.out.println("Current pos: [" + currentPos[0] + ", " + currentPos[1] + "]");
+            if (DEBUG) System.out.println("Current pos: [" + currentPos[0] + ", " + currentPos[1] + "]");
             // every search step 1 mark
             mark += 1;
             String[] nearbyColors = board.getColorsNearby(currentPos[0], currentPos[1]);
@@ -240,27 +242,17 @@ public class Marrakech {
             boardColor[currentPos[0]][currentPos[1]] = "x";
 
             // [DEBUG] check board color state
-            for (int row = 0; row < boardColor.length; row++) {
-                for (int col = 0; col < boardColor[0].length; col++) {
-                    System.out.print(boardColor[col][row] + " ");
+            if (DEBUG) {
+                for (int row = 0; row < boardColor.length; row++) {
+                    for (int col = 0; col < boardColor[0].length; col++) {
+                        System.out.print(boardColor[col][row] + " ");
+                    }
+                    System.out.println();
                 }
-                System.out.println();
             }
         }
-        System.out.println("MARK: " + mark);
+        if (DEBUG) System.out.println("MARK: " + mark);
         return mark;
-        /**
-         * TEST ERROR AT:
-         * org.opentest4j.AssertionFailedError: Expected payment of 0 for game state Pc00004oPy06604iPp01604iPr03805iA60WBc23c23y23r12r12n00n00n00r22y23y19y19p19n00c05p14y18y18r09p19n00p11p11y06c16n00y10r03y04n00c24r10c19c19r13y04p21c24r23p20p10n00y01y21y24r18r18c21c21 ==>
-         * Expected :0
-         * Actual   :5
-         * org.opentest4j.AssertionFailedError: Expected payment of 5 for game state Pc00006oPy09806iPp00706iPr01506iA24WBy02n00n00y07p11c07r06c20r18r18y12c17c17r06c20y05c16y16y15y17n00p18c10y13y16y06y17n00y00c00y08y04r21r21n00y21y21r03p21n00r20y03n00p04n00p21n00r20p17 ==>
-         * Expected :5
-         * Actual   :11
-         * org.opentest4j.AssertionFailedError: Expected payment of 2 for game state Pc03802iPy00003oPp00003oPr08203iA50SBp20r17r14r02r02c09n00r20p23r14y23y23c18n00r20p23n00c17c23r22n00r15y17c19c19y06r19r19r21p11p16y07c05n00r06r21c14p16c25y25p22p22n00y13y13p10y25c10r08 ==>
-         * Expected :2
-         * Actual   :5
-         */
     }
     private static boolean listHasPosition(Queue<int[]> list, int[] pos) {
         assert pos.length == 2;

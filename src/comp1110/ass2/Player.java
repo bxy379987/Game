@@ -1,10 +1,14 @@
 package comp1110.ass2;
 
+import java.util.HashMap;
+
 public class Player {
     private boolean isPlaying = false;
     private char color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
+    private HashMap<Integer, Rug> rugUsed = new HashMap<>();
+    private HashMap<Integer, Rug> rugToBeUsed = new HashMap<>();
 
     /**
      *
@@ -62,6 +66,10 @@ public class Player {
             players[i-1] = player;
         }
         return players;
+    }
+
+    public void initRugs() {
+
     }
 
     public boolean isIsplaying() {

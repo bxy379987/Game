@@ -60,6 +60,15 @@ public class Rug {
         this.secondCoordinate = secondCoordinate;
     }
 
+    /**
+     * Rotate rug with different center provided by [x, y]
+     * @param x
+     * @param y
+     */
+    public void rotateClockwise(int x, int y) {
+        // TODO: Rotate rug with different center provided by [x, y]
+    }
+
     @Override
     public String toString() {
         return color + String.format("%02d", ID) + firstCoordinate[0] + firstCoordinate[1] + secondCoordinate[0] + secondCoordinate[1];
