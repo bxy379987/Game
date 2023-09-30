@@ -2,17 +2,16 @@ package comp1110.ass2.gui;
 
 import comp1110.ass2.Board;
 import comp1110.ass2.Rug;
-import gittest.C;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 public class Game extends Application {
@@ -24,13 +23,17 @@ public class Game extends Application {
     /**
      * Game entities
      */
+    public Scene scene;
     private static final int RUG_AMOUNT = 15;
     private final Board board = new Board();
-    private final DraggableRugEntity[][] playerDraggableRugEntities = new DraggableRugEntity[4][RUG_AMOUNT];
+    private DraggableRugEntity[][] playerDraggableRugEntities = new DraggableRugEntity[4][RUG_AMOUNT];
     // set minimal distance for draggable rug stick to nearest block ↓
-    private static final double MIN_STICK_DISTANCE = 40;
-    private final Rectangle[][] boardSticks = new Rectangle[board.BOARD_WIDTH][board.BOARD_HEIGHT];
-    Rectangle nearest;
+    private static final double MAX_ANCHOR_DISTANCE = 40;
+    private Circle[][] boardAnchors = new Circle[board.BOARD_WIDTH][board.BOARD_HEIGHT];
+    public Circle[] nearest;
+    public double[] nearestDistance;
+    public double[] nearestTrans;
+
     /**
      * Game Parameters
      * +---------------------+----------+
@@ -55,92 +58,167 @@ public class Game extends Application {
     // DIRHAMS relative to PLAYER information panel
     private static final int PLAYER_DIRHAMS_START_X = 180;
     private static final int PLAYER_DIRHAMS_START_Y = 0;
-     public void findNearest(double x, double y) {
-//        System.out.println(triangles.get(0));
-        int minDistanceX = -1;
-        int minDistanceY = -1;
-        double minDistance = Double.POSITIVE_INFINITY;
-         for (int col = 0; col < boardSticks.length; col++) {
-             for (int row = 0; row < boardSticks[0].length; row++) {
-                 double stickerX = boardSticks[col][row].getX();
-                 double stickerY = boardSticks[col][row].getY();
-                 double distance = Math.sqrt((stickerX - x) * (stickerX - x) + (stickerY - y) * (stickerY - y));
-                 if (minDistance > distance) {
-                     minDistance = distance;
-                     minDistanceX = col;
-                     minDistanceY = row;
+     public void findNearest(Group group) {
+         if (nearest != null) {
+             for (Circle n: nearest) {
+                 n.setFill(Color.BLACK);
+             }
+         }
+         Circle[] rugAnchors = {(Circle) group.getChildren().get(1), (Circle) group.getChildren().get(2)};
+
+         int[][] rugAnchorsIdx = {{-1, -1}, {-1, -1}};
+         double[] minDistance = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY};
+         for (int col = 0; col < boardAnchors.length; col++) {
+             for (int row = 0; row < boardAnchors[0].length; row++) {
+                 double boardAnchorX = boardAnchors[col][row].getCenterX();
+                 double boardAnchorY = boardAnchors[col][row].getCenterY();
+                 for (int idx = 0; idx < rugAnchors.length; idx++) {
+                     double x, y;
+                     Bounds bounds = rugAnchors[idx].localToScene(rugAnchors[idx].getBoundsInLocal());
+                     x = bounds.getCenterX();
+                     y = bounds.getCenterY();
+                     System.out.println(x + "-" + y);
+                     double distance = Math.sqrt((boardAnchorX - x) * (boardAnchorX - x) + (boardAnchorY - y) * (boardAnchorY - y));
+//                 System.out.println(distance);
+                     if (minDistance[idx] > distance) {
+                         minDistance[idx] = distance;
+                         rugAnchorsIdx[idx][0] = col;
+                         rugAnchorsIdx[idx][1] = row;
+                         nearestTrans = new double[]{boardAnchorX - x, boardAnchorY - y};
+                     }
                  }
              }
          }
-       nearest = boardSticks[minDistanceX][minDistanceY];
+         nearest = new Circle[]{boardAnchors[rugAnchorsIdx[0][0]][rugAnchorsIdx[0][1]],
+                 boardAnchors[rugAnchorsIdx[1][0]][rugAnchorsIdx[1][1]]};
+         nearestDistance = minDistance;
+         System.out.println("Find Nearest");
+         for (Circle n: nearest) {
+             System.out.println(n.getCenterX() + " " + n.getCenterY());
+             n.setFill(Color.GREEN);
+         }
+
     }
 
     static class RugEntity extends Rug {
-        ImageView rug;
-        int colorIdx;
-        public RugEntity(char color) {
-            switch (color) {
-                case 'c' -> colorIdx = 0;
-                case 'y' -> colorIdx = 1;
-                case 'r' -> colorIdx = 2;
-                case 'p' -> colorIdx = 3;
-            }
+         Group rugGroup;
+//        ImageView rug;
+        private final Circle firstPart;
+        private final Circle secondPart;
+        public RugEntity(char color, double x, double y) {
+            rugGroup = new Group();
+            // init Rug patterns
             Image rugImage = new Image("comp1110/ass2/assets/rug" +
                     String.valueOf(color).toUpperCase() + ".png",
                     NODE_SIZE * 2 + 10, NODE_SIZE, false, false);
-            rug = new ImageView(rugImage);
-            rug.setX(PLAYER_START_X + PLAYER_RUG_START_X);
-            rug.setY(PLAYER_START_Y + PLAYER_RUG_START_Y + colorIdx * (PLAYER_RUG_SPACE + NODE_SIZE));
-            root.getChildren().add(rug);
-        }
-        public RugEntity(String input) {
-            super(input);
+            ImageView rug = new ImageView(rugImage);
 
+            rugGroup.getChildren().add(rug);
+            // init Rug anchors for mapping Board anchors
+            firstPart = new Circle(NODE_SIZE * 0.5, NODE_SIZE * 0.5,
+                    NODE_SIZE * 0.5);
+            secondPart = new Circle( NODE_SIZE * 1.5 + 10, NODE_SIZE * 0.5,
+                    NODE_SIZE * 0.5);
+            rugGroup.getChildren().add(firstPart);
+            rugGroup.getChildren().add(secondPart);
+            // set Group coordinates
+            rugGroup.setLayoutX(x);
+            rugGroup.setLayoutY(y);
+            root.getChildren().add(rugGroup);
         }
 
-        public void setCoordinate(int x, int y) {
-            rug.setX(x);
-            rug.setY(y);
+        public Circle getFirstPart() {
+            return firstPart;
+        }
+
+        public Circle getSecondPart() {
+            return secondPart;
         }
     }
 
     class DraggableRugEntity extends RugEntity {
-        private double mouseX;
-        private double mouseY;
+        private double mouseX, mouseY;
+        private double originX, originY;
+        public boolean isMousePressed = false;
+        public boolean isMouseDragged = false;
+        public double originRotate;
 
-        public DraggableRugEntity(char color) {
-            super(color);
-            this.rug.setOnMousePressed(event -> {
+        /**
+         * Init entity with coordinates nad tag
+         * @param color
+         * @param x
+         * @param y
+         */
+        public DraggableRugEntity(char color, double x, double y) {
+            super(color, x, y);
+            // mouse pressed: set init states & check keyboard rotate
+            rugGroup.setOnMousePressed(event -> {
                 mouseX = event.getSceneX();
                 mouseY = event.getSceneY();
-//                System.out.println("mouseX/mouseY " + mouseX + " " +mouseY);
+                // set original states
+                originX = rugGroup.getLayoutX();
+                originY = rugGroup.getLayoutY();
+                originRotate = rugGroup.getRotate();
 
-                this.rug.toFront();
+                rugGroup.toFront();
+                getFirstPart().toFront();
+                getSecondPart().toFront();
+
+                isMousePressed = true;
+                // CASE: rotate
+                scene.setOnKeyPressed(keyEvent -> {
+                    if (isMousePressed && keyEvent.getCode() == KeyCode.E) {
+                        rugGroup.setRotate(rugGroup.getRotate() + 90);
+                        findNearest(rugGroup);
+                    }
+                });
             });
-
-            this.rug.setOnMouseDragged(event -> {
+            // when entity was dragged: check nearest mapping anchors and log
+            rugGroup.setOnMouseDragged(event -> {
+                isMouseDragged = true;
                 double deltaX = event.getSceneX() - mouseX;
                 double deltaY = event.getSceneY() - mouseY;
-//                System.out.println(this.x + " " + this.y + "\n" + deltaX + " " + deltaY + "\n");
-                this.rug.setLayoutX(this.rug.getLayoutX() + deltaX);
-                this.rug.setLayoutY(this.rug.getLayoutY() + deltaY);
+                rugGroup.setLayoutX(rugGroup.getLayoutX() + deltaX);
+                rugGroup.setLayoutY(rugGroup.getLayoutY() + deltaY);
                 mouseX = event.getSceneX();
                 mouseY = event.getSceneY();
-                findNearest(event.getSceneX(), event.getSceneY());
-//                highlightedNearestTriangle(event.getSceneX(), event.getSceneY());
+                findNearest(rugGroup);
             });
-
-            this.rug.setOnMouseReleased(event -> {
-                this.rug.setLayoutX(nearest.getLayoutX());
-                this.rug.setLayoutY(nearest.getLayoutY());
+            // when anchors valid, stick entity to anchors
+            rugGroup.setOnMouseReleased(event -> {
+                isMousePressed = false;
+                if (!isMouseDragged) findNearest(rugGroup);
+                // if anchors valid
+                if (Math.abs(nearestDistance[1] - nearestDistance[0]) < 1e-7
+                        && nearestDistance[0] < MAX_ANCHOR_DISTANCE) {
+                    rugGroup.setLayoutX(rugGroup.getLayoutX() + nearestTrans[0]);
+                    rugGroup.setLayoutY(rugGroup.getLayoutY() + nearestTrans[1]);
+                } else {
+                    rugGroup.setLayoutX(originX);
+                    rugGroup.setLayoutY(originY);
+                    rugGroup.setRotate(originRotate);
+                }
+                isMouseDragged = false;
+                for (Circle circle : nearest) {
+                    circle.setFill(Color.BLACK);
+                }
+                nearest = null;
             });
         }
     }
 
+    /**
+     * MAIN SCENE
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         // FIXME Task 7 and 15
-        Scene scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         stage.setTitle("◀ Assam Game ▶");
 
@@ -164,12 +242,12 @@ public class Game extends Application {
 
         for (int x = 0; x < board.BOARD_WIDTH; x++) {
             for (int y = 0; y < board.BOARD_HEIGHT; y++) {
-                Rectangle sticker = new Rectangle(NODE_SIZE, NODE_SIZE);
-                sticker.setLayoutX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);
-                sticker.setLayoutY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);
-//                sticker.setFill(Color.BLACK);
-//                root.getChildren().add(sticker);
-                boardSticks[x][y] = sticker;
+                boardAnchors[x][y] = new Circle(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE + NODE_SIZE / 2,
+                        BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE + NODE_SIZE / 2,10);
+//                boardAnchors[x][y].setFill(Color.TRANSPARENT);
+                boardAnchors[x][y].setFill(Color.BLACK);
+                root.getChildren().add(boardAnchors[x][y]);
+
             }
         }
         // ASSAM
@@ -184,7 +262,15 @@ public class Game extends Application {
         char[] rugColors = {'c', 'y', 'r', 'p'};
         for (int colorIdx = 0; colorIdx < rugColors.length; colorIdx++) {
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
-                playerDraggableRugEntities[colorIdx][rugIdx] = new DraggableRugEntity(rugColors[colorIdx]);
+                switch (rugColors[colorIdx]) {
+                    case 'c' -> colorIdx = 0;
+                    case 'y' -> colorIdx = 1;
+                    case 'r' -> colorIdx = 2;
+                    case 'p' -> colorIdx = 3;
+                }
+                playerDraggableRugEntities[colorIdx][rugIdx] = new DraggableRugEntity(rugColors[colorIdx],
+                        PLAYER_START_X + PLAYER_RUG_START_X,
+                        PLAYER_START_Y + PLAYER_RUG_START_Y + colorIdx * (PLAYER_RUG_SPACE + NODE_SIZE));
             }
         }
 
