@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import comp1110.ass2.gui.Game;
+
 import java.util.HashMap;
 
 public class Player {
@@ -7,6 +9,7 @@ public class Player {
     private char color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
+    public static final int RUG_AMOUNT = 15;
     private HashMap<Integer, Rug> rugUsed = new HashMap<>();
     private HashMap<Integer, Rug> rugToBeUsed = new HashMap<>();
 
@@ -23,6 +26,7 @@ public class Player {
         this.color = color;
         this.dirhams = dirhams;
         this.remainingRugs = remainingRugs;
+        initRugs();
     }
 
     /**
@@ -32,6 +36,9 @@ public class Player {
      * @return A PlayerPattern object created from the given player string
      * @throws IllegalArgumentException If the player string is invalid
      */
+
+    // It may cause conflict when init from String
+    // because we can not determinate which rug is used
     public static Player fromString(String playerString) {
         if (playerString.length() != 8){
             throw new IllegalArgumentException("Invalid Player String: " + playerString);
@@ -69,7 +76,9 @@ public class Player {
     }
 
     public void initRugs() {
-
+        for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+            rugToBeUsed.put(rugIdx, new Rug(getColor(), rugIdx));
+        }
     }
 
     public boolean isIsplaying() {
@@ -82,10 +91,6 @@ public class Player {
 
     public char getColor() {
         return color;
-    }
-
-    public void setColor(char color) {
-        this.color = color;
     }
 
     public int getDirhams() {
@@ -102,6 +107,14 @@ public class Player {
 
     public void setRemainingRugs(int remainingRugs) {
         this.remainingRugs = remainingRugs;
+    }
+
+    public HashMap<Integer, Rug> getRugToBeUsed() {
+        return rugToBeUsed;
+    }
+
+    public HashMap<Integer, Rug> getRugUsed() {
+        return rugUsed;
     }
 
     @Override

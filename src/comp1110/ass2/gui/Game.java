@@ -1,7 +1,6 @@
 package comp1110.ass2.gui;
 
-import comp1110.ass2.Board;
-import comp1110.ass2.Rug;
+import comp1110.ass2.*;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -14,28 +13,35 @@ import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+
 public class Game extends Application {
+    public static final boolean DEBUG = false;
 
     private static Group root = new Group();
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 700;
-
+    /**
+     * Game Back-end class
+     */
+    private Board board;
+    private Player[] players;
+    private Assam assam;
     /**
      * Game entities
      */
     public Scene scene;
     private static final int RUG_AMOUNT = 15;
-    private final Board board = new Board();
-    private DraggableRugEntity[][] playerDraggableRugEntities = new DraggableRugEntity[4][RUG_AMOUNT];
+    private DraggableRugEntity[][] playerDraggableRugEntities;
     // set minimal distance for draggable rug stick to nearest block ↓
     private static final double MAX_ANCHOR_DISTANCE = 40;
-    private Circle[][] boardAnchors = new Circle[board.BOARD_WIDTH][board.BOARD_HEIGHT];
+    private Circle[][] boardAnchors;
     public Circle[] nearest;
     public double[] nearestDistance;
     public double[] nearestTrans;
 
     /**
-     * Game Parameters
+     * Game GUI Parameters
      * +---------------------+----------+
      * +                     |          |
      * +      BOARD          |  PLAYER  |
@@ -100,12 +106,20 @@ public class Game extends Application {
 
     }
 
-    static class RugEntity extends Rug {
+    /**
+     * ==================== GAME ENTITIES ====================
+     */
+
+    static class RugEntity{
+        private final int ID;
+        private final char color;
          Group rugGroup;
 //        ImageView rug;
         private final Circle firstPart;
         private final Circle secondPart;
-        public RugEntity(char color, double x, double y) {
+        public RugEntity(int ID, char color, double x, double y) {
+            this.ID = ID;
+            this.color = color;
             rugGroup = new Group();
             // init Rug patterns
             Image rugImage = new Image("comp1110/ass2/assets/rug" +
@@ -119,6 +133,10 @@ public class Game extends Application {
                     NODE_SIZE * 0.5);
             secondPart = new Circle( NODE_SIZE * 1.5 + 10, NODE_SIZE * 0.5,
                     NODE_SIZE * 0.5);
+            if (!DEBUG) {
+                firstPart.setFill(Color.TRANSPARENT);
+                secondPart.setFill(Color.TRANSPARENT);
+            }
             rugGroup.getChildren().add(firstPart);
             rugGroup.getChildren().add(secondPart);
             // set Group coordinates
@@ -133,6 +151,14 @@ public class Game extends Application {
 
         public Circle getSecondPart() {
             return secondPart;
+        }
+
+        public int getID() {
+            return ID;
+        }
+
+        public char getColor() {
+            return color;
         }
     }
 
@@ -149,8 +175,8 @@ public class Game extends Application {
          * @param x
          * @param y
          */
-        public DraggableRugEntity(char color, double x, double y) {
-            super(color, x, y);
+        public DraggableRugEntity(int ID ,char color, double x, double y) {
+            super(ID, color, x, y);
             // mouse pressed: set init states & check keyboard rotate
             rugGroup.setOnMousePressed(event -> {
                 mouseX = event.getSceneX();
@@ -222,57 +248,46 @@ public class Game extends Application {
 
         stage.setTitle("◀ Assam Game ▶");
 
-        startGame();
-        gameStage();
-
+        gameSelectStage();
+        gamePrepareStage();
 
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
+    /**
+     * ==================== GAME SELECT STAGE ====================
+     */
+    public void gameSelectStage() {
+        boolean[] isPlayerPlaying = new boolean[4];
+        // get options from gamer
+        // TODO: add GUI to select players
 
-    private void gameStage() {
-        // BACKGROUND
-        Image backgroundImage = new Image("comp1110/ass2/assets/Background.png",
-                WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
-        ImageView background = new ImageView(backgroundImage);
 
-        root.getChildren().add(background);
-        // BOARD
+        // init players
+        players = new Player[]{new Player(isPlayerPlaying[0], 'c', 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[1], 'y', 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[2], 'r', 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[3], 'p', 30, RUG_AMOUNT)
+        };
 
-        for (int x = 0; x < board.BOARD_WIDTH; x++) {
-            for (int y = 0; y < board.BOARD_HEIGHT; y++) {
-                boardAnchors[x][y] = new Circle(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE + NODE_SIZE / 2,
-                        BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE + NODE_SIZE / 2,10);
-//                boardAnchors[x][y].setFill(Color.TRANSPARENT);
-                boardAnchors[x][y].setFill(Color.BLACK);
-                root.getChildren().add(boardAnchors[x][y]);
 
-            }
-        }
+    }
+
+    /**
+     * ==================== GAME PREPARE STAGE ====================
+     */
+
+    private void gamePrepareStage() {
+        // INIT BACKGROUND ENTITY
+        initBackground();
+        // INIT BOARD ENTITY
+        initBoard();
         // ASSAM
-        Image assamImage = new Image("comp1110/ass2/assets/pointer.png",
-                NODE_SIZE, NODE_SIZE, false, false);
-        ImageView assam = new ImageView(assamImage);
-        assam.setX(BOARD_START_X + 3 * NODE_OUTER_BOUND_SIZE);
-        assam.setY(BOARD_START_Y + 3 * NODE_OUTER_BOUND_SIZE);
-        root.getChildren().add(assam);
+        initAssam();
+        // PLAYER
+        initRugs();
 
-        // RUG
-        char[] rugColors = {'c', 'y', 'r', 'p'};
-        for (int colorIdx = 0; colorIdx < rugColors.length; colorIdx++) {
-            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
-                switch (rugColors[colorIdx]) {
-                    case 'c' -> colorIdx = 0;
-                    case 'y' -> colorIdx = 1;
-                    case 'r' -> colorIdx = 2;
-                    case 'p' -> colorIdx = 3;
-                }
-                playerDraggableRugEntities[colorIdx][rugIdx] = new DraggableRugEntity(rugColors[colorIdx],
-                        PLAYER_START_X + PLAYER_RUG_START_X,
-                        PLAYER_START_Y + PLAYER_RUG_START_Y + colorIdx * (PLAYER_RUG_SPACE + NODE_SIZE));
-            }
-        }
 
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
@@ -283,8 +298,58 @@ public class Game extends Application {
         root.getChildren().add(dirhams);
     }
 
-    private void startGame() {
+    private void initBackground() {
+        Image backgroundImage = new Image("comp1110/ass2/assets/Background.png",
+                WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
+        ImageView background = new ImageView(backgroundImage);
+
+        root.getChildren().add(background);
     }
+
+    private void initBoard() {
+        // INIT BOARD
+        board = new Board();
+
+        boardAnchors = new Circle[board.BOARD_WIDTH][board.BOARD_HEIGHT];
+        for (int x = 0; x < board.BOARD_WIDTH; x++) {
+            for (int y = 0; y < board.BOARD_HEIGHT; y++) {
+                boardAnchors[x][y] = new Circle(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE + NODE_SIZE * 0.5,
+                        BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE + NODE_SIZE * 0.5,10);
+//                boardAnchors[x][y].setFill(Color.TRANSPARENT);
+                boardAnchors[x][y].setFill(Color.BLACK);
+                if (DEBUG) root.getChildren().add(boardAnchors[x][y]);
+            }
+        }
+
+    }
+
+    private void initAssam() {
+        Image assamImage = new Image("comp1110/ass2/assets/pointer.png",
+                NODE_SIZE, NODE_SIZE, false, false);
+        ImageView assamEntity = new ImageView(assamImage);
+        assamEntity.setX(BOARD_START_X + 3 * NODE_OUTER_BOUND_SIZE);
+        assamEntity.setY(BOARD_START_Y + 3 * NODE_OUTER_BOUND_SIZE);
+        root.getChildren().add(assamEntity);
+
+        assam = new Assam(3, 3, Direction.NORTH);
+    }
+
+    private void initRugs() {
+        // init draggable rug
+        playerDraggableRugEntities = new DraggableRugEntity[players.length][RUG_AMOUNT];
+        for (int playerIdx = 0; playerIdx < players.length; playerIdx++) {
+            int x = PLAYER_START_X + PLAYER_RUG_START_X;
+            int y = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
+            System.out.println(x + " " + y);
+            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor(), x, y);
+
+            }
+        }
+
+    }
+
+
 
 
 }

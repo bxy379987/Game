@@ -5,8 +5,8 @@ public class Rug {
     private boolean isCovered = false;
     private char color;//"c"表示青色，"y"表示黄色，"r"表示红色，"p"表示紫色 if empty then 'w'(white);
     private int ID;//If it is covered, what is the ID of the rug which is occupying it. And if the STATU is empty, ID=00.
-    private int[] firstCoordinate = new int[2];//And if the STATU is empty, Coordination=[0,0]
-    private int[] secondCoordinate = new int[2];
+    private int[] firstCoordinate;//And if the STATU is empty, Coordination=[0,0]
+    private int[] secondCoordinate;
 
     public Rug() {}
     public Rug(String input) {
@@ -14,11 +14,18 @@ public class Rug {
         this.ID = Integer.parseInt(input.substring(1,3));
         char[] firstCoordinates = input.substring(3,5).toCharArray();
         char[] secondCoordinates = input.substring(5).toCharArray();
+        this.firstCoordinate = new int[2];
+        this.secondCoordinate = new int[2];
         this.firstCoordinate[0] = firstCoordinates[0] - '0';
         this.firstCoordinate[1] = firstCoordinates[1] - '0';
         this.secondCoordinate[0] = secondCoordinates[0] - '0';
         this.secondCoordinate[1] = secondCoordinates[1] - '0';
     }//将一个Rug string转化为一个Rug对象
+
+    public Rug(char color, int id) {
+        this.color = color;
+        this.ID = id;
+    }
 
     public boolean isCovered() {
         return isCovered;
