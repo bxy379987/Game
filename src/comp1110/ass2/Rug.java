@@ -8,7 +8,7 @@ public class Rug {
     private int[] firstCoordinate = new int[2];//And if the STATU is empty, Coordination=[0,0]
     private int[] secondCoordinate = new int[2];
 
-
+    public Rug() {}
     public Rug(String input) {
         this.color = input.charAt(0);
         this.ID = Integer.parseInt(input.substring(1,3));
