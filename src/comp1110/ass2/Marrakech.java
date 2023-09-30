@@ -84,11 +84,10 @@ public class Marrakech {
      * @return The result of the roll of the die meeting the criteria above
      */
     public static int rollDie() {
-        int[] roll = new int[]{1, 2, 2, 3, 3, 4};
-        int i = (int) (Math.random() * 6);
-        return roll[i];
         // FIXME: Task 6
-
+        Dice dice = new Dice();
+//        System.out.println(dice.rollDice());
+        return dice.rollDice();
     }
 
     /**
