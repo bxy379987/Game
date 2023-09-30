@@ -4,10 +4,10 @@ package comp1110.ass2;
 import java.util.*;
 
 public class Board {
-    int BOARD_WIDTH = 7;
-    int BOARD_HEIGHT = 7;
-    String[][] boardColor;
-    int[][] subID;
+    public int BOARD_WIDTH = 7;
+    public int BOARD_HEIGHT = 7;
+    private String[][] boardColor;
+    private int[][] subID;
     Map<String, String> tunnels = new HashMap<>();
 
 //    ArrayList<ArrayList<Stack<Rug>>> boardHistoryRug = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Board {
     /**
      * Empty Constructor
      */
-    Board() {
+    public Board() {
         boardColor = new String[BOARD_HEIGHT][BOARD_WIDTH];
         subID = new int[BOARD_HEIGHT][BOARD_WIDTH];
         for (int col = 0; col < BOARD_WIDTH; col++) {

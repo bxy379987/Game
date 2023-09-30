@@ -1,5 +1,6 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.Board;
 import comp1110.ass2.Rug;
 import gittest.C;
 import javafx.application.Application;
@@ -10,6 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Game extends Application {
@@ -17,9 +20,19 @@ public class Game extends Application {
     private static Group root = new Group();
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 700;
-    private static final int RUG_AMOUNT = 15;
-    private DraggableRugEntity[][] playerDraggableRugEntities = new DraggableRugEntity[4][RUG_AMOUNT] ;
+
     /**
+     * Game entities
+     */
+    private static final int RUG_AMOUNT = 15;
+    private final Board board = new Board();
+    private final DraggableRugEntity[][] playerDraggableRugEntities = new DraggableRugEntity[4][RUG_AMOUNT];
+    // set minimal distance for draggable rug stick to nearest block ↓
+    private static final double MIN_STICK_DISTANCE = 40;
+    private final Rectangle[][] boardSticks = new Rectangle[board.BOARD_WIDTH][board.BOARD_HEIGHT];
+    Rectangle nearest;
+    /**
+     * Game Parameters
      * +---------------------+----------+
      * +                     |          |
      * +      BOARD          |  PLAYER  |
@@ -42,6 +55,25 @@ public class Game extends Application {
     // DIRHAMS relative to PLAYER information panel
     private static final int PLAYER_DIRHAMS_START_X = 180;
     private static final int PLAYER_DIRHAMS_START_Y = 0;
+     public void findNearest(double x, double y) {
+//        System.out.println(triangles.get(0));
+        int minDistanceX = -1;
+        int minDistanceY = -1;
+        double minDistance = Double.POSITIVE_INFINITY;
+         for (int col = 0; col < boardSticks.length; col++) {
+             for (int row = 0; row < boardSticks[0].length; row++) {
+                 double stickerX = boardSticks[col][row].getX();
+                 double stickerY = boardSticks[col][row].getY();
+                 double distance = Math.sqrt((stickerX - x) * (stickerX - x) + (stickerY - y) * (stickerY - y));
+                 if (minDistance > distance) {
+                     minDistance = distance;
+                     minDistanceX = col;
+                     minDistanceY = row;
+                 }
+             }
+         }
+       nearest = boardSticks[minDistanceX][minDistanceY];
+    }
 
     static class RugEntity extends Rug {
         ImageView rug;
@@ -94,15 +126,14 @@ public class Game extends Application {
                 this.rug.setLayoutY(this.rug.getLayoutY() + deltaY);
                 mouseX = event.getSceneX();
                 mouseY = event.getSceneY();
+                findNearest(event.getSceneX(), event.getSceneY());
 //                highlightedNearestTriangle(event.getSceneX(), event.getSceneY());
             });
 
-//            this.setOnMouseReleased(event -> {
-//                System.out.println("Highlighted rotate:" + highlighted.getRotate());
-//                this.rug.setRotate(highlighted.getRotate());
-//                this.rug.setLayoutX(highlighted.getLayoutX());
-//                this.rug.setLayoutY(highlighted.getLayoutY());
-//            });
+            this.rug.setOnMouseReleased(event -> {
+                this.rug.setLayoutX(nearest.getLayoutX());
+                this.rug.setLayoutY(nearest.getLayoutY());
+            });
         }
     }
 
@@ -129,6 +160,18 @@ public class Game extends Application {
         ImageView background = new ImageView(backgroundImage);
 
         root.getChildren().add(background);
+        // BOARD
+
+        for (int x = 0; x < board.BOARD_WIDTH; x++) {
+            for (int y = 0; y < board.BOARD_HEIGHT; y++) {
+                Rectangle sticker = new Rectangle(NODE_SIZE, NODE_SIZE);
+                sticker.setLayoutX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);
+                sticker.setLayoutY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);
+//                sticker.setFill(Color.BLACK);
+//                root.getChildren().add(sticker);
+                boardSticks[x][y] = sticker;
+            }
+        }
         // ASSAM
         Image assamImage = new Image("comp1110/ass2/assets/pointer.png",
                 NODE_SIZE, NODE_SIZE, false, false);
@@ -136,6 +179,7 @@ public class Game extends Application {
         assam.setX(BOARD_START_X + 3 * NODE_OUTER_BOUND_SIZE);
         assam.setY(BOARD_START_Y + 3 * NODE_OUTER_BOUND_SIZE);
         root.getChildren().add(assam);
+
         // RUG
         char[] rugColors = {'c', 'y', 'r', 'p'};
         for (int colorIdx = 0; colorIdx < rugColors.length; colorIdx++) {
@@ -143,6 +187,7 @@ public class Game extends Application {
                 playerDraggableRugEntities[colorIdx][rugIdx] = new DraggableRugEntity(rugColors[colorIdx]);
             }
         }
+
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
                 100, 120, false, false);
