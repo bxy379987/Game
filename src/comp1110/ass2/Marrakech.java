@@ -175,12 +175,19 @@ public class Marrakech {
         boardEntity.showBoardColorInMatrix();
         Rug rugEntity = new Rug(rug);
         System.out.println(rugEntity);
+        // [DEBUG] Added the rug cover assam situation
+        Assam assam = new Assam(gameState);
+        int[] assamCoordinate = {assam.getxCoordinate(),assam.getyCoordinate()};
+        if (Arrays.equals(rugEntity.getFirstCoordinate(),assamCoordinate) || Arrays.equals(rugEntity.getSecondCoordinate(),assamCoordinate))
+            return false;
+        //TODO:  Optimize the code to ensure it doesn't exceed the timeout.
+        if (!NextTo(assamCoordinate, rugEntity.getFirstCoordinate()) && !NextTo(assamCoordinate, rugEntity.getSecondCoordinate()))
+            return false;
         return boardEntity.placeRug(rugEntity);
     }
     /**
      * Testdata Bug: 385
      */
-
 
     /**
      * Determine the amount of payment required should another player land on a square.
