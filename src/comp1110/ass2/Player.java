@@ -79,6 +79,16 @@ public class Player {
         for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
             rugToBeUsed.put(rugIdx, new Rug(getColor(), rugIdx));
         }
+        this.remainingRugs = RUG_AMOUNT;
+    }
+
+    public void setRugUsed(int rugIdx) {
+        if (rugToBeUsed.containsKey(rugIdx)){
+            Rug rug = rugToBeUsed.get(rugIdx);
+            rugUsed.put(rugIdx, rug);
+            rugToBeUsed.remove(rugIdx);
+            this.remainingRugs --;
+        }
     }
 
     public boolean isIsplaying() {
