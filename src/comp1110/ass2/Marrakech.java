@@ -167,23 +167,18 @@ public class Marrakech {
     //写一个判断相邻的方法
     public static boolean isPlacementValid(String gameState, String rug) {
         // FIXME: Task 10
-        System.out.println("=============[isPlacementValid]=============");
-        System.out.println(gameState);
+//        System.out.println("=============[isPlacementValid]=============");
+//        System.out.println(gameState);
         String boardString = gameState.split("B")[1];
         Board boardEntity = new Board(boardString);
 //        System.out.println(boardEntity);
-        boardEntity.showBoardColorInMatrix();
+//        boardEntity.showBoardColorInMatrix();
         Rug rugEntity = new Rug(rug);
-        System.out.println(rugEntity);
-        // [DEBUG] Added the rug cover assam situation
+//        System.out.println(rugEntity);
+        //[DEBUG] Added the rug cover assam situation
         Assam assam = new Assam(gameState);
-        int[] assamCoordinate = {assam.getxCoordinate(),assam.getyCoordinate()};
-        if (Arrays.equals(rugEntity.getFirstCoordinate(),assamCoordinate) || Arrays.equals(rugEntity.getSecondCoordinate(),assamCoordinate))
-            return false;
-        //TODO:  Optimize the code to ensure it doesn't exceed the timeout.
-        if (!NextTo(assamCoordinate, rugEntity.getFirstCoordinate()) && !NextTo(assamCoordinate, rugEntity.getSecondCoordinate()))
-            return false;
-        return boardEntity.placeRug(rugEntity);
+
+        return boardEntity.placeRug(rugEntity, assam);
     }
     /**
      * Testdata Bug: 385

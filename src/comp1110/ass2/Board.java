@@ -3,6 +3,8 @@ package comp1110.ass2;
 
 import java.util.*;
 
+import static comp1110.ass2.Marrakech.NextTo;
+
 public class Board {
     public int BOARD_WIDTH = 7;
     public int BOARD_HEIGHT = 7;
@@ -162,6 +164,10 @@ public class Board {
         return Assam.fromString(tunnels.get(assam.toString()));
     }
 
+    public int[][] getSubID() {
+        return subID;
+    }
+
     /**
      * Input the Rug instance that is about to be placed on the Board.
      * If it can be placed, update the Board's state and return `True`;
@@ -169,15 +175,22 @@ public class Board {
      * @param rug is about to be placed
      * @return is place valid
      */
-    public boolean placeRug(Rug rug) {
+    public boolean placeRug(Rug rug, Assam assam) {
         // TODO: place rug into board
-        String firstPartColor = getColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1]);
-        String secondPartColor = getColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1]);
+        pieceColor firstPartColor = getColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1]);
+        pieceColor secondPartColor = getColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1]);
         // CASE: invalid
-        if (firstPartColor.equals(secondPartColor) && !firstPartColor.equals("n")) return false;
+        if (firstPartColor.equals(secondPartColor) && !firstPartColor.equals(pieceColor.NONE)  && getSubID()[rug.getFirstCoordinate()[0]][rug.getFirstCoordinate()[1]] == getSubID()[rug.getSecondCoordinate()[0]][rug.getSecondCoordinate()[1]]) {
+            return false;}
+        int[] assamCoordinate = {assam.getxCoordinate(),assam.getyCoordinate()};
+        if (Arrays.equals(rug.getFirstCoordinate(),assamCoordinate) || Arrays.equals(rug.getSecondCoordinate(),assamCoordinate))
+            return false;
+        //TODO:  Optimize the code to ensure it doesn't exceed the timeout.
+        if (!NextTo(assamCoordinate, rug.getFirstCoordinate()) && !NextTo(assamCoordinate, rug.getSecondCoordinate()))
+            return false;
         // CASE: valid
-        setColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1], String.valueOf(rug.getColor()), rug.getID());
-        setColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1], String.valueOf(rug.getColor()), rug.getID());
+        setColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1], String.valueOf(rug.getColor().getSymbol()), rug.getID());
+        setColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1], String.valueOf(rug.getColor().getSymbol()), rug.getID());
         return true;
     }
 
