@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Player {
     private boolean isPlaying = false;
-    private char color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
+    private pieceColor color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
     public static final int RUG_AMOUNT = 15;
@@ -21,12 +21,11 @@ public class Player {
      * @param remainingRugs The number of remaining rugs the player has
      */
 
-    public Player(boolean isPlaying, char color, int dirhams, int remainingRugs){
+    public Player(boolean isPlaying, pieceColor color, int dirhams, int remainingRugs){
         this.isPlaying = isPlaying;
         this.color = color;
         this.dirhams = dirhams;
         this.remainingRugs = remainingRugs;
-        initRugs();
     }
 
     /**
@@ -45,7 +44,7 @@ public class Player {
         }
         else {
             boolean isPlaying = playerString.charAt(7) == 'i';
-            char color = playerString.charAt(1);
+            pieceColor color = pieceColor.fromSymbol(String.valueOf(playerString.charAt(1)));
             String dirhamsStr = playerString.substring(2, 5);
             int dirhams = Integer.parseInt(dirhamsStr);
             String remainingRugsStr = playerString.substring(5, 7);
@@ -99,7 +98,7 @@ public class Player {
         this.isPlaying = isplaying;
     }
 
-    public char getColor() {
+    public pieceColor getColor() {
         return color;
     }
 
@@ -129,7 +128,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "P" + this.getColor() +String.format("%03d",this.getDirhams())+ String.format("%02d",this.getRemainingRugs())+(isPlaying?'i':'o');
+        return "P" + this.getColor().getSymbol().charAt(0) +String.format("%03d",this.getDirhams())+ String.format("%02d",this.getRemainingRugs())+(isPlaying?'i':'o');
     }
 }
 

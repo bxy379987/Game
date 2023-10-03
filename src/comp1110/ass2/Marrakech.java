@@ -208,10 +208,10 @@ public class Marrakech {
 
         // [INIT] new board
         Board board = new Board(boardString);
-        String[][] boardColor = board.getBoardColor();
-        String currentColor = boardColor[assamPos[0]][assamPos[1]];
+        pieceColor[][] boardColor = board.getBoardColor();
+        pieceColor currentColor = boardColor[assamPos[0]][assamPos[1]];
         // CASE: no color
-        if (currentColor.equals("n")) return 0;
+        if (currentColor == pieceColor.NONE) return 0;
         if (DEBUG) System.out.println("MAPPING COLOR: " + currentColor);
 
         // Start calculate costs by BFS
@@ -228,10 +228,10 @@ public class Marrakech {
             if (DEBUG) System.out.println("Current pos: [" + currentPos[0] + ", " + currentPos[1] + "]");
             // every search step 1 mark
             mark += 1;
-            String[] nearbyColors = board.getColorsNearby(currentPos[0], currentPos[1]);
+            pieceColor[] nearbyColors = board.getColorsNearby(currentPos[0], currentPos[1]);
             for (int i = 0; i < nearbyColors.length; i++) {
                 // out of border
-                if (nearbyColors[i].equals("")) continue;
+                if (nearbyColors[i] == pieceColor.OUT) continue;
                 // find matching color
                 int[] nextPos = {currentPos[0] + directions[i][0], currentPos[1] + directions[i][1]};
                 if (nearbyColors[i].equals(currentColor) && !listHasPosition(searchList, nextPos)) {
@@ -240,7 +240,7 @@ public class Marrakech {
             }
             // delete position has searched surround
             searchList.poll();
-            boardColor[currentPos[0]][currentPos[1]] = "x";
+            boardColor[currentPos[0]][currentPos[1]] = pieceColor.OUT;
 
             // [DEBUG] check board color state
             if (DEBUG) {
@@ -321,7 +321,7 @@ public class Marrakech {
                 maxIdxList[countMax - 1] = idx;
             }
         }
-        if (countMax == 1) return players[maxIdxList[0]].getColor();
+        if (countMax == 1) return players[maxIdxList[0]].getColor().getSymbol().charAt(0);
 
         // same total score, the player with the largest number of dirhams wins.
         max = -1;
@@ -336,7 +336,7 @@ public class Marrakech {
                 maxIdx = maxIdxList[idx];
             }
         }
-        return players[maxIdx].getColor();
+        return players[maxIdx].getColor().getSymbol().charAt(0);
         /**
          * Test Error At
          * =============[getWinner]=============
@@ -457,7 +457,7 @@ public class Marrakech {
      * or the input currentGame unchanged otherwise.
      */
     public static String makePlacement(String currentGame, String rug) {
-       if(isPlacementValid(currentGame,rug)==false){return currentGame;}
+       if(!isPlacementValid(currentGame, rug)){return currentGame;}
         Rug rug1=new Rug(rug);
         int x1=rug1.getFirstCoordinate()[0];
         int x2=rug1.getSecondCoordinate()[0];
@@ -484,8 +484,8 @@ public class Marrakech {
 //        board.setColorByCoordinate(x,y,rug1.getColor()+"");//为什么color是字符串?
         String Boardstring=currentGame.substring(36);
         char[] Board=Boardstring.toCharArray();
-        Board[x*3+1]=rug1.getColor();
-        Board[y*3+1]=rug1.getColor();
+        Board[x*3+1]=rug1.getColor().getSymbol().charAt(0);
+        Board[y*3+1]=rug1.getColor().getSymbol().charAt(0);
         System.out.println(player1.toString());
         System.out.println(Board);
 //        System.out.println("board"+board);

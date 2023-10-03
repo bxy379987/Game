@@ -31,7 +31,7 @@ public class PlayerTest {
             Player playerPattern = Player.fromString(playerString);
 
             // Check if properties are correctly set
-            Assertions.assertEquals(playerString.charAt(1), playerPattern.getColor());
+            Assertions.assertEquals(playerString.charAt(1), playerPattern.getColor().getSymbol().charAt(0));
             Assertions.assertEquals(Integer.parseInt(playerString.substring(2, 5)), playerPattern.getDirhams());
             Assertions.assertEquals(Integer.parseInt(playerString.substring(5, 7)), playerPattern.getRemainingRugs());
             Assertions.assertEquals(playerString.charAt(7) == 'i', playerPattern.isIsplaying());

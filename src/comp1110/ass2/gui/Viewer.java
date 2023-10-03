@@ -4,6 +4,7 @@ import comp1110.ass2.Assam;
 import comp1110.ass2.Board;
 import comp1110.ass2.Direction;
 import comp1110.ass2.Player;
+import comp1110.ass2.pieceColor;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -59,7 +60,7 @@ public class Viewer extends Application {
 
     // Display the board based on the provided board object
     public void displayBoard(Board board){
-        String[][] boardcolors = board.getBoardColor();
+        pieceColor[][] boardcolors = board.getBoardColor();
         for (int col = 0; col < BOARD_INDEX_WIDTH; col++) {
             for (int row = 0; row < BOARD_INDEX_HEIGHT; row++) {
                 Rectangle node = new Rectangle(NODE_SIZE * 0.9, NODE_SIZE * 0.9);
@@ -70,10 +71,10 @@ public class Viewer extends Application {
                 // set node color
                 node.setFill(Color.WHITE);
                 switch (boardcolors[col][row]) {
-                    case "c" -> node.setFill(Color.CYAN);
-                    case "y" -> node.setFill(Color.YELLOW);
-                    case "p" -> node.setFill(Color.PURPLE);
-                    case "r" -> node.setFill(Color.RED);
+                    case CYAN -> node.setFill(Color.CYAN);
+                    case YELLOW -> node.setFill(Color.YELLOW);
+                    case PURPLE -> node.setFill(Color.PURPLE);
+                    case RED -> node.setFill(Color.RED);
                     }
                 // add node
                 root.getChildren().addAll(node);
@@ -149,10 +150,10 @@ public class Viewer extends Application {
 
             // Set the color of the player information label based on the player's color
             switch (player.getColor()){
-                case 'c' -> playerLabel.setTextFill(Color.CYAN);
-                case 'y' -> playerLabel.setTextFill(Color.YELLOW);
-                case 'p' -> playerLabel.setTextFill(Color.PURPLE);
-                case 'r' -> playerLabel.setTextFill(Color.RED);
+                case CYAN -> playerLabel.setTextFill(Color.CYAN);
+                case YELLOW -> playerLabel.setTextFill(Color.YELLOW);
+                case PURPLE -> playerLabel.setTextFill(Color.PURPLE);
+                case RED -> playerLabel.setTextFill(Color.RED);
             }
 
             // Set the position of the player information label

@@ -2,7 +2,6 @@ package comp1110.ass2;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -39,8 +38,8 @@ class BoardTest {
     }
     @Test
     void getColorsNearby() {
-        String[] colorsNearby;
-        String[] expect;
+        pieceColor[] colorsNearby;
+        pieceColor[] expect;
         Board board = new Board("y00n00n00n00n00n00n00" +
                         "y00n00r00n00n00n00n00" +
                         "n00n00r00n00n00n00n00" +
@@ -61,7 +60,7 @@ class BoardTest {
         //     ← up * down →
         //          ↓ right
         colorsNearby = board.getColorsNearby(3, 3);
-        expect = new String[]{"p", "y", "n", "n"};
+        expect = new pieceColor[]{pieceColor.PURPLE, pieceColor.YELLOW, pieceColor.NONE, pieceColor.NONE};
         for (int idx = 0; idx < colorsNearby.length; idx++) {
             Assertions.assertEquals(colorsNearby[idx], expect[idx]);
         }
@@ -78,7 +77,7 @@ class BoardTest {
         //     ← up * down →
         //          ↓ right
         colorsNearby = board.getColorsNearby(0, 0);
-        expect = new String[]{"", "y", "n", ""};
+        expect = new pieceColor[]{pieceColor.OUT, pieceColor.YELLOW, pieceColor.NONE, pieceColor.OUT};
         for (int idx = 0; idx < colorsNearby.length; idx++) {
             Assertions.assertEquals(colorsNearby[idx], expect[idx]);
         }
@@ -95,7 +94,7 @@ class BoardTest {
         //     ← up * down →
         //          ↓ right
         colorsNearby = board.getColorsNearby(3, 6);
-        expect = new String[]{"n", "n", "", "n"};
+        expect = new pieceColor[]{pieceColor.NONE, pieceColor.NONE, pieceColor.OUT,pieceColor.NONE};
         for (int idx = 0; idx < colorsNearby.length; idx++) {
             Assertions.assertEquals(colorsNearby[idx], expect[idx]);
         }
@@ -120,10 +119,10 @@ class BoardTest {
                 {"y", "r", "r", "p", "r", "r", "y"},
                 {"n", "r", "n", "p", "n", "r", "p"},
         };
-        String[][] boardColor = board.getBoardColor();
+        pieceColor[][] boardColor = board.getBoardColor();
         for (int x = 0; x < boardColor.length; x++) {
             for (int y = 0; y < boardColor[0].length; y++) {
-                Assertions.assertEquals(boardColor[x][y], expect[x][y]);
+                Assertions.assertEquals(boardColor[x][y].getSymbol(), expect[x][y]);
             }
         }
     }
@@ -186,9 +185,9 @@ class BoardTest {
                         "y00c00y08y04r23r21n00" +
                         "y21r28r03p21r23r20y03" +
                         "n00r28n00p21n00r20p17");
-        Assertions.assertEquals(board.getColorByCoordinate(0, 0), "y");
-        Assertions.assertEquals(board.getColorByCoordinate(1, 1), "r");
-        Assertions.assertEquals(board.getColorByCoordinate(4, 5), "r");
+        Assertions.assertEquals(board.getColorByCoordinate(0, 0), pieceColor.fromSymbol("y"));
+        Assertions.assertEquals(board.getColorByCoordinate(1, 1), pieceColor.fromSymbol("r"));
+        Assertions.assertEquals(board.getColorByCoordinate(4, 5), pieceColor.fromSymbol("r"));
         try {
             board.getColorByCoordinate(-3, -5);
             Assertions.fail("should accept IllegalArgumentException()");

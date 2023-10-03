@@ -265,10 +265,10 @@ public class Game extends Application {
 
 
         // init players
-        players = new Player[]{new Player(isPlayerPlaying[0], 'c', 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[1], 'y', 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[2], 'r', 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[3], 'p', 30, RUG_AMOUNT)
+        players = new Player[]{new Player(isPlayerPlaying[0], pieceColor.CYAN, 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[1], pieceColor.YELLOW, 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[2], pieceColor.RED, 30, RUG_AMOUNT),
+                new Player(isPlayerPlaying[3], pieceColor.PURPLE, 30, RUG_AMOUNT)
         };
 
 
@@ -342,7 +342,7 @@ public class Game extends Application {
             int y = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
             System.out.println(x + " " + y);
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
-                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor(), x, y);
+                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor().getSymbol().charAt(0), x, y);
 
             }
         }
