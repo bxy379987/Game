@@ -112,18 +112,18 @@ public class Game extends Application {
 
     static class RugEntity{
         private final int ID;
-        private final char color;
+        private final pieceColor color;
          Group rugGroup;
 //        ImageView rug;
         private final Circle firstPart;
         private final Circle secondPart;
-        public RugEntity(int ID, char color, double x, double y) {
+        public RugEntity(int ID, pieceColor color, double x, double y) {
             this.ID = ID;
             this.color = color;
             rugGroup = new Group();
             // init Rug patterns
             Image rugImage = new Image("comp1110/ass2/assets/rug" +
-                    String.valueOf(color).toUpperCase() + ".png",
+                    color.getSymbol() + ".png",
                     NODE_SIZE * 2 + 10, NODE_SIZE, false, false);
             ImageView rug = new ImageView(rugImage);
 
@@ -157,7 +157,7 @@ public class Game extends Application {
             return ID;
         }
 
-        public char getColor() {
+        public pieceColor getColor() {
             return color;
         }
     }
@@ -175,7 +175,7 @@ public class Game extends Application {
          * @param x
          * @param y
          */
-        public DraggableRugEntity(int ID ,char color, double x, double y) {
+        public DraggableRugEntity(int ID ,pieceColor color, double x, double y) {
             super(ID, color, x, y);
             // mouse pressed: set init states & check keyboard rotate
             rugGroup.setOnMousePressed(event -> {
@@ -265,13 +265,12 @@ public class Game extends Application {
 
 
         // init players
-        players = new Player[]{new Player(isPlayerPlaying[0], pieceColor.CYAN, 30, RUG_AMOUNT),
+        players = new Player[]{
+                new Player(isPlayerPlaying[0], pieceColor.CYAN, 30, RUG_AMOUNT),
                 new Player(isPlayerPlaying[1], pieceColor.YELLOW, 30, RUG_AMOUNT),
                 new Player(isPlayerPlaying[2], pieceColor.RED, 30, RUG_AMOUNT),
                 new Player(isPlayerPlaying[3], pieceColor.PURPLE, 30, RUG_AMOUNT)
         };
-
-
     }
 
     /**
@@ -342,7 +341,7 @@ public class Game extends Application {
             int y = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
             System.out.println(x + " " + y);
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
-                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor().getSymbol().charAt(0), x, y);
+                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor(), x, y);
 
             }
         }
