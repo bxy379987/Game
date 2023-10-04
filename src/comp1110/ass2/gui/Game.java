@@ -10,10 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Game extends Application {
     public static final boolean DEBUG = false;
@@ -64,14 +63,22 @@ public class Game extends Application {
     // DIRHAMS relative to PLAYER information panel
     private static final int PLAYER_DIRHAMS_START_X = 180;
     private static final int PLAYER_DIRHAMS_START_Y = 0;
+    // DICE position
+    private static final int DICE_START_X = 660;
+    private static final int DICE_START_Y = 500;
+
+
+
+
      public void findNearest(Group group) {
+         // clear flags
          if (nearest != null) {
              for (Circle n: nearest) {
                  n.setFill(Color.BLACK);
              }
          }
          Circle[] rugAnchors = {(Circle) group.getChildren().get(1), (Circle) group.getChildren().get(2)};
-
+         // find nearest anchors/coordinates/distance
          int[][] rugAnchorsIdx = {{-1, -1}, {-1, -1}};
          double[] minDistance = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY};
          for (int col = 0; col < boardAnchors.length; col++) {
@@ -80,6 +87,7 @@ public class Game extends Application {
                  double boardAnchorY = boardAnchors[col][row].getCenterY();
                  for (int idx = 0; idx < rugAnchors.length; idx++) {
                      double x, y;
+                     // get local to scene coordinates
                      Bounds bounds = rugAnchors[idx].localToScene(rugAnchors[idx].getBoundsInLocal());
                      x = bounds.getCenterX();
                      y = bounds.getCenterY();
@@ -110,6 +118,7 @@ public class Game extends Application {
      * ==================== GAME ENTITIES ====================
      */
 
+    // ==================== RUG ENTITIES ====================
     static class RugEntity{
         private final int ID;
         private final pieceColor color;
@@ -117,9 +126,12 @@ public class Game extends Application {
 //        ImageView rug;
         private final Circle firstPart;
         private final Circle secondPart;
+//        private Rug rug;
         public RugEntity(int ID, pieceColor color, double x, double y) {
             this.ID = ID;
             this.color = color;
+            // abstract rug
+//            this.rug = new Rug(color, ID);
             rugGroup = new Group();
             // init Rug patterns
             Image rugImage = new Image("comp1110/ass2/assets/rug" +
@@ -224,6 +236,8 @@ public class Game extends Application {
                     rugGroup.setLayoutY(originY);
                     rugGroup.setRotate(originRotate);
                 }
+
+                // reset anchors
                 isMouseDragged = false;
                 for (Circle circle : nearest) {
                     circle.setFill(Color.BLACK);
@@ -233,6 +247,36 @@ public class Game extends Application {
         }
     }
 
+    // ==================== DICE ENTITIES ====================
+    class DiceEntity {
+        private boolean clickable = false;
+        private int number;
+        private final Dice dice;
+        DiceEntity(double x, double y) {
+            dice = new Dice();
+            number = dice.rollDice();
+            AtomicReference<Image> diceImage = new AtomicReference<>(
+                    new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
+                            190, 200, false, false));
+            ImageView diceEntity = new ImageView(diceImage.get());
+            diceEntity.setX(x);
+            diceEntity.setY(y);
+            root.getChildren().add(diceEntity);
+            // active event
+            if (clickable) {
+                diceEntity.setOnMouseClicked(event -> {
+                    number = dice.rollDice();
+                    diceImage.set(new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
+                            190, 200, false, false));
+                    diceEntity.setImage(diceImage.get());
+                });
+            }
+        }
+
+        public void setClickable(boolean clickable) {
+            this.clickable = clickable;
+        }
+    }
     /**
      * MAIN SCENE
      * @param stage the primary stage for this application, onto which
@@ -286,7 +330,8 @@ public class Game extends Application {
         initAssam();
         // PLAYER
         initRugs();
-
+        // DICE
+        DiceEntity diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
 
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",

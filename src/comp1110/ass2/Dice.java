@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dice {
     Random rand;
     int[] diceScore;
-    Dice () {
+    public Dice () {
         rand = new Random();
         diceScore = new int[]{1, 2, 2, 3, 3, 4};
     }
