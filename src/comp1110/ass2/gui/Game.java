@@ -1,6 +1,8 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -11,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -66,7 +69,8 @@ public class Game extends Application {
     // DICE position
     private static final int DICE_START_X = 660;
     private static final int DICE_START_Y = 500;
-
+    private static final double DICE_ANIME_TIME = 0.8;
+    private static final int DICE_ANIME_FRAMES = 30;
 
 
 
@@ -263,14 +267,21 @@ public class Game extends Application {
             diceEntity.setY(y);
             root.getChildren().add(diceEntity);
             // active event
-            if (clickable) {
-                diceEntity.setOnMouseClicked(event -> {
-                    number = dice.rollDice();
-                    diceImage.set(new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
-                            190, 200, false, false));
-                    diceEntity.setImage(diceImage.get());
-                });
-            }
+            diceEntity.setOnMouseClicked(event -> {
+                if (clickable) {
+//                    System.out.println("Click");
+                    KeyFrame keyFrame = new KeyFrame(Duration.seconds(DICE_ANIME_TIME / DICE_ANIME_FRAMES), eventAnime -> {
+                        number = dice.rollDice();
+//                        System.out.println("Anime: change to [" + number + "]");
+                        diceImage.set(new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
+                                190, 200, false, false));
+                        diceEntity.setImage(diceImage.get());
+                    });
+                    Timeline timeline = new Timeline(keyFrame);
+                    timeline.setCycleCount(DICE_ANIME_FRAMES);
+                    timeline.play();
+                }
+            });
         }
 
         public void setClickable(boolean clickable) {
@@ -332,7 +343,7 @@ public class Game extends Application {
         initRugs();
         // DICE
         DiceEntity diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
-
+        diceEntity.setClickable(true);
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
                 100, 120, false, false);
