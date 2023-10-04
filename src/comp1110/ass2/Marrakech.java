@@ -457,41 +457,32 @@ public class Marrakech {
      * or the input currentGame unchanged otherwise.
      */
     public static String makePlacement(String currentGame, String rug) {
-       if(!isPlacementValid(currentGame, rug)){return currentGame;}
+        if (!isRugValid(currentGame,rug)){return currentGame;}
+        if (!isPlacementValid(currentGame, rug)){return currentGame;}
         Rug rug1=new Rug(rug);
         int x1=rug1.getFirstCoordinate()[0];
         int x2=rug1.getSecondCoordinate()[0];
         int y1=rug1.getFirstCoordinate()[1];
         int y2=rug1.getSecondCoordinate()[1];
-        int x=x1*7+y1;
-        int y=x2*7+y2;
-//        String substringGameState = currentGame.substring(21);
 
-        Player player1 = Player.fromString(currentGame.substring(0,8));
-        Player player2 = Player.fromString(currentGame.substring(8,16));
-        Player player3 = Player.fromString(currentGame.substring(16,24));
-        Player player4 = Player.fromString(currentGame.substring(24,32));
-        Assam assam1=Assam.fromString(currentGame.substring(32,36));
-//        Board board=new Board(currentGame.substring(36));
-        if(rug1.getColor()== player1.getColor()){
-            player1.setRemainingRugs(player1.getRemainingRugs()-1);}
-        if(rug1.getColor()== player2.getColor()){
-            player2.setRemainingRugs(player2.getRemainingRugs()-1);}
-        if(rug1.getColor()== player3.getColor()){
-            player3.setRemainingRugs(player3.getRemainingRugs()-1);}
-        if(rug1.getColor()== player4.getColor()){
-            player4.setRemainingRugs(player4.getRemainingRugs()-1);}
-//        board.setColorByCoordinate(x,y,rug1.getColor()+"");//为什么color是字符串?
-        String Boardstring=currentGame.substring(36);
-        char[] Board=Boardstring.toCharArray();
-        Board[x*3+1]=rug1.getColor().getSymbol().charAt(0);
-        Board[y*3+1]=rug1.getColor().getSymbol().charAt(0);
-        System.out.println(player1.toString());
-        System.out.println(Board);
-//        System.out.println("board"+board);
-        String changedgamestate=new String(player1.toString()+ player2.toString()+ player3 + player4 +assam1+new String(Board));
-        System.out.println("state"+changedgamestate);
-        return changedgamestate;
+        Player[] players = Player.fromGameString(currentGame);
+        Assam assam1 = new Assam(currentGame);
+
+        for (Player player: players){
+            if (rug1.getColor()==player.getColor()){
+                player.setRemainingRugs(player.getRemainingRugs()-1);
+            }
+        }
+
+        String Boardstring=currentGame.split("B")[1];
+        Board boardEntity =new Board(Boardstring);
+        boardEntity.setColorByCoordinate(x1,y1,rug1.getColor().getSymbol(), rug1.getID());
+        boardEntity.setColorByCoordinate(x2,y2,rug1.getColor().getSymbol(), rug1.getID());
+
+        String changedGameState=new String(players[0].toString()+ players[1]+ players[2] + players[3] +assam1+ "B" +boardEntity.toString());
+        System.out.println("state"+changedGameState);
+        return changedGameState;
+
 //        int substringGameStatelLength = substringGameState.length();//is 49^3
 //        int substringcount = substringGameStatelLength / 3;//is 49
 //        String[] substringGameStatearray = new String[substringcount];
