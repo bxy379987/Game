@@ -47,6 +47,7 @@ public class Board {
         tunnels.put("A16S", "A26N");
         // bottom left corner
         tunnels.put("A06S", "A06E");
+        tunnels.put("A06W", "A06N");
         // left line
         tunnels.put("A05W", "A04E");
         tunnels.put("A04W", "A05E");
@@ -180,8 +181,10 @@ public class Board {
         pieceColor firstPartColor = getColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1]);
         pieceColor secondPartColor = getColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1]);
         // CASE: invalid
-        if (firstPartColor.equals(secondPartColor) && !firstPartColor.equals(pieceColor.NONE)  && getSubID()[rug.getFirstCoordinate()[0]][rug.getFirstCoordinate()[1]] == getSubID()[rug.getSecondCoordinate()[0]][rug.getSecondCoordinate()[1]]) {
-            return false;}
+        if (firstPartColor.equals(secondPartColor) && !firstPartColor.equals(pieceColor.NONE) &&
+                getSubID()[rug.getFirstCoordinate()[0]][rug.getFirstCoordinate()[1]] == getSubID()[rug.getSecondCoordinate()[0]][rug.getSecondCoordinate()[1]]) {
+            return false;
+        }
         int[] assamCoordinate = {assam.getxCoordinate(),assam.getyCoordinate()};
         if (Arrays.equals(rug.getFirstCoordinate(),assamCoordinate) || Arrays.equals(rug.getSecondCoordinate(),assamCoordinate))
             return false;

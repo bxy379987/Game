@@ -380,69 +380,13 @@ public class Marrakech {
      * @return A String representing Assam's state after the movement.
      */
     public static String moveAssam(String currentAssam, int dieResult){
-        System.out.println(currentAssam+" "+dieResult);
-        Assam assam=new Assam();
-       assam=Assam.fromString(currentAssam);
-        char direction=assam.getDirection().getSymbol();
-        int x=assam.getxCoordinate();
-        int y=assam.getyCoordinate();
-        switch(currentAssam.charAt(3)){
-            case 'N':
-                if(y-dieResult>=0){y-=dieResult;}
-                   else if(y-dieResult<0&&x!=6){
-                       direction='S';
-                       y=dieResult-1-y;
-                       if(x%2==0){x+=1;}else x-=1;
-            }
-                   else if(y-dieResult<0&&x==6){
-                       x=y+7-dieResult;
-                       y=0;
-                       direction='W';//边角转弯只验证了一次,需要小心下面边角出问题;
-
-                }
-                   break;
-            case 'S':
-                if(y+dieResult<=6){y+=dieResult;}
-                else if(y+dieResult>6&&x!=0){
-                    direction='N';
-                    y=13-y-dieResult;
-                    if(x%2==1)x+=1;else x-=1;
-                }
-                else if(y+dieResult>6&&x==0){
-                    x=y+dieResult-7;
-                    y=6;
-                    direction='E';
-                }
-                break;
-            case'E':
-                if(x+dieResult<=6){x+=dieResult;}
-                else if(x+dieResult>6&&y!=0){
-                    direction='W';
-                      x=13-x-dieResult;
-                    if(y%2==1)y+=1;else y-=1;
-                }
-                else if(x+dieResult>6&&y==0){
-                    y=x+dieResult-7;
-                    x=6;
-                    direction='S';
-                }
-                break;
-            case'W':
-                if(x-dieResult>=0){x-=dieResult;}
-                else if(x-dieResult<0&&y!=6){
-                    direction='E';
-                    x=dieResult-1-x;
-                    if(y%2==0)y+=1;else y-=1;
-                }else if(x-dieResult<0&&y==6){
-                    y=x-dieResult+7;
-                    x=0;
-                    direction='N';
-                }break;
-        }
         // FIXME: Task 13
-        String X=Integer.toString(x);
-        String Y=Integer.toString(y);
-        return 'A'+X+Y+direction;
+        System.out.println("=============[moveAssam]=============");
+        System.out.println(currentAssam + " " + dieResult);
+        // [INIT]
+        Assam assam = Assam.fromString(currentAssam);
+        assam.moveXSteps(dieResult);
+        return assam.toString();
     }
 
     /**

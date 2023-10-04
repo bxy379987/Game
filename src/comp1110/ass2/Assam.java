@@ -127,6 +127,33 @@ public class Assam {
         direction = counterClockwiseSequence[(directionIdx + steps) % 4];
     }
 
+    public void moveXSteps(int steps) {
+        // add steps
+        switch (direction) {
+            case NORTH -> yCoordinate -= steps;
+            case EAST -> xCoordinate += steps;
+            case SOUTH -> yCoordinate += steps;
+            case WEST -> xCoordinate -= steps;
+        }
+        // if result in board
+        Board board = new Board();
+        if ((xCoordinate >= 0 && xCoordinate < board.BOARD_WIDTH) &&
+                (yCoordinate >= 0 && yCoordinate < board.BOARD_HEIGHT)) return;
+        // if result out of board
+        // get edge state of board
+        int newXCoordinate = xCoordinate < 0 ? 0 : Math.min(xCoordinate, 6);
+        int newYCoordinate = yCoordinate < 0 ? 0 : Math.min(yCoordinate, 6);
+//        System.out.println(newXCoordinate + "," + newYCoordinate);
+        // find remaining steps
+        steps = Math.abs(newXCoordinate - xCoordinate) + Math.abs(newYCoordinate - yCoordinate) - 1;
+        Assam assam = board.getAssamViaTunnel(new Assam(newXCoordinate, newYCoordinate, direction));
+//        System.out.println(assam.toString());
+        // recursively get
+        assam.moveXSteps(steps);
+        xCoordinate = assam.xCoordinate;
+        yCoordinate = assam.yCoordinate;
+        direction = assam.direction;
+    }
     @Override
     public String toString() {
         return "A"+xCoordinate+yCoordinate+direction.getSymbol();
