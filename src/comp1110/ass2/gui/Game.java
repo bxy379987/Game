@@ -30,7 +30,7 @@ public class Game extends Application {
     private Player[] players;
     private Assam assam;
     /**
-     * Game entities
+     * Game Front-end entities
      */
     public Scene scene;
     private static final int RUG_AMOUNT = 15;
@@ -50,6 +50,8 @@ public class Game extends Application {
      * +                     |          |
      * +---------------------+----------+
      */
+    // GAME STAGE
+    public int GAME_STAGE = 0;
     // BOARD panel
     private static final int NODE_OUTER_BOUND_SIZE = 70;
     private static final int NODE_SIZE = 60;
@@ -263,6 +265,7 @@ public class Game extends Application {
                     new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
                             190, 200, false, false));
             ImageView diceEntity = new ImageView(diceImage.get());
+
             diceEntity.setX(x);
             diceEntity.setY(y);
             root.getChildren().add(diceEntity);
@@ -288,6 +291,61 @@ public class Game extends Application {
             this.clickable = clickable;
         }
     }
+
+    // ==================== PLAYER ENTITIES ====================
+
+    class PlayerEntity {
+        private boolean isSelect = false;
+        Player player;
+        pieceColor color;
+        public PlayerEntity(double x, double y, pieceColor color) {
+            this.color = color;
+            AtomicReference<Image> playerImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + ".png",
+                    500, 500, false, false));
+            ImageView playerEntity = new ImageView(playerImage.get());
+            playerEntity.setX(x);
+            playerEntity.setY(y);
+            root.getChildren().add(playerEntity);
+
+            playerEntity.setOnMouseClicked(event -> {
+                if (isSelect) {
+                    playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + "_select.png",
+                            500, 500, false, false));
+                } else {
+                    playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + ".png",
+                            500, 500, false, false));
+                }
+                playerEntity.setImage(playerImage.get());
+                isSelect = !isSelect;
+            });
+        }
+    }
+
+    // ==================== START ENTITIES ====================
+    class StartEntity {
+        public StartEntity(double x, double y) {
+            AtomicReference<Image> startImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/START.png",
+                    850, 420, false, false));
+            ImageView startEntity = new ImageView(startImage.get());
+            startEntity.setX(x);
+            startEntity.setY(y);
+            root.getChildren().add(startEntity);
+
+            startEntity.setOnMouseEntered(event -> {
+                startImage.set(new Image("comp1110/ass2/assets/selection/START_select.png",
+                        850, 420, false, false));
+                startEntity.setImage(startImage.get());
+            });
+            startEntity.setOnMouseExited(event -> {
+                startImage.set(new Image("comp1110/ass2/assets/selection/START.png",
+                        850, 420, false, false));
+                startEntity.setImage(startImage.get());
+            });
+            startEntity.setOnMousePressed(event -> {
+
+            });
+        }
+    }
     /**
      * MAIN SCENE
      * @param stage the primary stage for this application, onto which
@@ -299,12 +357,13 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // FIXME Task 7 and 15
+
         scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         stage.setTitle("◀ Assam Game ▶");
 
-        gameSelectStage();
-        gamePrepareStage();
+        if (GAME_STAGE == 0) gameSelectStage();
+        if (GAME_STAGE == 1) gamePrepareStage();
 
         stage.setResizable(false);
         stage.setScene(scene);
@@ -317,8 +376,18 @@ public class Game extends Application {
         boolean[] isPlayerPlaying = new boolean[4];
         // get options from gamer
         // TODO: add GUI to select players
+        initBackground("SELECT");
 
+        initPlayer(isPlayerPlaying);
 
+    }
+
+    private void initPlayer(boolean[] isPlayerPlaying) {
+        PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN);
+        StartEntity startEntity = new StartEntity(180, 190);
+        PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW);
+        PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE);
+        PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED);
         // init players
         players = new Player[]{
                 new Player(isPlayerPlaying[0], pieceColor.CYAN, 30, RUG_AMOUNT),
@@ -334,7 +403,7 @@ public class Game extends Application {
 
     private void gamePrepareStage() {
         // INIT BACKGROUND ENTITY
-        initBackground();
+        initBackground("PREPARE");
         // INIT BOARD ENTITY
         initBoard();
         // ASSAM
@@ -353,12 +422,22 @@ public class Game extends Application {
         root.getChildren().add(dirhams);
     }
 
-    private void initBackground() {
-        Image backgroundImage = new Image("comp1110/ass2/assets/Background.png",
-                WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
-        ImageView background = new ImageView(backgroundImage);
+    private void initBackground(String stage) {
+        if (stage.equals("PREPARE")) {
+            Image backgroundImage = new Image("comp1110/ass2/assets/Background.png",
+                    WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
+            ImageView background = new ImageView(backgroundImage);
 
-        root.getChildren().add(background);
+            root.getChildren().add(background);
+        }
+
+        if (stage.equals("SELECT")) {
+            Image backgroundImage = new Image("comp1110/ass2/assets/selection/background_select.png",
+                    WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
+            ImageView background = new ImageView(backgroundImage);
+
+            root.getChildren().add(background);
+        }
     }
 
     private void initBoard() {
