@@ -139,10 +139,10 @@ public class Board {
 //        boardColor[x][y] = color;
 //    }
 
-    public void setColorByCoordinate(int x, int y, String color, int id) {
-        if (!"cyrpn".contains(color)) throw new IllegalArgumentException("Only accept \"cyrpn\" as color");
+    public void setColorByCoordinate(int x, int y, pieceColor color, int id) {
+//        if (!"cyrpn".contains(color)) throw new IllegalArgumentException("Only accept \"cyrpn\" as color");
         if (id < 0) throw new IllegalArgumentException("Only accept rug ID");
-        boardColor[x][y] = pieceColor.fromSymbol(color);
+        boardColor[x][y] = color;
         subID[x][y] = id;
     }
 
@@ -188,8 +188,8 @@ public class Board {
         if (!NextTo(assamCoordinate, rug.getFirstCoordinate()) && !NextTo(assamCoordinate, rug.getSecondCoordinate()))
             return false;
         // CASE: valid
-        setColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1], String.valueOf(rug.getColor().getSymbol()), rug.getID());
-        setColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1], String.valueOf(rug.getColor().getSymbol()), rug.getID());
+        setColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1], rug.getColor(), rug.getID());
+        setColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1], rug.getColor(), rug.getID());
         return true;
     }
 

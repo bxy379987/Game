@@ -146,7 +146,7 @@ class BoardTest {
                         "y00c00y08y04r23r21n00" +
                         "y21r28r03p21r23r20y03" +
                         "n00r28n00p21n00r20p17");
-        board.setColorByCoordinate(0, 0, "n", 0);
+        board.setColorByCoordinate(0, 0, pieceColor.NONE, 0);
         Assertions.assertEquals(board.toString(), boardExpect.toString());
         // CASE: edge
         boardExpect = new Board(
@@ -157,18 +157,11 @@ class BoardTest {
                         "y00c00y08y04p02r21n00" +
                         "y21r28r03p21r23r20y03" +
                         "n00r28n00p21n00r20p17");
-        board.setColorByCoordinate(4, 4, "p", 2);
+        board.setColorByCoordinate(4, 4, pieceColor.PURPLE, 2);
         Assertions.assertEquals(board.toString(), boardExpect.toString());
         // CASE: error
         try {
-            board.setColorByCoordinate(1, 2, "x", 2);
-            Assertions.fail("should accept IllegalArgumentException()");
-        } catch (Exception e) {
-            Assertions.assertEquals(e.getClass(), IllegalArgumentException.class);
-        }
-
-        try {
-            board.setColorByCoordinate(3, 5, "y", -2);
+            board.setColorByCoordinate(3, 5, pieceColor.YELLOW, -2);
             Assertions.fail("should accept IllegalArgumentException()");
         } catch (Exception e) {
             Assertions.assertEquals(e.getClass(), IllegalArgumentException.class);

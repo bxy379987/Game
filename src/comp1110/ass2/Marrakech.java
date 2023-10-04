@@ -476,8 +476,8 @@ public class Marrakech {
 
         String Boardstring=currentGame.split("B")[1];
         Board boardEntity =new Board(Boardstring);
-        boardEntity.setColorByCoordinate(x1,y1,rug1.getColor().getSymbol(), rug1.getID());
-        boardEntity.setColorByCoordinate(x2,y2,rug1.getColor().getSymbol(), rug1.getID());
+        boardEntity.setColorByCoordinate(x1, y1, rug1.getColor(), rug1.getID());
+        boardEntity.setColorByCoordinate(x2, y2, rug1.getColor(), rug1.getID());
 
         String changedGameState=new String(players[0].toString()+ players[1]+ players[2] + players[3] +assam1+ "B" +boardEntity.toString());
         System.out.println("state"+changedGameState);
