@@ -140,8 +140,8 @@ public class Game extends Application {
 //            this.rug = new Rug(color, ID);
             rugGroup = new Group();
             // init Rug patterns
-            Image rugImage = new Image("comp1110/ass2/assets/rug" +
-                    color.getSymbol() + ".png",
+            Image rugImage = new Image("comp1110/ass2/assets/Rug" +
+                    color.getSymbol().toUpperCase() + ".png",
                     NODE_SIZE * 2 + 10, NODE_SIZE, false, false);
             ImageView rug = new ImageView(rugImage);
 
