@@ -12,8 +12,8 @@ contributions:
     contribution: 33
   - uid: u7751023
     contribution: 33
-  - uid:
-    contribution:
+  - uid: u7755061
+    contribution: 33
 
 # Sign *your* name and uids here. (Remove entries if you have fewer
 # than three members)
@@ -22,5 +22,5 @@ signatures:
     uid: u7733037
   - name: Xiangyu Bao
     uid:  u7751023
-  - name:
-    uid:
+  - name: Yusi Zhong
+    uid: u7755061
