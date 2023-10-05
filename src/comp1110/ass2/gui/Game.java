@@ -45,9 +45,9 @@ public class Game extends Application {
     /**
      * Game GUI Parameters
      * +---------------------+----------+
-     * +                     |          |
-     * +      BOARD          |  PLAYER  |
-     * +                     |          |
+     * |                     |          |
+     * |      BOARD          |  PLAYER  |
+     * |                     |          |
      * +---------------------+----------+
      */
     // GAME STAGE
