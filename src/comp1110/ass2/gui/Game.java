@@ -300,6 +300,8 @@ public class Game extends Application {
         pieceColor color;
         public PlayerEntity(double x, double y, pieceColor color) {
             this.color = color;
+            this.player = new Player(isSelect, color, 30, RUG_AMOUNT);
+
             AtomicReference<Image> playerImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + ".png",
                     500, 500, false, false));
             ImageView playerEntity = new ImageView(playerImage.get());
@@ -317,6 +319,7 @@ public class Game extends Application {
                 }
                 playerEntity.setImage(playerImage.get());
                 isSelect = !isSelect;
+                this.player.setIsplaying(isSelect);
             });
         }
     }
@@ -342,7 +345,8 @@ public class Game extends Application {
                 startEntity.setImage(startImage.get());
             });
             startEntity.setOnMousePressed(event -> {
-
+                System.out.println("GAME START");
+                GAME_STAGE = 1;
             });
         }
     }
@@ -362,8 +366,8 @@ public class Game extends Application {
 
         stage.setTitle("◀ Assam Game ▶");
 
-        if (GAME_STAGE == 0) gameSelectStage();
-        if (GAME_STAGE == 1) gamePrepareStage();
+        gameSelectStage();
+        gamePrepareStage();
 
         stage.setResizable(false);
         stage.setScene(scene);
@@ -378,23 +382,23 @@ public class Game extends Application {
         // TODO: add GUI to select players
         initBackground("SELECT");
 
-        initPlayer(isPlayerPlaying);
-
+        initPlayer();
     }
 
-    private void initPlayer(boolean[] isPlayerPlaying) {
+    private void initPlayer() {
         PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN);
         StartEntity startEntity = new StartEntity(180, 190);
         PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW);
         PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE);
         PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED);
-        // init players
+
         players = new Player[]{
-                new Player(isPlayerPlaying[0], pieceColor.CYAN, 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[1], pieceColor.YELLOW, 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[2], pieceColor.RED, 30, RUG_AMOUNT),
-                new Player(isPlayerPlaying[3], pieceColor.PURPLE, 30, RUG_AMOUNT)
+            playerC.player,
+            playerY.player,
+            playerP.player,
+            playerR.player
         };
+
     }
 
     /**
