@@ -479,7 +479,10 @@ public class Game extends Application {
      */
 
     private void gamePrepareStage() {
-        scene.setOnKeyPressed(event -> {
+        assamEntity.setFocusTraversable(true);
+        assamEntity.requestFocus();
+
+        assamEntity.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case N:
                     ASSAM.imageView.setRotate(0);
@@ -519,7 +522,9 @@ public class Game extends Application {
         root.getChildren().add(dirhams);
     }
     public void GamePlayingStage(){
-        scene.setOnKeyPressed(event -> {
+        assamEntity.setFocusTraversable(true);
+        assamEntity.requestFocus();
+        assamEntity.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case N:
                     ASSAM.imageView.setRotate(0);
@@ -539,18 +544,21 @@ public class Game extends Application {
                     break;
             }
         });
-        TextField textField = new TextField();
-        textField.setLayoutX(50);
-        textField.setLayoutY(50);
-        textField.setPromptText("player number 2-4");
-        textField.toFront();
-        root.getChildren().add(textField);
-        String S=textField.getText();
+        //循环player,因为player还没写好所以先注释
+
+//        TextField textField = new TextField();
+//        textField.setLayoutX(50);
+//        textField.setLayoutY(50);
+//        textField.setText("player number 2-4");
+//     textField.toFront();
+//        root.getChildren().add(textField);
+//        String S=textField.getText();
 //        if(S.charAt(0)==2)players=new Player[]{playerC.player,playerY.player};
 //        if(S.charAt(0)==3)players=new Player[]{playerC.player,playerY.player,playerP.player};
 //        if(S.charAt(0)==4)players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
 //        else players=new Player[]{playerC.player};
 //        System.out.println("player number "+S.charAt(0));
+        String S=new String();
         Player currentPlayer;
         int u=0;
         if(players!=null&&players.length!=0) {
