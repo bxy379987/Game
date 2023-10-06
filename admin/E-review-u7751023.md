@@ -165,7 +165,7 @@ If the state doesn't contain the "B" character,
 
 the split method in displayState will 
 
-cause an ArrayIndexOutOfBoundsException.
+8cause an ArrayIndexOutOfBoundsException.
 
 
 
