@@ -299,61 +299,9 @@ public class Game extends Application {
                 Direction direction1=ASSAM.getDirection();
                 int x2=ASSAM.getX();
                 int y2=ASSAM.getY();
-//                switch(direction1){
-//                    case NORTH:
-//                        if(y2-number>=0){y2-=number;}
-//                        else if(y2-number<0&&x2!=6){
-//                            ASSAM.direction=Direction.SOUTH;
-//
-//                            y2=number-1-y2;
-//                            if(x2%2==0){x2+=1;}else x2-=1;
-//                        }
-//                        else if(y2-number<0&&x2==6){
-//                            x2=y2+7-number;
-//                            y2=0;
-//                            ASSAM.direction=Direction.NORTH;//边角转弯只验证了一次,需要小心下面边角出问题;
-//
-//                        }
-//                        break;
-//                    case SOUTH:
-//                        if(y2+number<=6){y2+=number;}
-//                        else if(y2+number>6&&x2!=0){
-//                            ASSAM.direction=Direction.NORTH;
-//                            y2=13-y2-number;
-//                            if(x2%2==1)x2+=1;else x2-=1;
-//                        }
-//                        else if(y2+number>6&&x2==0){
-//                            x2=y2+number-7;
-//                            y2=6;
-//                            ASSAM.direction=Direction.EAST;
-//                        }
-//                        break;
-//                    case EAST:
-//                        if(x2+number<=6){x2+=number;}
-//                        else if(x2+number>6&&y2!=0){
-//                            ASSAM.direction=Direction.WEST;
-//                            x2=13-x2-number;
-//                            if(y2%2==1)y2+=1;else y2-=1;
-//                        }
-//                        else if(x2+number>6&&y2==0){
-//                            y2=x2+number-7;
-//                            x2=6;
-//                            ASSAM.direction=Direction.SOUTH;
-//                        }
-//                        break;
-//                    case WEST:
-//                        if(x2-number>=0){x2-=number;}
-//                        else if(x2-number<0&&y2!=6){
-//                            ASSAM.direction=Direction.EAST;
-//                            x2=number-1-x2;
-//                            if(y2%2==0)y2+=1;else y2-=1;
-//                        }else if(x2-number<0&&y2==6){
-//                            y2=x2-number+7;
-//                            x2=0;
-//                            ASSAM.direction=Direction.NORTH;
-//                        }break;
-//                }
+
                 Assam assam1=new Assam(x2,y2,direction1);
+                System.out.println("number"+number);
                 assam1.moveXSteps(number);
                 System.out.println(assam1);
                 x2=assam1.getxCoordinate();
