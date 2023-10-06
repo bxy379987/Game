@@ -7,10 +7,12 @@ import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -18,6 +20,7 @@ import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static comp1110.ass2.Marrakech.isGameOver;
 import static java.awt.PageAttributes.MediaType.D;
 
 public class Game extends Application {
@@ -30,7 +33,12 @@ public class Game extends Application {
      * Game Back-end class
      */
     private Board board;
-    private Player[] players;
+    PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN);
+    PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW);
+    PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE);
+    PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED);
+     Player[] players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
+
     private Assam assam;
     /**
      * Game Front-end entities
@@ -440,9 +448,89 @@ public class Game extends Application {
     public void start(Stage stage) throws Exception {
         // FIXME Task 7 and 15
 
+//        TextField textField = new TextField();
+//        textField.setLayoutX(50);
+//        textField.setLayoutY(50);
+//        textField.setPromptText("player number 2-4");
+//
+//        root.getChildren().add(textField);
+
+
+
         scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
         assamEntity.setFitHeight(NODE_SIZE);
         assamEntity.setFitWidth(NODE_SIZE);
+
+        stage.setTitle("◀ Assam Game ▶");
+
+        gameSelectStage();
+        gamePrepareStage();
+        GamePlayingStage();
+
+        stage.setResizable(false);
+//        textField.toFront();
+        stage.setScene(scene);
+//        scene.setOnKeyPressed(event -> {
+//            switch (event.getCode()) {
+//                case N:
+//                    ASSAM.imageView.setRotate(0);
+//                    ASSAM.setDirection(Direction.NORTH);
+//                    break;
+//                case S:
+//                    ASSAM.imageView.setRotate(180);
+//                    ASSAM.setDirection(Direction.SOUTH);
+//                    break;
+//                case W:
+//                    ASSAM.imageView.setRotate(270);
+//                    ASSAM.setDirection(Direction.WEST);
+//                    break;
+//                case E:
+//                    ASSAM.imageView.setRotate(90);
+//                    ASSAM.setDirection(Direction.EAST);
+//                    break;
+//            }
+//        });
+
+        stage.show();
+//        String S=textField.getText();
+//        if(S.charAt(0)==2)players=new Player[]{playerC.player,playerY.player};
+//        if(S.charAt(0)==3)players=new Player[]{playerC.player,playerY.player,playerP.player};
+//        if(S.charAt(0)==4)players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
+//        else players=new Player[]{playerC.player};
+//        System.out.println("player number "+S.charAt(0));
+//        Player currentPlayer;
+//        int u=0;
+//        if(players!=null&&players.length!=0) {
+//            while (!isGameOver(S)) {
+//                currentPlayer = players[u % 3];
+//                System.out.println(currentPlayer);
+//                //玩游戏
+//                u++;
+//
+//            }//isGameOver()
+//        }
+
+    }
+    /**
+     * ==================== GAME SELECT STAGE ====================
+     */
+    public void gameSelectStage() {
+        boolean[] isPlayerPlaying = new boolean[4];
+        // get options from gamer
+        // TODO: add GUI to select players
+        initBackground("SELECT");
+
+
+
+    }
+
+
+
+    /**
+     * ==================== GAME PREPARE STAGE ====================
+     */
+
+    private void gamePrepareStage() {
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case N:
@@ -463,49 +551,6 @@ public class Game extends Application {
                     break;
             }
         });
-
-        stage.setTitle("◀ Assam Game ▶");
-
-        gameSelectStage();
-        gamePrepareStage();
-
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-    }
-    /**
-     * ==================== GAME SELECT STAGE ====================
-     */
-    public void gameSelectStage() {
-        boolean[] isPlayerPlaying = new boolean[4];
-        // get options from gamer
-        // TODO: add GUI to select players
-        initBackground("SELECT");
-
-        initPlayer();
-    }
-
-    private void initPlayer() {
-        PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN);
-        StartEntity startEntity = new StartEntity(180, 190);
-        PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW);
-        PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE);
-        PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED);
-
-        players = new Player[]{
-            playerC.player,
-            playerY.player,
-            playerP.player,
-            playerR.player
-        };
-
-    }
-
-    /**
-     * ==================== GAME PREPARE STAGE ====================
-     */
-
-    private void gamePrepareStage() {
         // INIT BACKGROUND ENTITY
         initBackground("PREPARE");
         // INIT BOARD ENTITY
@@ -524,6 +569,52 @@ public class Game extends Application {
         dirhams.setX(PLAYER_START_X + PLAYER_DIRHAMS_START_X);
         dirhams.setY(PLAYER_START_Y + PLAYER_DIRHAMS_START_Y);
         root.getChildren().add(dirhams);
+    }
+    public void GamePlayingStage(){
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case N:
+                    ASSAM.imageView.setRotate(0);
+                    ASSAM.setDirection(Direction.NORTH);
+                    break;
+                case S:
+                    ASSAM.imageView.setRotate(180);
+                    ASSAM.setDirection(Direction.SOUTH);
+                    break;
+                case W:
+                    ASSAM.imageView.setRotate(270);
+                    ASSAM.setDirection(Direction.WEST);
+                    break;
+                case E:
+                    ASSAM.imageView.setRotate(90);
+                    ASSAM.setDirection(Direction.EAST);
+                    break;
+            }
+        });
+        TextField textField = new TextField();
+        textField.setLayoutX(50);
+        textField.setLayoutY(50);
+        textField.setPromptText("player number 2-4");
+        textField.toFront();
+        root.getChildren().add(textField);
+        String S=textField.getText();
+//        if(S.charAt(0)==2)players=new Player[]{playerC.player,playerY.player};
+//        if(S.charAt(0)==3)players=new Player[]{playerC.player,playerY.player,playerP.player};
+//        if(S.charAt(0)==4)players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
+//        else players=new Player[]{playerC.player};
+//        System.out.println("player number "+S.charAt(0));
+        Player currentPlayer;
+        int u=0;
+        if(players!=null&&players.length!=0) {
+            while (!isGameOver(S)) {
+                currentPlayer = players[u % 3];
+                System.out.println(currentPlayer);
+                //玩游戏
+                u++;
+
+            }//isGameOver()
+       }
+
     }
 
     private void initBackground(String stage) {
