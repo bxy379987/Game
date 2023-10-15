@@ -294,30 +294,32 @@ public class Game extends Application {
                     });
                     Timeline timeline = new Timeline(keyFrame);
                     timeline.setCycleCount(DICE_ANIME_FRAMES);
+
+                    timeline.setOnFinished(event1 -> {
+                        Direction direction1 = ASSAM.getDirection();
+                        int x2 = ASSAM.getX();
+                        int y2 = ASSAM.getY();
+
+                        Assam assam1 = new Assam(x2, y2, direction1);
+                        System.out.println("number" + number);
+                        assam1.moveXSteps(number);
+                        System.out.println(assam1);
+                        x2 = assam1.getxCoordinate();
+                        y2 = assam1.getyCoordinate();
+                        ASSAM.direction = assam1.getDirection();
+                        if (ASSAM.direction == Direction.NORTH) assamEntity.setRotate(0);
+                        if (ASSAM.direction == Direction.SOUTH) assamEntity.setRotate(180);
+                        if (ASSAM.direction == Direction.EAST) assamEntity.setRotate(90);
+                        if (ASSAM.direction == Direction.WEST) assamEntity.setRotate(270);
+                        ASSAM.setX(x2);
+                        ASSAM.setY(y2);
+                        System.out.println(ASSAM);
+                        assamEntity.setX(BOARD_START_X + x2 * NODE_OUTER_BOUND_SIZE);
+                        assamEntity.setY(BOARD_START_Y + y2 * NODE_OUTER_BOUND_SIZE);
+                    });
                     timeline.play();
+                    setClickable(false);
                 }
-                Direction direction1=ASSAM.getDirection();
-                int x2=ASSAM.getX();
-                int y2=ASSAM.getY();
-
-                Assam assam1=new Assam(x2,y2,direction1);
-                System.out.println("number"+number);
-                assam1.moveXSteps(number);
-                System.out.println(assam1);
-                x2=assam1.getxCoordinate();
-                y2=assam1.getyCoordinate();
-                ASSAM.direction=assam1.getDirection();
-                if(ASSAM.direction==Direction.NORTH)assamEntity.setRotate(0);
-                if(ASSAM.direction==Direction.SOUTH)assamEntity.setRotate(180);
-                if(ASSAM.direction==Direction.EAST)assamEntity.setRotate(90);
-                if(ASSAM.direction==Direction.WEST)assamEntity.setRotate(270);
-                ASSAM.setX(x2);
-                ASSAM.setY(y2);
-                System.out.println(ASSAM);
-                assamEntity.setX(BOARD_START_X + x2* NODE_OUTER_BOUND_SIZE);
-                assamEntity.setY(BOARD_START_Y + y2* NODE_OUTER_BOUND_SIZE);
-
-
             });
         }
 
