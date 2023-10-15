@@ -456,7 +456,7 @@ public class Game extends Application {
 
         gameSelectStage();
         gamePrepareStage();
-        GamePlayingStage();
+        gamePlayingStage(players);
 
         stage.setResizable(false);
 //        textField.toFront();
@@ -522,29 +522,29 @@ public class Game extends Application {
      */
 
     private void gamePrepareStage() {
-        assamEntity.setFocusTraversable(true);
-        assamEntity.requestFocus();
-
-        assamEntity.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case N:
-                    ASSAM.imageView.setRotate(0);
-                    ASSAM.setDirection(Direction.NORTH);
-                    break;
-                case S:
-                    ASSAM.imageView.setRotate(180);
-                    ASSAM.setDirection(Direction.SOUTH);
-                    break;
-                case W:
-                    ASSAM.imageView.setRotate(270);
-                    ASSAM.setDirection(Direction.WEST);
-                    break;
-                case E:
-                    ASSAM.imageView.setRotate(90);
-                    ASSAM.setDirection(Direction.EAST);
-                    break;
-            }
-        });
+//        assamEntity.setFocusTraversable(true);
+//        assamEntity.requestFocus();
+//
+//        assamEntity.setOnKeyPressed(event -> {
+//            switch (event.getCode()) {
+//                case N:
+//                    ASSAM.imageView.setRotate(0);
+//                    ASSAM.setDirection(Direction.NORTH);
+//                    break;
+//                case S:
+//                    ASSAM.imageView.setRotate(180);
+//                    ASSAM.setDirection(Direction.SOUTH);
+//                    break;
+//                case W:
+//                    ASSAM.imageView.setRotate(270);
+//                    ASSAM.setDirection(Direction.WEST);
+//                    break;
+//                case E:
+//                    ASSAM.imageView.setRotate(90);
+//                    ASSAM.setDirection(Direction.EAST);
+//                    break;
+//            }
+//        });
         // INIT BACKGROUND ENTITY
         initBackground("PREPARE");
         // INIT BOARD ENTITY
@@ -553,9 +553,6 @@ public class Game extends Application {
         initAssam();
         // PLAYER
         initRugs();
-        // DICE
-        DiceEntity diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
-        diceEntity.setClickable(true);
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
                 100, 120, false, false);
@@ -564,29 +561,25 @@ public class Game extends Application {
         dirhams.setY(PLAYER_START_Y + PLAYER_DIRHAMS_START_Y);
         root.getChildren().add(dirhams);
     }
-    public void GamePlayingStage(){
-        assamEntity.setFocusTraversable(true);
-        assamEntity.requestFocus();
-        assamEntity.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case N:
-                    ASSAM.imageView.setRotate(0);
-                    ASSAM.setDirection(Direction.NORTH);
-                    break;
-                case S:
-                    ASSAM.imageView.setRotate(180);
-                    ASSAM.setDirection(Direction.SOUTH);
-                    break;
-                case W:
-                    ASSAM.imageView.setRotate(270);
-                    ASSAM.setDirection(Direction.WEST);
-                    break;
-                case E:
-                    ASSAM.imageView.setRotate(90);
-                    ASSAM.setDirection(Direction.EAST);
-                    break;
+    public void gamePlayingStage(Player[] currentPlayers){
+        playerP.player.setIsplaying(true);
+        playerC.player.setIsplaying(true);
+        playerY.player.setIsplaying(true);
+        playerR.player.setIsplaying(true);
+        String currentGame = getCurrentGame();
+        for (Player currentPlayer : currentPlayers){
+            System.out.println("++++++++++");
+            rotatePhase(currentPlayer);
+            movePhase(currentPlayer);
+            placementPhase(currentPlayer);
+            System.out.println("xinde"+ getCurrentGame());
+            if (isGameOver(currentGame)){
+                System.out.println("GameOver");
+                break;
             }
-        });
+        }
+        System.out.println(getWinner(currentGame));
+
         //循环player,因为player还没写好所以先注释
 
 //        TextField textField = new TextField();
@@ -601,18 +594,79 @@ public class Game extends Application {
 //        if(S.charAt(0)==4)players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
 //        else players=new Player[]{playerC.player};
 //        System.out.println("player number "+S.charAt(0));
-        String S=new String();
-        Player currentPlayer;
-        int u=0;
-        if(players!=null&&players.length!=0) {
-            while (!isGameOver(S)) {
-                currentPlayer = players[u % 3];
-                System.out.println(currentPlayer);
-                //玩游戏
-                u++;
+//        String S=new String();
+//        Player currentPlayer;
+//        int u=0;
+//        if(players!=null&&players.length!=0) {
+//            while (!isGameOver(S)) {
+//                currentPlayer = players[u % 3];
+//                System.out.println(currentPlayer);
+//                //玩游戏
+//                u++;
+//
+//            }//isGameOver()
+//       }
 
-            }//isGameOver()
-       }
+    }
+    private String getCurrentGame() {
+        return players[0].toString() + players[1]+ players[2]+players[3]+ASSAM.toString()+"B"+board.toString();
+    }
+
+    private boolean rotateComfirmed = false;
+    private void rotatePhase(Player currentPlayer){
+        rotateComfirmed = false;
+        assamEntity.setFocusTraversable(true);
+        assamEntity.requestFocus();
+        assamEntity.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case UP:
+                    ASSAM.imageView.setRotate(0);
+                    ASSAM.setDirection(Direction.NORTH);
+                    break;
+                case DOWN:
+                    ASSAM.imageView.setRotate(180);
+                    ASSAM.setDirection(Direction.SOUTH);
+                    break;
+                case LEFT:
+                    ASSAM.imageView.setRotate(270);
+                    ASSAM.setDirection(Direction.WEST);
+                    break;
+                case RIGHT:
+                    ASSAM.imageView.setRotate(90);
+                    ASSAM.setDirection(Direction.EAST);
+                    break;
+                case ENTER:
+                    rotateComfirmed = true;
+                    break;
+            }
+            if (rotateComfirmed){
+                assamEntity.setOnKeyPressed(null);
+                movePhase(currentPlayer);
+            }
+        });}
+
+    DiceEntity diceEntity;
+    private void movePhase(Player currentPlayer){
+        // DICE
+        if (diceEntity == null){
+            diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
+        }
+        diceEntity.setClickable(true);
+        if (board.getColorByCoordinate(ASSAM.x, ASSAM.y) != pieceColor.NONE) {
+            int payment = getPaymentAmount(getCurrentGame());
+            currentPlayer.setDirhams(currentPlayer.getDirhams() - payment);
+            for (Player player : players){
+                if (board.getColorByCoordinate(ASSAM.x, ASSAM.y) == player.getColor()){
+                    player.setDirhams(player.getDirhams() + payment);
+                    break;
+                }
+            }
+        }
+        System.out.println("pay"+getCurrentGame());
+        placementPhase(currentPlayer);
+    }
+    private void placementPhase(Player currentPlayer) {
+
 
     }
 
@@ -691,11 +745,8 @@ public class Game extends Application {
 
          @Override
          public String toString() {
-             return "AssamEntity{" +
-                     "x=" + x +
-                     ", y=" + y +
-                     ", direction=" + direction +
-                     '}';
+             return "A" + x + y +
+                      direction.getSymbol();
          }
      }
 AssamEntity ASSAM=new AssamEntity(3,3,Direction.NORTH,"comp1110/ass2/assets/pointer.png");
