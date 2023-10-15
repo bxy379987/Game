@@ -118,6 +118,14 @@ public class Player {
     public void setRemainingRugs(int remainingRugs) {
         this.remainingRugs = remainingRugs;
     }
+    public boolean deducedRemainingRugs() {
+        this.remainingRugs -= 1;
+        if (this.remainingRugs == 0) {
+            this.remainingRugs = 0;
+            return false;
+        }
+        return true;
+    }
 
     public HashMap<Integer, Rug> getRugToBeUsed() {
         return rugToBeUsed;
