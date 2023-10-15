@@ -5,7 +5,7 @@ import comp1110.ass2.gui.Game;
 import java.util.HashMap;
 
 public class Player {
-    private boolean isPlaying = false;
+    private boolean isPlaying;
     private pieceColor color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
@@ -95,6 +95,7 @@ public class Player {
     }
 
     public void setIsplaying(boolean isplaying) {
+        System.out.println("Set to: " + isplaying);
         this.isPlaying = isplaying;
     }
 
