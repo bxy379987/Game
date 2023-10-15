@@ -461,8 +461,6 @@ public class Game extends Application {
                         BlockEntity blockEntity = new BlockEntity(playerX, playerY);
                     }
 
-
-
                 }
                 // Player count must larger than 1
                 if (count > 1) stage.setScene(scene);
@@ -542,7 +540,8 @@ public class Game extends Application {
 //        playerR.player.setIsplaying(true);
         String currentGame = getCurrentGame();
         for (Player currentPlayer : currentPlayers){
-            System.out.println("++++++++++");
+            System.out.println("#".repeat(40));
+            System.out.println("Current Player" + currentPlayer.getColor());
             rotatePhase(currentPlayer);
             movePhase(currentPlayer);
             placementPhase(currentPlayer);
@@ -594,10 +593,10 @@ public class Game extends Application {
         assamEntity.imageView.requestFocus();
         assamEntity.imageView.setOnKeyPressed(event -> {
             switch (event.getCode()) {
-                case UP: assamEntity.setDirection(Direction.NORTH);
-                case RIGHT: assamEntity.setDirection(Direction.EAST);
-                case DOWN: assamEntity.setDirection(Direction.SOUTH);
-                case LEFT: assamEntity.setDirection(Direction.WEST);
+                case UP: assamEntity.setDirection(Direction.NORTH); break;
+                case RIGHT: assamEntity.setDirection(Direction.EAST); break;
+                case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                case LEFT: assamEntity.setDirection(Direction.WEST); break;
 
                 case ENTER:
                     rotateComfirmed = true;
