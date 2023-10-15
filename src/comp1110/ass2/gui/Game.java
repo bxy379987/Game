@@ -336,7 +336,7 @@ public class Game extends Application {
         private boolean clickable = false;
         private int number;
         private final Dice dice;
-        DiceEntity(double x1, double y1) {
+        DiceEntity(double x, double y) {
             dice = new Dice();
             number = dice.rollDice();
             AtomicReference<Image> diceImage = new AtomicReference<>(
@@ -344,8 +344,8 @@ public class Game extends Application {
                             190, 200, false, false));
             ImageView diceEntity = new ImageView(diceImage.get());
 
-            diceEntity.setX(x1);
-            diceEntity.setY(y1);
+            diceEntity.setX(x);
+            diceEntity.setY(y);
             root.getChildren().add(diceEntity);
             // active event
             diceEntity.setOnMouseClicked(event -> {
@@ -383,7 +383,7 @@ public class Game extends Application {
                                     playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
                                     playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
                                     //
-                                    // TODO: Check after pay & do something
+                                    // TODO: Check after pay & do something // dirhams under 0
                                 }
                             }
 
@@ -411,6 +411,11 @@ public class Game extends Application {
         Text dirhamsText;
         pieceColor color;
         int playerIdx;
+        // Mode 0: Human
+        // Mode 1: Random
+        // Mode 2: AI
+        // TODO: implement AI / need to add a selective button to change mode
+        int characterMode = 0;
         public PlayerEntity(double x, double y, pieceColor color, boolean isSelect) {
             this.color = color;
             this.isSelect = isSelect;
@@ -461,6 +466,11 @@ public class Game extends Application {
                 playerEntity.setImage(playerImage.get());
             });
         }
+
+        public void setCharacterMode(int characterMode) {
+            this.characterMode = characterMode;
+        }
+
         // ADD group set method
         public void setRugsDraggableValue(boolean value) {
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
@@ -560,7 +570,6 @@ public class Game extends Application {
     public void gameSelectStage() {
         System.out.println("==============[ gameSelectStage ]==============");
         // get options from gamer
-        // TODO: add GUI to select players
         initBackground("SELECT");
         PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN, false);
         StartEntity startEntity = new StartEntity(180, 190);
@@ -609,6 +618,7 @@ public class Game extends Application {
                     case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
                     case LEFT: assamEntity.setDirection(Direction.WEST); break;
                     case ENTER:
+                        // TODO: [BUG] assam can not rotate 180 degrees
                         diceEntity.setClickable(true);
                         assamEntity.setRotatable(false);
                         System.out.println("[rootEvent] Keyboard Entered");
