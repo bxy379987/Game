@@ -33,6 +33,13 @@ public enum Direction {
     public String getDescription(){
         return Description;
     }
+    public Direction getOpposite() {
+        if (symbol == 'N') return Direction.SOUTH;
+        if (symbol == 'E') return Direction.WEST;
+        if (symbol == 'S') return Direction.NORTH;
+        if (symbol == 'W') return Direction.EAST;
+        return null;
+    }
 
     // Static method to obtain a Direction enum from its symbolic characters
     public static Direction fromSymbol (char symbol){
