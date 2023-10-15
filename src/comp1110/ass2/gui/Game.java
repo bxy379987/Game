@@ -2,6 +2,7 @@ package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
 import gittest.A;
+import gittest.B;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -93,6 +94,7 @@ public class Game extends Application {
 
 
      public void findNearest(Group group) {
+         System.out.println("==============[ findNearest ]==============");
          // clear flags
          if (nearest != null) {
              for (Circle n: nearest) {
@@ -310,6 +312,19 @@ public class Game extends Application {
         }
     }
 
+    class BlockEntity {
+        double x, y;
+        ImageView imageView;
+        public BlockEntity(double x, double y) {
+            this.x = x;
+            this.y = y;
+            imageView = new ImageView(new Image("comp1110/ass2/assets/Block.png",
+                    NODE_SIZE * 2 + 10, NODE_SIZE, false, false));
+            imageView.setX(x);
+            imageView.setY(y);
+            root.getChildren().add(imageView);
+        }
+    }
     // ==================== DICE ENTITIES ====================
     class DiceEntity {
         private boolean clickable = false;
@@ -435,9 +450,19 @@ public class Game extends Application {
                 System.out.println("=".repeat(40));
                 System.out.println("GAME START");
                 int count = 0;
-                for (Player player : players) {
-                    System.out.println(player);
-                    if (player.isIsplaying()) count += 1;
+                for (int idx = 0; idx < players.length; idx++) {
+                    System.out.println(players[idx]);
+                    if (players[idx].isIsplaying()) {
+                        count += 1;
+                    } else {
+                        // add block if player is not playing
+                        int playerX = PLAYER_START_X + PLAYER_RUG_START_X;
+                        int playerY = PLAYER_START_Y + PLAYER_RUG_START_Y + idx * (PLAYER_RUG_SPACE + NODE_SIZE);
+                        BlockEntity blockEntity = new BlockEntity(playerX, playerY);
+                    }
+
+
+
                 }
                 // Player count must larger than 1
                 if (count > 1) stage.setScene(scene);
@@ -454,6 +479,7 @@ public class Game extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
+        System.out.println("==============[ start ]==============");
         // FIXME Task 7 and 15
         this.stage = stage;
         stage.setTitle("◀ Assam Game ▶");
@@ -469,6 +495,7 @@ public class Game extends Application {
      * ==================== GAME SELECT STAGE ====================
      */
     public void gameSelectStage() {
+        System.out.println("==============[ gameSelectStage ]==============");
         // get options from gamer
         // TODO: add GUI to select players
         initBackground("SELECT");
@@ -489,7 +516,7 @@ public class Game extends Application {
      */
 
     private void gamePrepareStage() {
-
+        System.out.println("==============[ gamePrepareStage ]==============");
         // INIT BACKGROUND ENTITY
         initBackground("PREPARE");
         // INIT BOARD ENTITY
@@ -507,6 +534,7 @@ public class Game extends Application {
         root.getChildren().add(dirhams);
     }
     public void gamePlayingStage(Player[] currentPlayers){
+        System.out.println("==============[ gamePlayingStage ]==============");
         // [DEBUG] md 我说为什么如果不点player不管怎么初始化都固定为true，坑到我了
 //        playerP.player.setIsplaying(true);
 //        playerC.player.setIsplaying(true);
@@ -560,6 +588,7 @@ public class Game extends Application {
 
     private boolean rotateComfirmed = false;
     private void rotatePhase(Player currentPlayer){
+        System.out.println("==============[ rotatePhase ]==============");
         rotateComfirmed = false;
         assamEntity.imageView.setFocusTraversable(true);
         assamEntity.imageView.requestFocus();
@@ -582,6 +611,7 @@ public class Game extends Application {
 
     DiceEntity diceEntity;
     private void movePhase(Player currentPlayer){
+        System.out.println("==============[ movePhase ]==============");
         // DICE
         if (diceEntity == null){
             diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
@@ -702,9 +732,11 @@ public class Game extends Application {
     }
 
     private void initRugs() {
+        System.out.println("==============[ initRugs ]==============");
         // init draggable rug
         playerDraggableRugEntities = new DraggableRugEntity[players.length][RUG_AMOUNT];
         for (int playerIdx = 0; playerIdx < players.length; playerIdx++) {
+            System.out.println(players[playerIdx]);
             int x = PLAYER_START_X + PLAYER_RUG_START_X;
             int y = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
             System.out.println(x + " " + y);
