@@ -507,10 +507,11 @@ public class Game extends Application {
         root.getChildren().add(dirhams);
     }
     public void gamePlayingStage(Player[] currentPlayers){
-        playerP.player.setIsplaying(true);
-        playerC.player.setIsplaying(true);
-        playerY.player.setIsplaying(true);
-        playerR.player.setIsplaying(true);
+        // [DEBUG] md 我说为什么如果不点player不管怎么初始化都固定为true，坑到我了
+//        playerP.player.setIsplaying(true);
+//        playerC.player.setIsplaying(true);
+//        playerY.player.setIsplaying(true);
+//        playerR.player.setIsplaying(true);
         String currentGame = getCurrentGame();
         for (Player currentPlayer : currentPlayers){
             System.out.println("++++++++++");
