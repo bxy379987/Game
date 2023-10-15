@@ -1,31 +1,26 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
-import gittest.A;
-import gittest.B;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.IntStream;
 
 import static comp1110.ass2.Marrakech.*;
-import static java.awt.PageAttributes.MediaType.D;
 
 public class Game extends Application {
     public static final boolean DEBUG = false;
@@ -38,7 +33,7 @@ public class Game extends Application {
      * Game Back-end class
      */
     private Board board;
-    PlayerEntity[] players;
+    PlayerEntity[] playerEntities;
 
     private AssamEntity assamEntity;
     /**
@@ -412,6 +407,7 @@ public class Game extends Application {
         boolean isSelect;
         public Player player;
         DraggableRugEntity[] rugEntities;
+        Text dirhamsText;
         pieceColor color;
         int playerIdx;
         public PlayerEntity(double x, double y, pieceColor color, boolean isSelect) {
@@ -432,6 +428,17 @@ public class Game extends Application {
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
                 this.rugEntities[rugIdx] = new DraggableRugEntity(rugIdx, color, rugX, rugY, false);
             }
+
+            // init Dirhams
+            Font pixelFont = Font.loadFont(Game.class.getResourceAsStream("PixelFonts.ttf"), NODE_SIZE);
+            dirhamsText = new Text(String.valueOf(player.getDirhams()));
+            dirhamsText.setFont(pixelFont);
+            dirhamsText.setFill(Color.WHITE);
+            dirhamsText.setLayoutX(rugX + 3 * NODE_SIZE + 10);
+            dirhamsText.setLayoutY(rugY + NODE_SIZE);
+            root.getChildren().add(dirhamsText);
+
+
             // init Entity
             AtomicReference<Image> playerImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/player" + this.color.getSymbol().toUpperCase() + ".png",
                     500, 500, false, false));
@@ -439,6 +446,7 @@ public class Game extends Application {
             playerEntity.setX(x);
             playerEntity.setY(y);
             selectRoot.getChildren().add(playerEntity);
+
             // init Actions
             AtomicBoolean currentSelect = new AtomicBoolean(isSelect);
             playerEntity.setOnMouseClicked(event -> {
@@ -464,10 +472,16 @@ public class Game extends Application {
             }
         }
 
-        public void setRugToFront() {
+        public void setEntitiesToFront() {
             for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
                 rugEntities[rugIdx].rugGroup.toFront();
             }
+            dirhamsText.toFront();
+        }
+
+        public void setDirhams(int value) {
+            player.setDirhams(value);
+            dirhamsText.setText(String.valueOf(value));
         }
     }
 
@@ -495,9 +509,9 @@ public class Game extends Application {
                 System.out.println("=".repeat(40));
                 System.out.println("GAME START");
                 int count = 0;
-                for (int idx = 0; idx < players.length; idx++) {
-                    System.out.println(players[idx]);
-                    if (players[idx].player.isIsplaying()) {
+                for (int idx = 0; idx < playerEntities.length; idx++) {
+                    System.out.println("[startEntity] " + playerEntities[idx].player);
+                    if (playerEntities[idx].player.isIsplaying()) {
                         count += 1;
                     } else {
                         // add block if player is not playing
@@ -529,7 +543,7 @@ public class Game extends Application {
 
         gameSelectStage();
         gamePrepareStage();
-        gamePlayingStage(players);
+        gamePlayingStage(playerEntities);
 
         stage.setResizable(false);
         stage.show();
@@ -547,7 +561,7 @@ public class Game extends Application {
         PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW, false);
         PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
         PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
-        players = new PlayerEntity[] {playerC, playerY, playerP, playerR};
+        playerEntities = new PlayerEntity[] {playerC, playerY, playerP, playerR};
 
         stage.setScene(selectScene);
     }
@@ -568,7 +582,7 @@ public class Game extends Application {
         initAssam();
         // RUGS
         for (int playerIdx = 0; playerIdx < 4; playerIdx++) {
-            players[playerIdx].setRugToFront();
+            playerEntities[playerIdx].setEntitiesToFront();
         }
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
@@ -629,7 +643,7 @@ public class Game extends Application {
 
     }
     private String getCurrentGame() {
-        return String.valueOf(players[0].player) + players[1].player + players[2].player + players[3].player + assamEntity + "B" + board;
+        return String.valueOf(playerEntities[0].player) + playerEntities[1].player + playerEntities[2].player + playerEntities[3].player + assamEntity + "B" + board;
     }
 
     private boolean rotateComfirmed = false;
@@ -667,7 +681,7 @@ public class Game extends Application {
         if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) != pieceColor.NONE) {
             int payment = getPaymentAmount(getCurrentGame());
             currentPlayer.setDirhams(currentPlayer.getDirhams() - payment);
-            for (PlayerEntity player : players){
+            for (PlayerEntity player : playerEntities){
                 if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) == player.player.getColor()){
                     player.player.setDirhams(player.player.getDirhams() + payment);
                     break;
