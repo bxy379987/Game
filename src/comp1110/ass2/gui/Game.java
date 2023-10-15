@@ -94,7 +94,7 @@ public class Game extends Application {
 
 
      public void findNearest(Group group) {
-         System.out.println("==============[ findNearest ]==============");
+//         System.out.println("==============[ findNearest ]==============");
          // clear flags
          if (nearest != null) {
              for (Circle n: nearest) {
@@ -115,7 +115,7 @@ public class Game extends Application {
                      Bounds bounds = rugAnchors[idx].localToScene(rugAnchors[idx].getBoundsInLocal());
                      x = bounds.getCenterX();
                      y = bounds.getCenterY();
-                     System.out.println(x + "-" + y);
+//                     System.out.println(x + "-" + y);
                      double distance = Math.sqrt((boardAnchorX - x) * (boardAnchorX - x) + (boardAnchorY - y) * (boardAnchorY - y));
 //                 System.out.println(distance);
                      if (minDistance[idx] > distance) {
@@ -131,9 +131,9 @@ public class Game extends Application {
                  boardAnchors[rugAnchorsIdx[1][0]][rugAnchorsIdx[1][1]]};
          nearestIdx = rugAnchorsIdx;
          nearestDistance = minDistance;
-         System.out.println("Find Nearest");
+//         System.out.println("Find Nearest");
          for (Circle n: nearest) {
-             System.out.println(n.getCenterX() + " " + n.getCenterY());
+//             System.out.println(n.getCenterX() + " " + n.getCenterY());
              n.setFill(Color.GREEN);
          }
 
@@ -269,8 +269,8 @@ public class Game extends Application {
                         board.placeRug(this.rug, assamEntity.assam);
                         System.out.println(getCurrentGame());
                         // set player rug amount
-                        int playerIdx = getIndexByColor(color);
-                        playerEntities[playerIdx].player.deducedRemainingRugs();
+
+                        playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
                         // set un-draggable
                         this.draggable = false;
                         // reset current draggable rug
@@ -279,12 +279,14 @@ public class Game extends Application {
                         System.out.println("[RugEntity] set assam rotatable");
                         CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
                         // find next valid player
-
-                        do {
-                            CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
-                        } while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying());
+                        if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                            while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                                CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+                            }
+                        }
                         System.out.println("[RugEntity] find valid player: " + CURRENT_PLAYER_IDX);
                         assamEntity.setRotatable(true);
+                        // set Rug draggable
 
                     } else {
                         rugGroup.setLayoutX(originX);
@@ -356,41 +358,24 @@ public class Game extends Application {
                     Timeline timeline = new Timeline(keyFrame);
                     timeline.setCycleCount(DICE_ANIME_FRAMES);
 
-                    timeline.setOnFinished(event1 -> {
-                        Direction direction1 = assamEntity.getDirection();
-                        int x2 = assamEntity.getX();
-                        int y2 = assamEntity.getY();
-
-                        Assam assam1 = new Assam(x2, y2, direction1);
-                        System.out.println("[DiceEntity] number " + number);
-                        assam1.moveXSteps(number);
-//                        System.out.println("[DiceEntity] assam " + assam1);
-                        x2 = assam1.getxCoordinate();
-                        y2 = assam1.getyCoordinate();
-                        // CHANGE the function to AssamEntity Class
-                        assamEntity.setDirection(assam1.getDirection());
-//                        assamEntity.direction = assam1.getDirection();
-//                        if (assamEntity.direction == Direction.NORTH) assamEntity.setRotate(0);
-//                        if (assamEntity.direction == Direction.SOUTH) assamEntity.setRotate(180);
-//                        if (assamEntity.direction == Direction.EAST) assamEntity.setRotate(90);
-//                        if (assamEntity.direction == Direction.WEST) assamEntity.setRotate(270);
-                        assamEntity.setX(x2);
-                        assamEntity.setY(y2);
+                    timeline.setOnFinished(eventTimelineFin -> {
+                        assamEntity.moveXStep(number);
                         System.out.println("[DiceEntity] assam " + assamEntity.assam);
                         // assam to top
                         assamEntity.imageView.toFront();
                         // set Rug Draggable
+                        System.out.println("[DiceEntity] Current player " + CURRENT_PLAYER_IDX);
                         playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].setDraggable(true);
 
                         gameState = getCurrentGame();
                         System.out.println("[DiceEntity] " + gameState);
-                        if (isGameOver(gameState)) {
+                        if (!isGameOver(gameState)) {
                             pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
                             if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
                                 int payment = getPaymentAmount(gameState);
                                 if (payment != 0) {
                                     int playerToPayIdx = getIndexByColor(boardColor);
-                                    System.out.println("[DiceEntity] " + CURRENT_PLAYER_IDX + "pay " + playerToPayIdx + ": " + payment);
+                                    System.out.println("[DiceEntity] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
                                     playerEntities[playerToPayIdx].player.setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
                                     playerEntities[CURRENT_PLAYER_IDX].player.setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
                                     //
@@ -461,7 +446,7 @@ public class Game extends Application {
                 this.isSelect = currentSelect.get();
                 this.player.setIsplaying(this.isSelect);
 
-                System.out.println(currentSelect.get());
+//                System.out.println(currentSelect.get());
                 if (currentSelect.get()) {
                     playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + "_select.png",
                             500, 500, false, false));
@@ -533,9 +518,11 @@ public class Game extends Application {
                 if (count > 1) {
                     // find first valid player
 
-                    do {
-                        CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
-                    } while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying());
+                    if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                        while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                            CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+                        }
+                    }
                     System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
                     stage.setScene(scene);
                 }
@@ -559,7 +546,6 @@ public class Game extends Application {
 
         gameSelectStage();
         gamePrepareStage();
-//        gamePlayingStage(playerEntities);
 
         stage.setResizable(false);
         stage.show();
@@ -577,7 +563,7 @@ public class Game extends Application {
         PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW, false);
         PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
         PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
-        playerEntities = new PlayerEntity[] {playerC, playerY, playerP, playerR};
+        playerEntities = new PlayerEntity[] {playerC, playerY, playerR, playerP};
         stage.setScene(selectScene);
     }
 
@@ -610,7 +596,7 @@ public class Game extends Application {
 
         // combine keyboard event
         scene.setOnKeyPressed(event -> {
-//            System.out.println("[AssamEntity] " + event.getCode() + " Pressed");
+//            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
             // AssamEntity case
             if (assamEntity.rotatable) {
                 switch (event.getCode()) {
@@ -646,91 +632,11 @@ public class Game extends Application {
         }
         return -1;
     }
-    public void gamePlayingStage(PlayerEntity[] currentPlayers){
-        System.out.println("==============[ gamePlayingStage ]==============");
-        String currentGame = getCurrentGame();
-        for (PlayerEntity currentPlayer : currentPlayers){
 
-            System.out.println("#".repeat(40));
-            System.out.println("Current Player" + currentPlayer.player.getColor());
-//            rotatePhase(currentPlayer);
-//            movePhase(currentPlayer.player);
-//            placementPhase(currentPlayer.player);
-            System.out.println("xinde"+ getCurrentGame());
-            if (isGameOver(currentGame)){
-                System.out.println("GameOver");
-                break;
-            }
-        }
-        System.out.println(getWinner(currentGame));
-
-        //循环player,因为player还没写好所以先注释
-
-//        TextField textField = new TextField();
-//        textField.setLayoutX(50);
-//        textField.setLayoutY(50);
-//        textField.setText("player number 2-4");
-//     textField.toFront();
-//        root.getChildren().add(textField);
-//        String S=textField.getText();
-//        if(S.charAt(0)==2)players=new Player[]{playerC.player,playerY.player};
-//        if(S.charAt(0)==3)players=new Player[]{playerC.player,playerY.player,playerP.player};
-//        if(S.charAt(0)==4)players=new Player[]{playerC.player,playerY.player,playerP.player,playerR.player};
-//        else players=new Player[]{playerC.player};
-//        System.out.println("player number "+S.charAt(0));
-//        String S=new String();
-//        Player currentPlayer;
-//        int u=0;
-//        if(players!=null&&players.length!=0) {
-//            while (!isGameOver(S)) {
-//                currentPlayer = players[u % 3];
-//                System.out.println(currentPlayer);
-//                //玩游戏
-//                u++;
-//
-//            }//isGameOver()
-//       }
-
-    }
     private String getCurrentGame() {
         return String.valueOf(playerEntities[0].player) + playerEntities[1].player + playerEntities[2].player + playerEntities[3].player + assamEntity + "B" + board;
     }
 
-    private void rotatePhase(PlayerEntity currentPlayer){
-
-//        root.setOnKeyPressed(event -> {
-//            System.out.println("[rotatePhase] Current: " + currentPlayer.player.toString().toUpperCase() + " ");
-//            System.out.println("[rotatePhase] " + getCurrentGame());
-//            // active player rugs
-////            currentPlayer.rugEntities[currentPlayer.player.getRemainingRugs() - 1].setDraggable(true);
-//            if (event.getCode() == KeyCode.ENTER) {
-//                assamEntity.setRotatable(false);
-//                diceEntity.setClickable(true);
-//                assamEntity.imageView.setOnKeyPressed(null);
-//                movePhase(currentPlayer.player);
-//            }
-//        });
-    }
-
-
-    private void movePhase(Player currentPlayer){
-        System.out.println("==============[ movePhase ]==============");
-//        diceEntity.setClickable(true);
-        if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) != pieceColor.NONE) {
-            int payment = getPaymentAmount(getCurrentGame());
-            currentPlayer.setDirhams(currentPlayer.getDirhams() - payment);
-            for (PlayerEntity player : playerEntities){
-                if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) == player.player.getColor()){
-                    player.player.setDirhams(player.player.getDirhams() + payment);
-                    break;
-                }
-            }
-        }
-        System.out.println("pay"+getCurrentGame());
-    }
-    private void placementPhase(Player currentPlayer) {
-
-    }
 
     private void initBackground(String stage) {
         if (stage.equals("PREPARE")) {
@@ -767,7 +673,7 @@ public class Game extends Application {
 
     }
 
-     public class AssamEntity{
+     public static class AssamEntity{
         int x;
         int y;
         boolean rotatable;
@@ -826,6 +732,13 @@ public class Game extends Application {
             if (direction == Direction.EAST) imageView.setRotate(90);
             if (direction == Direction.SOUTH) imageView.setRotate(180);
             if (direction == Direction.WEST) imageView.setRotate(270);
+         }
+
+         public void moveXStep(int step) {
+            this.assam.moveXSteps(step);
+            this.setDirection(this.assam.getDirection());
+            this.setX(assam.getxCoordinate());
+            this.setY(assam.getyCoordinate());
          }
 
          @Override
