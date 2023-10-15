@@ -20,7 +20,7 @@ import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static comp1110.ass2.Marrakech.isGameOver;
+import static comp1110.ass2.Marrakech.*;
 import static java.awt.PageAttributes.MediaType.D;
 
 public class Game extends Application {
@@ -136,7 +136,7 @@ public class Game extends Application {
      */
 
     // ==================== RUG ENTITIES ====================
-    static class RugEntity{
+    static class RugEntity {
         private final int ID;
         private final pieceColor color;
          Group rugGroup;
@@ -160,7 +160,7 @@ public class Game extends Application {
             // init Rug anchors for mapping Board anchors
             firstPart = new Circle(NODE_SIZE * 0.5, NODE_SIZE * 0.5,
                     NODE_SIZE * 0.5);
-            secondPart = new Circle( NODE_SIZE * 1.5 + 10, NODE_SIZE * 0.5,
+            secondPart = new Circle(NODE_SIZE * 1.5 + 10, NODE_SIZE * 0.5,
                     NODE_SIZE * 0.5);
             if (!DEBUG) {
                 firstPart.setFill(Color.TRANSPARENT);
@@ -242,12 +242,53 @@ public class Game extends Application {
             // when anchors valid, stick entity to anchors
             rugGroup.setOnMouseReleased(event -> {
                 isMousePressed = false;
-                if (!isMouseDragged) findNearest(rugGroup);
+                int boardX = (int) ((rugGroup.getLayoutX() + nearestTrans[0] - BOARD_START_X) / NODE_OUTER_BOUND_SIZE);
+                int boardY = (int) ((rugGroup.getLayoutY() + nearestTrans[1] - BOARD_START_Y) / NODE_OUTER_BOUND_SIZE);
+                int secondBoardX = boardX + 1;
+                int secondBoardY = boardY;
+//                System.out.println(boardX);
+//                System.out.println(boardY);
+//                System.out.println(secondBoardX);
+//                System.out.println(secondBoardY);
+                double rotation = rugGroup.getRotate() % 360;
+                if (Math.abs(rotation - 180) == 0) {
+                    // 0° or 180° rotation
+                    secondBoardX = boardX - 1;
+                } else if (Math.abs(rotation - 90) == 0) {
+                    // 90° or 270° rotation
+                    boardX = boardX + 1;
+                    secondBoardX = boardX;
+                    secondBoardY = boardY + 1;
+                } else if (Math.abs(rotation - 270) == 0) {
+                    boardX ++;
+                    boardY ++;
+                    secondBoardX = boardX;
+                    secondBoardY = boardY - 1;
+                } else {
+                    secondBoardX = boardX + 1;
+                    secondBoardY = boardY;
+                }
+                System.out.println(boardX);
+                System.out.println(boardY);
+                System.out.println(secondBoardX);
+                System.out.println(secondBoardY);
+                String rugString = getColor().getSymbol() + getID() + boardX + boardY + secondBoardX + secondBoardY;
+                System.out.println(rugString);
+                System.out.println(getCurrentGame());
                 // if anchors valid
                 if (Math.abs(nearestDistance[1] - nearestDistance[0]) < 1e-7
                         && nearestDistance[0] < MAX_ANCHOR_DISTANCE) {
-                    rugGroup.setLayoutX(rugGroup.getLayoutX() + nearestTrans[0]);
-                    rugGroup.setLayoutY(rugGroup.getLayoutY() + nearestTrans[1]);
+                    if (isPlacementValid(getCurrentGame(), rugString)) {
+                        rugGroup.setLayoutX(rugGroup.getLayoutX() + nearestTrans[0]);
+                        rugGroup.setLayoutY(rugGroup.getLayoutY() + nearestTrans[1]);
+                        board.setColorByCoordinate(boardX, boardY, getColor(), getID());
+                        board.setColorByCoordinate(secondBoardX,secondBoardY,getColor(),getID());
+                        System.out.println(getCurrentGame());
+                    } else {
+                        rugGroup.setLayoutX(originX);
+                        rugGroup.setLayoutY(originY);
+                        rugGroup.setRotate(originRotate);
+                    }
                 } else {
                     rugGroup.setLayoutX(originX);
                     rugGroup.setLayoutY(originY);
@@ -719,8 +760,5 @@ AssamEntity ASSAM=new AssamEntity(3,3,Direction.NORTH,"comp1110/ass2/assets/poin
         }
 
     }
-
-
-
 
 }
