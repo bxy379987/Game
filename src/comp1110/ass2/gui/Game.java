@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import static comp1110.ass2.Marrakech.*;
 import static java.awt.PageAttributes.MediaType.D;
@@ -37,11 +38,7 @@ public class Game extends Application {
      * Game Back-end class
      */
     private Board board;
-    PlayerEntity playerC;
-    PlayerEntity playerY;
-    PlayerEntity playerP;
-    PlayerEntity playerR;
-    Player[] players;
+    PlayerEntity[] players;
 
     private AssamEntity assamEntity;
     /**
@@ -51,7 +48,6 @@ public class Game extends Application {
     public Scene selectScene = new Scene(selectRoot, WINDOW_WIDTH, WINDOW_HEIGHT);
     private static final int RUG_AMOUNT = 15;
     private static final int DIRHAM_AMOUNT = 30;
-    private DraggableRugEntity[][] playerDraggableRugEntities;
     // set minimal distance for draggable rug stick to nearest block ↓
     private static final double MAX_ANCHOR_DISTANCE = 40;
     private Circle[][] boardAnchors;
@@ -68,6 +64,10 @@ public class Game extends Application {
      * +---------------------+----------+
      */
     // GAME STAGE
+    /**
+     * 0 : SELECT STAGE
+     * 1 :
+     */
     public int GAME_STAGE = 0;
     // BOARD panel
     private static final int NODE_OUTER_BOUND_SIZE = 70;
@@ -203,7 +203,9 @@ public class Game extends Application {
         private double originX, originY;
         public boolean isMousePressed = false;
         public boolean isMouseDragged = false;
+        private boolean draggable;
         public double originRotate;
+
 
         /**
          * Init entity with coordinates nad tag
@@ -211,105 +213,120 @@ public class Game extends Application {
          * @param x
          * @param y
          */
-        public DraggableRugEntity(int ID ,pieceColor color, double x, double y) {
+        public DraggableRugEntity(int ID ,pieceColor color, double x, double y, boolean draggable) {
             super(ID, color, x, y);
             // mouse pressed: set init states & check keyboard rotate
             rugGroup.setOnMousePressed(event -> {
-                mouseX = event.getSceneX();
-                mouseY = event.getSceneY();
-                // set original states
-                originX = rugGroup.getLayoutX();
-                originY = rugGroup.getLayoutY();
-                originRotate = rugGroup.getRotate();
+                if (draggable) {
+                    mouseX = event.getSceneX();
+                    mouseY = event.getSceneY();
+                    // set original states
+                    originX = rugGroup.getLayoutX();
+                    originY = rugGroup.getLayoutY();
+                    originRotate = rugGroup.getRotate();
 
-                rugGroup.toFront();
-                getFirstPart().toFront();
-                getSecondPart().toFront();
+                    rugGroup.toFront();
+                    getFirstPart().toFront();
+                    getSecondPart().toFront();
 
-                isMousePressed = true;
-                // CASE: rotate
-                scene.setOnKeyPressed(keyEvent -> {
-                    if (isMousePressed && keyEvent.getCode() == KeyCode.E) {
-                        rugGroup.setRotate(rugGroup.getRotate() + 90);
-                        findNearest(rugGroup);
-                    }
-                });
+                    isMousePressed = true;
+                    // CASE: rotate
+                    scene.setOnKeyPressed(keyEvent -> {
+                        if (isMousePressed && keyEvent.getCode() == KeyCode.E) {
+                            rugGroup.setRotate(rugGroup.getRotate() + 90);
+                            findNearest(rugGroup);
+                        }
+                    });
+                }
             });
             // when entity was dragged: check nearest mapping anchors and log
             rugGroup.setOnMouseDragged(event -> {
-                isMouseDragged = true;
-                double deltaX = event.getSceneX() - mouseX;
-                double deltaY = event.getSceneY() - mouseY;
-                rugGroup.setLayoutX(rugGroup.getLayoutX() + deltaX);
-                rugGroup.setLayoutY(rugGroup.getLayoutY() + deltaY);
-                mouseX = event.getSceneX();
-                mouseY = event.getSceneY();
-                findNearest(rugGroup);
+                if (draggable) {
+                    isMouseDragged = true;
+                    double deltaX = event.getSceneX() - mouseX;
+                    double deltaY = event.getSceneY() - mouseY;
+                    rugGroup.setLayoutX(rugGroup.getLayoutX() + deltaX);
+                    rugGroup.setLayoutY(rugGroup.getLayoutY() + deltaY);
+                    mouseX = event.getSceneX();
+                    mouseY = event.getSceneY();
+                    findNearest(rugGroup);
+                }
             });
             // when anchors valid, stick entity to anchors
             rugGroup.setOnMouseReleased(event -> {
-                isMousePressed = false;
-                int boardX = (int) ((rugGroup.getLayoutX() + nearestTrans[0] - BOARD_START_X) / NODE_OUTER_BOUND_SIZE);
-                int boardY = (int) ((rugGroup.getLayoutY() + nearestTrans[1] - BOARD_START_Y) / NODE_OUTER_BOUND_SIZE);
-                int secondBoardX = boardX + 1;
-                int secondBoardY = boardY;
+                if (draggable) {
+                    isMousePressed = false;
+                    int boardX = (int) ((rugGroup.getLayoutX() + nearestTrans[0] - BOARD_START_X) / NODE_OUTER_BOUND_SIZE);
+                    int boardY = (int) ((rugGroup.getLayoutY() + nearestTrans[1] - BOARD_START_Y) / NODE_OUTER_BOUND_SIZE);
+                    int secondBoardX = boardX + 1;
+                    int secondBoardY = boardY;
 //                System.out.println(boardX);
 //                System.out.println(boardY);
 //                System.out.println(secondBoardX);
 //                System.out.println(secondBoardY);
-                double rotation = rugGroup.getRotate() % 360;
-                if (Math.abs(rotation - 180) == 0) {
-                    // 0° or 180° rotation
-                    secondBoardX = boardX - 1;
-                } else if (Math.abs(rotation - 90) == 0) {
-                    // 90° or 270° rotation
-                    boardX = boardX + 1;
-                    secondBoardX = boardX;
-                    secondBoardY = boardY + 1;
-                } else if (Math.abs(rotation - 270) == 0) {
-                    boardX ++;
-                    boardY ++;
-                    secondBoardX = boardX;
-                    secondBoardY = boardY - 1;
-                } else {
-                    secondBoardX = boardX + 1;
-                    secondBoardY = boardY;
-                }
-                System.out.println(boardX);
-                System.out.println(boardY);
-                System.out.println(secondBoardX);
-                System.out.println(secondBoardY);
-                String rugString = getColor().getSymbol() + getID() + boardX + boardY + secondBoardX + secondBoardY;
-                System.out.println(rugString);
-                System.out.println(getCurrentGame());
-                // if anchors valid
-                if (Math.abs(nearestDistance[1] - nearestDistance[0]) < 1e-7
-                        && nearestDistance[0] < MAX_ANCHOR_DISTANCE) {
-                    if (isPlacementValid(getCurrentGame(), rugString)) {
-                        rugGroup.setLayoutX(rugGroup.getLayoutX() + nearestTrans[0]);
-                        rugGroup.setLayoutY(rugGroup.getLayoutY() + nearestTrans[1]);
-                        board.setColorByCoordinate(boardX, boardY, getColor(), getID());
-                        board.setColorByCoordinate(secondBoardX,secondBoardY,getColor(),getID());
-                        System.out.println(getCurrentGame());
+                    double rotation = rugGroup.getRotate() % 360;
+                    if (Math.abs(rotation - 180) == 0) {
+                        // 0° or 180° rotation
+                        secondBoardX = boardX - 1;
+                    } else if (Math.abs(rotation - 90) == 0) {
+                        // 90° or 270° rotation
+                        boardX = boardX + 1;
+                        secondBoardX = boardX;
+                        secondBoardY = boardY + 1;
+                    } else if (Math.abs(rotation - 270) == 0) {
+                        boardX ++;
+                        boardY ++;
+                        secondBoardX = boardX;
+                        secondBoardY = boardY - 1;
+                    } else {
+                        secondBoardX = boardX + 1;
+                        secondBoardY = boardY;
+                    }
+                    System.out.println(boardX);
+                    System.out.println(boardY);
+                    System.out.println(secondBoardX);
+                    System.out.println(secondBoardY);
+                    String rugString = getColor().getSymbol() + getID() + boardX + boardY + secondBoardX + secondBoardY;
+                    System.out.println(rugString);
+                    System.out.println(getCurrentGame());
+                    // if anchors valid
+                    if (Math.abs(nearestDistance[1] - nearestDistance[0]) < 1e-7
+                            && nearestDistance[0] < MAX_ANCHOR_DISTANCE) {
+                        if (isPlacementValid(getCurrentGame(), rugString)) {
+                            rugGroup.setLayoutX(rugGroup.getLayoutX() + nearestTrans[0]);
+                            rugGroup.setLayoutY(rugGroup.getLayoutY() + nearestTrans[1]);
+                            board.setColorByCoordinate(boardX, boardY, getColor(), getID());
+                            board.setColorByCoordinate(secondBoardX,secondBoardY,getColor(),getID());
+                            System.out.println(getCurrentGame());
+                        } else {
+                            rugGroup.setLayoutX(originX);
+                            rugGroup.setLayoutY(originY);
+                            rugGroup.setRotate(originRotate);
+                        }
                     } else {
                         rugGroup.setLayoutX(originX);
                         rugGroup.setLayoutY(originY);
                         rugGroup.setRotate(originRotate);
                     }
-                } else {
-                    rugGroup.setLayoutX(originX);
-                    rugGroup.setLayoutY(originY);
-                    rugGroup.setRotate(originRotate);
-                }
 
-                // reset anchors
-                isMouseDragged = false;
-                for (Circle circle : nearest) {
-                    circle.setFill(Color.BLACK);
+                    // reset anchors
+                    isMouseDragged = false;
+                    for (Circle circle : nearest) {
+                        circle.setFill(Color.BLACK);
+                    }
+                    nearest = null;
                 }
-                nearest = null;
             });
+
         }
+
+        public void setDraggable(boolean draggable) {
+            this.draggable = draggable;
+        }
+        public boolean getDraggable() {
+            return this.draggable;
+        }
+
     }
 
     class BlockEntity {
@@ -394,19 +411,35 @@ public class Game extends Application {
     class PlayerEntity {
         boolean isSelect;
         public Player player;
+        DraggableRugEntity[] rugEntities;
         pieceColor color;
+        int playerIdx;
         public PlayerEntity(double x, double y, pieceColor color, boolean isSelect) {
             this.color = color;
             this.isSelect = isSelect;
             this.player = new Player(this.isSelect, color, DIRHAM_AMOUNT, RUG_AMOUNT);
-
+            this.rugEntities = new DraggableRugEntity[RUG_AMOUNT];
+            // init PlayerIdx
+            switch (color) {
+                case CYAN -> playerIdx = 0;
+                case YELLOW -> playerIdx = 1;
+                case RED -> playerIdx = 2;
+                case PURPLE -> playerIdx = 3;
+            }
+            // init DraggableRugs
+            int rugX = PLAYER_START_X + PLAYER_RUG_START_X;
+            int rugY = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
+            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+                this.rugEntities[rugIdx] = new DraggableRugEntity(rugIdx, color, rugX, rugY, false);
+            }
+            // init Entity
             AtomicReference<Image> playerImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/player" + this.color.getSymbol().toUpperCase() + ".png",
                     500, 500, false, false));
             ImageView playerEntity = new ImageView(playerImage.get());
             playerEntity.setX(x);
             playerEntity.setY(y);
             selectRoot.getChildren().add(playerEntity);
-
+            // init Actions
             AtomicBoolean currentSelect = new AtomicBoolean(isSelect);
             playerEntity.setOnMouseClicked(event -> {
                 currentSelect.getAndSet(!currentSelect.get());
@@ -423,6 +456,18 @@ public class Game extends Application {
                 }
                 playerEntity.setImage(playerImage.get());
             });
+        }
+        // ADD group set method
+        public void setRugsDraggableValue(boolean value) {
+            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+                rugEntities[rugIdx].setDraggable(value);
+            }
+        }
+
+        public void setRugToFront() {
+            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+                rugEntities[rugIdx].rugGroup.toFront();
+            }
         }
     }
 
@@ -452,7 +497,7 @@ public class Game extends Application {
                 int count = 0;
                 for (int idx = 0; idx < players.length; idx++) {
                     System.out.println(players[idx]);
-                    if (players[idx].isIsplaying()) {
+                    if (players[idx].player.isIsplaying()) {
                         count += 1;
                     } else {
                         // add block if player is not playing
@@ -497,12 +542,12 @@ public class Game extends Application {
         // get options from gamer
         // TODO: add GUI to select players
         initBackground("SELECT");
-        playerC = new PlayerEntity(140, -100, pieceColor.CYAN, false);
+        PlayerEntity playerC = new PlayerEntity(140, -100, pieceColor.CYAN, false);
         StartEntity startEntity = new StartEntity(180, 190);
-        playerY = new PlayerEntity(610, -100, pieceColor.YELLOW, false);
-        playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
-        playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
-        players = new Player[]{playerC.player, playerY.player, playerP.player, playerR.player};
+        PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW, false);
+        PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
+        PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
+        players = new PlayerEntity[] {playerC, playerY, playerP, playerR};
 
         stage.setScene(selectScene);
     }
@@ -521,8 +566,10 @@ public class Game extends Application {
         initBoard();
         // ASSAM
         initAssam();
-        // PLAYER
-        initRugs();
+        // RUGS
+        for (int playerIdx = 0; playerIdx < 4; playerIdx++) {
+            players[playerIdx].setRugToFront();
+        }
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
                 100, 120, false, false);
@@ -531,7 +578,7 @@ public class Game extends Application {
         dirhams.setY(PLAYER_START_Y + PLAYER_DIRHAMS_START_Y);
         root.getChildren().add(dirhams);
     }
-    public void gamePlayingStage(Player[] currentPlayers){
+    public void gamePlayingStage(PlayerEntity[] currentPlayers){
         System.out.println("==============[ gamePlayingStage ]==============");
         // [DEBUG] md 我说为什么如果不点player不管怎么初始化都固定为true，坑到我了
 //        playerP.player.setIsplaying(true);
@@ -539,12 +586,12 @@ public class Game extends Application {
 //        playerY.player.setIsplaying(true);
 //        playerR.player.setIsplaying(true);
         String currentGame = getCurrentGame();
-        for (Player currentPlayer : currentPlayers){
+        for (PlayerEntity currentPlayer : currentPlayers){
             System.out.println("#".repeat(40));
-            System.out.println("Current Player" + currentPlayer.getColor());
-            rotatePhase(currentPlayer);
-            movePhase(currentPlayer);
-            placementPhase(currentPlayer);
+            System.out.println("Current Player" + currentPlayer.player.getColor());
+            rotatePhase(currentPlayer.player);
+            movePhase(currentPlayer.player);
+            placementPhase(currentPlayer.player);
             System.out.println("xinde"+ getCurrentGame());
             if (isGameOver(currentGame)){
                 System.out.println("GameOver");
@@ -582,16 +629,17 @@ public class Game extends Application {
 
     }
     private String getCurrentGame() {
-        return players[0].toString() + players[1]+ players[2]+players[3]+assamEntity+"B"+board.toString();
+        return String.valueOf(players[0].player) + players[1].player + players[2].player + players[3].player + assamEntity + "B" + board;
     }
 
     private boolean rotateComfirmed = false;
     private void rotatePhase(Player currentPlayer){
-        System.out.println("==============[ rotatePhase ]==============");
         rotateComfirmed = false;
         assamEntity.imageView.setFocusTraversable(true);
         assamEntity.imageView.requestFocus();
         assamEntity.imageView.setOnKeyPressed(event -> {
+            System.out.println("[rotatePhase] Current: " + currentPlayer.toString().toUpperCase() + " ");
+            System.out.println("[rotatePhase] " + getCurrentGame());
             switch (event.getCode()) {
                 case UP: assamEntity.setDirection(Direction.NORTH); break;
                 case RIGHT: assamEntity.setDirection(Direction.EAST); break;
@@ -619,9 +667,9 @@ public class Game extends Application {
         if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) != pieceColor.NONE) {
             int payment = getPaymentAmount(getCurrentGame());
             currentPlayer.setDirhams(currentPlayer.getDirhams() - payment);
-            for (Player player : players){
-                if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) == player.getColor()){
-                    player.setDirhams(player.getDirhams() + payment);
+            for (PlayerEntity player : players){
+                if (board.getColorByCoordinate(assamEntity.x, assamEntity.y) == player.player.getColor()){
+                    player.player.setDirhams(player.player.getDirhams() + payment);
                     break;
                 }
             }
@@ -711,12 +759,16 @@ public class Game extends Application {
          }
 
          public void setDirection(Direction direction) {
-             this.direction = direction;
-             assam.setDirection(direction);
-             if (direction == Direction.NORTH) imageView.setRotate(0);
-             if (direction == Direction.EAST) imageView.setRotate(90);
-             if (direction == Direction.SOUTH) imageView.setRotate(180);
-             if (direction == Direction.WEST) imageView.setRotate(270);
+            // [FIX] can not implement in this scene
+//            // only accept rotate 90 degrees
+//            if (direction.equals(this.direction.getOpposite())) return;
+            // rotate
+            this.direction = direction;
+            assam.setDirection(direction);
+            if (direction == Direction.NORTH) imageView.setRotate(0);
+            if (direction == Direction.EAST) imageView.setRotate(90);
+            if (direction == Direction.SOUTH) imageView.setRotate(180);
+            if (direction == Direction.WEST) imageView.setRotate(270);
          }
 
          @Override
@@ -730,21 +782,5 @@ public class Game extends Application {
         root.getChildren().add(assamEntity.imageView);
     }
 
-    private void initRugs() {
-        System.out.println("==============[ initRugs ]==============");
-        // init draggable rug
-        playerDraggableRugEntities = new DraggableRugEntity[players.length][RUG_AMOUNT];
-        for (int playerIdx = 0; playerIdx < players.length; playerIdx++) {
-            System.out.println(players[playerIdx]);
-            int x = PLAYER_START_X + PLAYER_RUG_START_X;
-            int y = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
-            System.out.println(x + " " + y);
-            for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
-                playerDraggableRugEntities[playerIdx][rugIdx] = new DraggableRugEntity(rugIdx, players[playerIdx].getColor(), x, y);
-
-            }
-        }
-
-    }
 
 }
