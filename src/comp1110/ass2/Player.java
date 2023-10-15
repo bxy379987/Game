@@ -95,7 +95,7 @@ public class Player {
     }
 
     public void setIsplaying(boolean isplaying) {
-        System.out.println("Set to: " + isplaying);
+//        System.out.println("Set to: " + isplaying);
         this.isPlaying = isplaying;
     }
 

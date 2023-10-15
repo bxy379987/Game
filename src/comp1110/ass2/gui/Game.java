@@ -252,10 +252,12 @@ public class Game extends Application {
             // when anchors valid, stick entity to anchors
             rugGroup.setOnMouseReleased(event -> {
                 if (this.draggable) {
+                    board.showBoardColorInMatrix();
+                    System.out.println();
                     isMousePressed = false;
                     String rugString = getColor().getSymbol() + getID() + nearestIdx[0][0] + nearestIdx[0][1] + nearestIdx[1][0] + nearestIdx[1][1];
-                    System.out.println(rugString);
-                    System.out.println(getCurrentGame());
+                    System.out.println("[RugEntity] " + rugString);
+//                    System.out.println(getCurrentGame());
                     // if anchors valid
                     if (Math.abs(nearestDistance[1] - nearestDistance[0]) < 1e-7
                             && nearestDistance[0] < MAX_ANCHOR_DISTANCE
@@ -267,7 +269,9 @@ public class Game extends Application {
                         this.rug.setFirstCoordinate(nearestIdx[0]);
                         this.rug.setSecondCoordinate(nearestIdx[1]);
                         board.placeRug(this.rug, assamEntity.assam);
-                        System.out.println(getCurrentGame());
+                        System.out.println("[RugEntity] " + getCurrentGame());
+                        board.showBoardColorInMatrix();
+                        System.out.println();
                         // set player rug amount
 
                         playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
@@ -376,8 +380,8 @@ public class Game extends Application {
                                 if (payment != 0) {
                                     int playerToPayIdx = getIndexByColor(boardColor);
                                     System.out.println("[DiceEntity] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
-                                    playerEntities[playerToPayIdx].player.setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
-                                    playerEntities[CURRENT_PLAYER_IDX].player.setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
+                                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
+                                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
                                     //
                                     // TODO: Check after pay & do something
                                 }
