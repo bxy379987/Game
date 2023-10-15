@@ -95,7 +95,7 @@ public class Player {
     }
 
     public void setIsplaying(boolean isplaying) {
-        System.out.println("Set to: " + isplaying);
+//        System.out.println("Set to: " + isplaying);
         this.isPlaying = isplaying;
     }
 
@@ -117,6 +117,14 @@ public class Player {
 
     public void setRemainingRugs(int remainingRugs) {
         this.remainingRugs = remainingRugs;
+    }
+    public boolean deducedRemainingRugs() {
+        this.remainingRugs -= 1;
+        if (this.remainingRugs == 0) {
+            this.remainingRugs = 0;
+            return false;
+        }
+        return true;
     }
 
     public HashMap<Integer, Rug> getRugToBeUsed() {
