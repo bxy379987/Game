@@ -1,13 +1,6 @@
-//import comp1110.ass2.gui.Game;
-//import comp1110.ass2.pieceColor;
-//import javafx.scene.Group;
-//import javafx.scene.image.Image;
-//import javafx.scene.image.ImageView;
-//import javafx.scene.input.KeyCode;
-//import javafx.scene.paint.Color;
-//import javafx.scene.shape.Circle;
-//
-//static class RugEntity{
+package gittest;
+
+public class Test {
 //    private final int ID;
 //    private final pieceColor color;
 //    Group rugGroup;
@@ -126,4 +119,4 @@
 //            nearest = null;
 //        });
 //    }
-//}
+}

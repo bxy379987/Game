@@ -11,7 +11,7 @@ Component: <https://gitlab.cecs.anu.edu.au/u7751023/comp1110-ass2/-/blob/20e59f4
 
 What are the best features of this code?
  - Well-structured and organized. The code follows object-oriented programming principles, particularly inheritance. 
-   for example, the design of 'RugEntity' and its extension into 'DraggableRugEntity'. As we learned on lab, it increases the readability and maintainability of the code.
+   for example, the design of 'Test' and its extension into 'DraggableRugEntity'. As we learned on lab, it increases the readability and maintainability of the code.
 
 Is the code well-documented?
  - Yes, the code includes comments that cover important information, but more detailed comments explaining the logic and algorithm may enhance the documentation.

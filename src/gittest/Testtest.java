@@ -1,11 +1,11 @@
-//package gittest;
+package gittest;
+
+import comp1110.ass2.Assam;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 //
-//import comp1110.ass2.Assam;
-//
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
-//
-//public class Testtest {
+public class Testtest {
 //    public  static int  findsamecolor(char color,String[]substringGameStatearray,int[]Assamcoordination){
 //        int count=0;
 //        int Sortnumber=Assamcoordination[0]*7+Assamcoordination[1];
@@ -65,7 +65,7 @@
 //
 //        // FIXME: Task 11
 //        return count;
-//    }
+    }
 //    public static void main(String[] args) {
 //
 //        System.out.println(getPaymentAmount());

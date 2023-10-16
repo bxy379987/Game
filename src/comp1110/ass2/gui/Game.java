@@ -25,6 +25,7 @@ import static comp1110.ass2.Marrakech.*;
 
 public class Game extends Application {
     public static final boolean DEBUG = false;
+    //show circles to debug
     public Stage stage;
     private static Group root = new Group();
     private static Group selectRoot = new Group();
@@ -37,7 +38,8 @@ public class Game extends Application {
     PlayerEntity[] playerEntities;
     private AssamEntity assamEntity;
     private DraggableRugEntity CurrentDraggableRug;
-    String gameState;
+    public String gameState;
+    public Direction currentDirection;
     /**
      * Game Front-end entities
      */
@@ -53,6 +55,7 @@ public class Game extends Application {
     public int[][] nearestIdx;
     public double[] nearestDistance;
     public double[] nearestTrans;
+    public ButtonEntity[] playerStatusButton;
 
     /**
      * Game GUI Parameters
@@ -69,6 +72,8 @@ public class Game extends Application {
      */
     public int GAME_STAGE = 0;
     public int CURRENT_PLAYER_IDX = 0;
+    // BUTTON
+    private static final int BUTTON_SIZE = 40;
     // BOARD panel
     private static final int NODE_OUTER_BOUND_SIZE = 70;
     private static final int NODE_SIZE = 60;
@@ -365,6 +370,8 @@ public class Game extends Application {
                     timeline.setOnFinished(eventTimelineFin -> {
                         assamEntity.moveXStep(number);
                         System.out.println("[DiceEntity] assam " + assamEntity.assam);
+                        // update current direction
+                        currentDirection = assamEntity.getDirection();
                         // assam to top
                         assamEntity.imageView.toFront();
                         // set Rug Draggable
@@ -406,6 +413,7 @@ public class Game extends Application {
 
     class PlayerEntity {
         boolean isSelect;
+        //judge select
         public Player player;
         DraggableRugEntity[] rugEntities;
         Text dirhamsText;
@@ -454,7 +462,10 @@ public class Game extends Application {
                 currentSelect.getAndSet(!currentSelect.get());
                 this.isSelect = currentSelect.get();
                 this.player.setIsplaying(this.isSelect);
-
+                System.out.println("[PlayerEntity] set is playing: " + this.player.isIsplaying());
+                // set player button active
+                playerStatusButton[playerIdx].invalid.setDisable(this.isSelect);
+                playerStatusButton[playerIdx].invalid.setVisible(!this.isSelect);
 //                System.out.println(currentSelect.get());
                 if (currentSelect.get()) {
                     playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + "_select.png",
@@ -489,6 +500,46 @@ public class Game extends Application {
         public void setDirhams(int value) {
             player.setDirhams(value);
             dirhamsText.setText(String.valueOf(value));
+        }
+    }
+    // ==================== BUTTON ENTITIES ====================
+    class ButtonEntity {
+        int state;
+        Image[] statesImage;
+        ImageView imageView;
+        ImageView invalid;
+        int playerIdx;
+
+        public ButtonEntity(int state, int playerIdx) {
+            this.state = state;
+            this.playerIdx = playerIdx;
+            statesImage = new Image[] {
+                    new Image("comp1110/ass2/assets/button_player.png", BUTTON_SIZE, BUTTON_SIZE, false, false),
+                    new Image("comp1110/ass2/assets/button_random.png", BUTTON_SIZE, BUTTON_SIZE, false, false),
+                    new Image("comp1110/ass2/assets/button_AI.png", BUTTON_SIZE, BUTTON_SIZE, false, false)
+            };
+            int buttonX = PLAYER_START_X + PLAYER_RUG_START_X;
+            int buttonY = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE) - 50;
+            System.out.println("[ButtonEntity] player is playing: " + playerEntities[playerIdx].player.isIsplaying());
+            imageView = new ImageView(statesImage[this.state]);
+            imageView.setX(buttonX);
+            imageView.setY(buttonY);
+            root.getChildren().add(imageView);
+            // init action
+            imageView.setOnMousePressed(event -> {
+                this.state = (this.state + 1) % 3;
+                imageView.setImage(statesImage[this.state]);
+                playerEntities[this.playerIdx].setCharacterMode(this.state);
+                System.out.println("[ButtonEntity] Set player status: " + playerEntities[this.playerIdx].characterMode);
+            });
+
+            invalid = new ImageView(
+                    new Image("comp1110/ass2/assets/button_invalid.png", BUTTON_SIZE, BUTTON_SIZE, false, false));
+            invalid.setX(buttonX);
+            invalid.setY(buttonY);
+
+            root.getChildren().add(invalid);
+//            invalid.setVisible(true);
         }
     }
 
@@ -539,6 +590,9 @@ public class Game extends Application {
                     }
                     System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
                     stage.setScene(scene);
+                    // set initial assam direction
+                    currentDirection = assamEntity.direction;
+                    System.out.println("[StartEntity] current direction: " + currentDirection);
                 }
             });
         }
@@ -554,7 +608,7 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         System.out.println("==============[ start ]==============");
-        // FIXME Task 7 and 15
+        //  FIXME Task 7 and 15
         this.stage = stage;
         stage.setTitle("◀ Assam Game ▶");
 
@@ -582,20 +636,25 @@ public class Game extends Application {
 
 
     /**
-     * ==================== GAME PREPARE STAGE ====================
+     * =================== GAME PREPARE STAGE ===================
      */
 
     private void gamePrepareStage() {
-        System.out.println("==============[ gamePrepareStage ]==============");
+        System.out.println("=============[ gamePrepareStage ]=============");
         // INIT BACKGROUND ENTITY
         initBackground("PREPARE");
         // INIT BOARD ENTITY
         initBoard();
         // ASSAM
         initAssam();
-        // RUGS
+
+        playerStatusButton = new ButtonEntity[4];
         for (int playerIdx = 0; playerIdx < 4; playerIdx++) {
+            // RUGS
             playerEntities[playerIdx].setEntitiesToFront();
+            // BUTTON
+            playerStatusButton[playerIdx] = new ButtonEntity(0, playerIdx);
+
         }
         // DIRHAMS
         Image dirhamsImage = new Image("comp1110/ass2/assets/Dirhams.png",
@@ -607,21 +666,31 @@ public class Game extends Application {
         // DICE
         diceEntity = new DiceEntity(DICE_START_X, DICE_START_Y);
 
+
+
         // combine keyboard event
         scene.setOnKeyPressed(event -> {
 //            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
             // AssamEntity case
             if (assamEntity.rotatable) {
+                //first we get the current direction
+                // then we can set direction excepts opposite of the current direction
+//                System.out.println("[SceneEvent] " + getCurrentGame());
                 switch (event.getCode()) {
                     case UP: assamEntity.setDirection(Direction.NORTH); break;
                     case RIGHT: assamEntity.setDirection(Direction.EAST); break;
                     case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
                     case LEFT: assamEntity.setDirection(Direction.WEST); break;
                     case ENTER:
-                        // TODO: [BUG] assam can not rotate 180 degrees
-                        diceEntity.setClickable(true);
-                        assamEntity.setRotatable(false);
                         System.out.println("[rootEvent] Keyboard Entered");
+                        if (currentDirection.getOpposite() != assamEntity.getDirection()) {
+                            diceEntity.setClickable(true);
+                            assamEntity.setRotatable(false);
+                            // update current direction
+                            currentDirection = assamEntity.getDirection();
+                        } else {
+                            System.out.println("[rootEvent] ERROR: Opposite direction invalid");
+                        }
                         break;
                 }
             }
@@ -629,7 +698,8 @@ public class Game extends Application {
             // DraggableEntity rotate case
             if (CurrentDraggableRug != null) {
                 if (CurrentDraggableRug.isMousePressed && event.getCode() == KeyCode.E) {
-                    CurrentDraggableRug.rugGroup.setRotate(CurrentDraggableRug.rugGroup.getRotate() + 90);
+                    CurrentDraggableRug.rugGroup.setRotate
+                            (CurrentDraggableRug.rugGroup.getRotate() + 90);
                     findNearest(CurrentDraggableRug.rugGroup);
                 }
             }
@@ -701,8 +771,8 @@ public class Game extends Application {
             this.direction=direction;
             this.imageView=new ImageView(new Image("comp1110/ass2/assets/pointer.png",
                     NODE_SIZE, NODE_SIZE, false, false));
-            imageView.setX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);
-            imageView.setY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);
+            imageView.setX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);//x coor on the scene is board coor + board spacing
+            imageView.setY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);//y coor on the scene is board coor + board spacing
             assam = new Assam(x, y, direction);
 
         }
@@ -736,23 +806,24 @@ public class Game extends Application {
          }
 
          public void setDirection(Direction direction) {
-            // [FIX] can not implement in this scene
-//            // only accept rotate 90 degrees
-//            if (direction.equals(this.direction.getOpposite())) return;
-            // rotate
+          //according to the direction to adjust the rotation of the picture
             this.direction = direction;
             assam.setDirection(direction);
-            if (direction == Direction.NORTH) imageView.setRotate(0);
-            if (direction == Direction.EAST) imageView.setRotate(90);
-            if (direction == Direction.SOUTH) imageView.setRotate(180);
-            if (direction == Direction.WEST) imageView.setRotate(270);
+            if (direction == Direction.NORTH)
+                imageView.setRotate(0);
+            if (direction == Direction.EAST)
+                imageView.setRotate(90);
+            if (direction == Direction.SOUTH)
+                imageView.setRotate(180);
+            if (direction == Direction.WEST)
+                imageView.setRotate(270);
          }
-
          public void moveXStep(int step) {
-            this.assam.moveXSteps(step);
-            this.setDirection(this.assam.getDirection());
-            this.setX(assam.getxCoordinate());
-            this.setY(assam.getyCoordinate());
+             this.assam.moveXSteps(step);
+             //we call assam.moveXsteps in AssamEntity to move the AssamEntity
+             this.setDirection(this.assam.getDirection());
+             this.setX(assam.getxCoordinate());
+             this.setY(assam.getyCoordinate());
          }
 
          @Override
