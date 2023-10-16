@@ -17,7 +17,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -204,6 +207,25 @@ public class Game extends Application {
         public pieceColor getColor() {
             return color;
         }
+
+        public void setPositionByRug(Rug rug) {
+            this.rug.setFirstCoordinate(rug.getFirstCoordinate());
+            this.rug.setSecondCoordinate(rug.getSecondCoordinate());
+            // if in row
+            if (rug.getFirstCoordinate()[1] == rug.getSecondCoordinate()[1]) {
+                double xPosition = BOARD_START_X + Math.min(rug.getFirstCoordinate()[0], rug.getSecondCoordinate()[0]) * NODE_OUTER_BOUND_SIZE;
+                double yPosition = BOARD_START_Y + rug.getFirstCoordinate()[1] * NODE_OUTER_BOUND_SIZE;
+                rugGroup.setLayoutX(xPosition);
+                rugGroup.setLayoutY(yPosition);
+            } else {
+                // if in line
+                rugGroup.setRotate(90);
+                double xPosition = BOARD_START_X + (rug.getFirstCoordinate()[0] - 0.5) * NODE_OUTER_BOUND_SIZE;
+                double yPosition = BOARD_START_Y + (Math.max(rug.getFirstCoordinate()[1], rug.getSecondCoordinate()[1]) - 0.5) * NODE_OUTER_BOUND_SIZE ;
+                rugGroup.setLayoutX(xPosition);
+                rugGroup.setLayoutY(yPosition);
+            }
+        }
     }
 
     class DraggableRugEntity extends RugEntity {
@@ -225,6 +247,7 @@ public class Game extends Application {
             this.draggable = draggable;
             // mouse pressed: set init states & check keyboard rotate
             rugGroup.setOnMousePressed(event -> {
+                System.out.println("[RugEntity] " + rug);
                 if (this.draggable) {
                     mouseX = event.getSceneX();
                     mouseY = event.getSceneY();
@@ -285,7 +308,7 @@ public class Game extends Application {
                         // reset current draggable rug
                         CurrentDraggableRug = null;
                         // [Phase] next player
-                        System.out.println("[RugEntity] set assam rotatable");
+
                         CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
                         // find next valid player
                         if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
@@ -294,8 +317,13 @@ public class Game extends Application {
                             }
                         }
                         System.out.println("[RugEntity] find valid player: " + CURRENT_PLAYER_IDX);
+                        System.out.println("[RugEntity] set assam rotatable");
                         assamEntity.setRotatable(true);
-                        // set Rug draggable
+
+                        // =================== CASE: AI ===================
+                        if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
+                            AIselectDirectionRollDice();
+                        }
 
                     } else {
                         rugGroup.setLayoutX(originX);
@@ -341,69 +369,61 @@ public class Game extends Application {
         private boolean clickable = false;
         private int number;
         private final Dice dice;
+        Image[] diceImages;
+        ImageView diceEntity;
         DiceEntity(double x, double y) {
             dice = new Dice();
             number = dice.rollDice();
-            AtomicReference<Image> diceImage = new AtomicReference<>(
-                    new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
-                            190, 200, false, false));
-            ImageView diceEntity = new ImageView(diceImage.get());
+            diceImages = new Image[] {
+                new Image("comp1110/ass2/assets/dice/dice_1.png", 190, 200, false, false),
+                new Image("comp1110/ass2/assets/dice/dice_2.png", 190, 200, false, false),
+                new Image("comp1110/ass2/assets/dice/dice_3.png", 190, 200, false, false),
+                new Image("comp1110/ass2/assets/dice/dice_4.png", 190, 200, false, false),
+            };
 
+            diceEntity = new ImageView(diceImages[number - 1]);
             diceEntity.setX(x);
             diceEntity.setY(y);
             root.getChildren().add(diceEntity);
             // active event
             diceEntity.setOnMouseClicked(event -> {
                 if (clickable) {
-//                    System.out.println("Click");
-                    KeyFrame keyFrame = new KeyFrame(Duration.seconds(DICE_ANIME_TIME / DICE_ANIME_FRAMES), eventAnime -> {
-                        number = dice.rollDice();
-//                        System.out.println(number);
-//                        System.out.println("Anime: change to [" + number + "]");
-                        diceImage.set(new Image("comp1110/ass2/assets/dice/dice_" + number + ".png",
-                                190, 200, false, false));
-                        diceEntity.setImage(diceImage.get());
-                    });
-                    Timeline timeline = new Timeline(keyFrame);
-                    timeline.setCycleCount(DICE_ANIME_FRAMES);
-
-                    timeline.setOnFinished(eventTimelineFin -> {
-                        assamEntity.moveXStep(number);
-                        System.out.println("[DiceEntity] assam " + assamEntity.assam);
-                        // update current direction
-                        currentDirection = assamEntity.getDirection();
-                        // assam to top
-                        assamEntity.imageView.toFront();
-                        // set Rug Draggable
-                        System.out.println("[DiceEntity] Current player " + CURRENT_PLAYER_IDX);
-                        playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].setDraggable(true);
-
-                        gameState = getCurrentGame();
-                        System.out.println("[DiceEntity] " + gameState);
-                        if (!isGameOver(gameState)) {
-                            pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
-                            if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
-                                int payment = getPaymentAmount(gameState);
-                                if (payment != 0) {
-                                    int playerToPayIdx = getIndexByColor(boardColor);
-                                    System.out.println("[DiceEntity] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
-                                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
-                                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
-                                    //
-                                    // TODO: Check after pay & do something // dirhams under 0
-                                }
-                            }
-
-                        } else {
-                            // TODO: Game Over
-                        }
-                    });
-                    timeline.play();
-                    setClickable(false);
+                    rollDiceAnime();
                 }
             });
         }
+        public void rollDiceAnime() {
+//                    System.out.println("Click");
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(DICE_ANIME_TIME / DICE_ANIME_FRAMES), eventAnime -> {
+                number = dice.rollDice();
+//                        System.out.println(number);
+//                        System.out.println("Anime: change to [" + number + "]");
+                diceEntity.setImage(diceImages[number - 1]);
+            });
+            Timeline timeline = new Timeline(keyFrame);
+            timeline.setCycleCount(DICE_ANIME_FRAMES);
 
+            timeline.setOnFinished(eventTimelineFin -> {
+                assamEntity.moveXStep(number);
+                System.out.println("[DiceEntity] assam " + assamEntity.assam);
+                // update current direction
+                currentDirection = assamEntity.getDirection();
+                // assam to top
+                assamEntity.imageView.toFront();
+                // set Rug Draggable
+                System.out.println("[DiceEntity] Current player " + CURRENT_PLAYER_IDX);
+
+
+                if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
+                    AImakePlacement();
+                } else {
+                    playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].setDraggable(true);
+                    placementFinish();
+                }
+            });
+            timeline.play();
+            setClickable(false);
+        }
         public void setClickable(boolean clickable) {
             this.clickable = clickable;
         }
@@ -582,17 +602,21 @@ public class Game extends Application {
                 // Player count must larger than 1
                 if (count > 1) {
                     // find first valid player
-
-                    if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
-                        while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
-                            CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+                    if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
+                        AIselectDirectionRollDice();
+                    } else {
+                        if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                            while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                                CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+                            }
                         }
+                        System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
+                        stage.setScene(scene);
+                        // set initial assam direction
+                        currentDirection = assamEntity.direction;
+                        System.out.println("[StartEntity] current direction: " + currentDirection);
                     }
-                    System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
-                    stage.setScene(scene);
-                    // set initial assam direction
-                    currentDirection = assamEntity.direction;
-                    System.out.println("[StartEntity] current direction: " + currentDirection);
+
                 }
             });
         }
@@ -618,6 +642,103 @@ public class Game extends Application {
         stage.setResizable(false);
         stage.show();
     }
+    /**
+     * AI
+     */
+    public void AIselectDirectionRollDice() {
+        System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
+        // select assam rotate
+        // generate selection list
+        List<Direction> directionSelections = new ArrayList<>();
+        directionSelections.add(Direction.NORTH);
+        directionSelections.add(Direction.EAST);
+        directionSelections.add(Direction.SOUTH);
+        directionSelections.add(Direction.WEST);
+        directionSelections.remove(assamEntity.direction.getOpposite());
+        // select
+        Random random = new Random();
+        assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
+        // roll dice
+        diceEntity.rollDiceAnime();
+    }
+
+    public void AImakePlacement() {
+        // check finish
+        placementFinish();
+
+        // make placement
+        // find all valid placement
+        // total case
+        // O O X O O
+        // O X X X O
+        // X X A X X
+        // O X X X O
+        // O O X O O
+        pieceColor currentColor = playerEntities[CURRENT_PLAYER_IDX].color;
+        int currentX = assamEntity.assam.getxCoordinate();
+        int currentY = assamEntity.assam.getyCoordinate();
+        gameState = getCurrentGame();
+        List<Rug> rugSelections = new ArrayList<>();
+        List<Rug> rugValidSelections = new ArrayList<>();
+        // outer case
+        // O O X O O
+        // O O X O O
+        // X X A X X
+        // O O X O O
+        // O O X O O
+        rugSelections.add(new Rug(currentColor, 0, new int[]{currentX, currentY - 1}, new int[]{currentX, currentY - 2}));
+        rugSelections.add(new Rug(currentColor, 1, new int[]{currentX, currentY + 1}, new int[]{currentX, currentY + 2}));
+        rugSelections.add(new Rug(currentColor, 2, new int[]{currentX - 1, currentY}, new int[]{currentX - 2, currentY}));
+        rugSelections.add(new Rug(currentColor, 3, new int[]{currentX + 1, currentY}, new int[]{currentX + 2, currentY}));
+        // inner case
+        // O O O O O
+        // O X X X O
+        // O X A X O
+        // O X X X O
+        // O O O O O
+        rugSelections.add(new Rug(currentColor, 4, new int[]{currentX, currentY - 1}, new int[]{currentX + 1, currentY - 1}));
+        rugSelections.add(new Rug(currentColor, 5, new int[]{currentX + 1, currentY - 1}, new int[]{currentX + 1, currentY}));
+        rugSelections.add(new Rug(currentColor, 6, new int[]{currentX + 1, currentY}, new int[]{currentX + 1, currentY + 1}));
+        rugSelections.add(new Rug(currentColor, 7, new int[]{currentX + 1, currentY + 1}, new int[]{currentX, currentY + 1}));
+        rugSelections.add(new Rug(currentColor, 8, new int[]{currentX, currentY + 1}, new int[]{currentX - 1, currentY + 1}));
+        rugSelections.add(new Rug(currentColor, 9, new int[]{currentX - 1, currentY + 1}, new int[]{currentX - 1, currentY}));
+        rugSelections.add(new Rug(currentColor, 10, new int[]{currentX - 1, currentY}, new int[]{currentX - 1, currentY - 1}));
+        rugSelections.add(new Rug(currentColor, 11, new int[]{currentX - 1, currentY - 1}, new int[]{currentX, currentY - 1}));
+        // remove invalid
+        for (int rugIdx = 0; rugIdx < rugSelections.size(); rugIdx++) {
+            Rug currentRug = rugSelections.get(rugIdx);
+            if (isPlacementValid(gameState, currentRug.toString())) {
+                rugValidSelections.add(currentRug);
+            }
+        }
+        System.out.println("[DiceEntity] find valid rug: " + rugValidSelections.size());
+        // place rug
+        Random random = new Random();
+        Rug toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
+        System.out.println("[DiceEntity] tend to place rug: " + toPlace);
+        playerEntities[CURRENT_PLAYER_IDX]
+                .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
+                .setPositionByRug(toPlace);
+        playerEntities[CURRENT_PLAYER_IDX]
+                .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
+                .rugGroup.toFront();
+        playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
+
+        // next player
+        CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+        // find next valid player
+        if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+            while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
+                CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
+            }
+        }
+        System.out.println("[DiceEntity] find valid player: " + CURRENT_PLAYER_IDX);
+        // if next player is AI too
+        if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
+            AIselectDirectionRollDice();
+        }
+    }
+
     /**
      * ==================== GAME SELECT STAGE ====================
      */
@@ -706,6 +827,36 @@ public class Game extends Application {
 
         });
     }
+
+    /**
+     *
+     */
+    public void placementFinish() {
+
+        gameState = getCurrentGame();
+        System.out.println("[placementFinish] " + gameState);
+        if (!isGameOver(gameState)) {
+            pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
+            if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
+                int payment = getPaymentAmount(gameState);
+                if (payment != 0) {
+                    int playerToPayIdx = getIndexByColor(boardColor);
+                    System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
+                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
+                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
+                    //
+                    // TODO: Check after pay & do something // dirhams under 0
+                }
+            }
+
+        } else {
+            // TODO: Game Over
+        }
+    }
+
+    /**
+     * TOOLS
+     */
 
     public int getIndexByColor(pieceColor color) {
         switch (color) {
