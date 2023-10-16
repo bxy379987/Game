@@ -612,6 +612,7 @@ public class Game extends Application {
         // combine keyboard event
         scene.setOnKeyPressed(event -> {
 //            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
+            // TODO: BUG still exists // assam can rotate 180 degrees
             // AssamEntity case
             if (assamEntity.rotatable) {
                 //first we get the current direction
