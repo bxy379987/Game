@@ -556,7 +556,7 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         System.out.println("==============[ start ]==============");
-        // FIXME Task 7 and 15
+        //  FIXME Task 7 and 15
         this.stage = stage;
         stage.setTitle("◀ Assam Game ▶");
 
@@ -669,7 +669,8 @@ public class Game extends Application {
             // DraggableEntity rotate case
             if (CurrentDraggableRug != null) {
                 if (CurrentDraggableRug.isMousePressed && event.getCode() == KeyCode.E) {
-                    CurrentDraggableRug.rugGroup.setRotate(CurrentDraggableRug.rugGroup.getRotate() + 90);
+                    CurrentDraggableRug.rugGroup.setRotate
+                            (CurrentDraggableRug.rugGroup.getRotate() + 90);
                     findNearest(CurrentDraggableRug.rugGroup);
                 }
             }
@@ -741,8 +742,8 @@ public class Game extends Application {
             this.direction=direction;
             this.imageView=new ImageView(new Image("comp1110/ass2/assets/pointer.png",
                     NODE_SIZE, NODE_SIZE, false, false));
-            imageView.setX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);
-            imageView.setY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);
+            imageView.setX(BOARD_START_X + x * NODE_OUTER_BOUND_SIZE);//x coor on the scene is board coor + board spacing
+            imageView.setY(BOARD_START_Y + y * NODE_OUTER_BOUND_SIZE);//y coor on the scene is board coor + board spacing
             assam = new Assam(x, y, direction);
 
         }

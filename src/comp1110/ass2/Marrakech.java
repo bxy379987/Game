@@ -35,7 +35,7 @@ public class Marrakech {
      */
     public static boolean isRugValid(String gameString, String rug) {
         // FIXME: Task 4
-        System.out.println("=============[isRugValid]=============");
+        System.out.println("============[isRugValid]============");
         System.out.println(rug);
         String boardString = gameString.split("B")[1];
         System.out.println(boardString);
@@ -53,18 +53,17 @@ public class Marrakech {
         if (Arrays.stream(coordinates).anyMatch(coordinate -> coordinate > 6)) return false;
         // CASE: is valid player
         if (!"cyrp".contains(rug.substring(0,1))) return false;
-
-        // 他居然不需要检测摆放的位置颜色相同，先注释了
-//        // CASE: covered with two same color [not valid]
-//        System.out.println(boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3]);
-//        char color1 = boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3];
-//        char color2 = boardString.toCharArray()[((coordinates[2])*7+coordinates[3]) * 3];
-//        System.out.println(color1 + " " + color2);
-//        if (color1 == color2 & color1 != 'n') {
-//            System.out.println("IN CASE");
-//            return false;
-//        };
-
+// 他居然不需要检测摆放的位置颜色相同，先注释了
+//    CASE: covered with two same color [not valid]
+//      System.out.println(boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3]);
+////        char color1 = boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3];
+////        char color2 = boardString.toCharArray()[((coordinates[2])*7+coordinates[3]) * 3];
+////        System.out.println(color1 + " " + color2);
+////        if (color1 == color2 & color1 != 'n') {
+////            System.out.println("IN CASE");
+////
+////            return false;
+////        };
         return true;//如果两者都不成立则成功
     }
 
