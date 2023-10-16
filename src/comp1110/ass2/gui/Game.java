@@ -404,6 +404,7 @@ public class Game extends Application {
             timeline.setCycleCount(DICE_ANIME_FRAMES);
 
             timeline.setOnFinished(eventTimelineFin -> {
+                System.out.println("[DiceEntity] assam " + assamEntity.assam);
                 assamEntity.moveXStep(number);
                 System.out.println("[DiceEntity] assam " + assamEntity.assam);
                 // update current direction
@@ -723,7 +724,7 @@ public class Game extends Application {
                 .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
                 .rugGroup.toFront();
         playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
-
+        board.placeRug(toPlace, assamEntity.assam);
         // next player
         CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
         // find next valid player
@@ -835,10 +836,13 @@ public class Game extends Application {
 
         gameState = getCurrentGame();
         System.out.println("[placementFinish] " + gameState);
+        board.showBoardColorInMatrix();
         if (!isGameOver(gameState)) {
+            System.out.println("[placementFinish] Game is not Over");
             pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
             if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
                 int payment = getPaymentAmount(gameState);
+                System.out.println("[placementFinish] Find pay: " + payment);
                 if (payment != 0) {
                     int playerToPayIdx = getIndexByColor(boardColor);
                     System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
