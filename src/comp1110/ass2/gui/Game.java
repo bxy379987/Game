@@ -407,6 +407,7 @@ public class Game extends Application {
 
     class PlayerEntity {
         boolean isSelect;
+        //judge select
         public Player player;
         DraggableRugEntity[] rugEntities;
         Text dirhamsText;
@@ -583,11 +584,11 @@ public class Game extends Application {
 
 
     /**
-     * ==================== GAME PREPARE STAGE ====================
+     * =================== GAME PREPARE STAGE ===================
      */
 
     private void gamePrepareStage() {
-        System.out.println("==============[ gamePrepareStage ]==============");
+        System.out.println("=============[ gamePrepareStage ]=============");
         // INIT BACKGROUND ENTITY
         initBackground("PREPARE");
         // INIT BOARD ENTITY
@@ -613,6 +614,8 @@ public class Game extends Application {
 //            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
             // AssamEntity case
             if (assamEntity.rotatable) {
+                //first we get the current direction
+                // then we can set direction excepts opposite of the current direction
                 if(assamEntity.getDirection()==Direction.NORTH){
                 switch (event.getCode()) {
                     case UP: assamEntity.setDirection(Direction.NORTH); break;
@@ -773,19 +776,21 @@ public class Game extends Application {
          }
 
          public void setDirection(Direction direction) {
-            // [FIX] can not implement in this scene
-//            // only accept rotate 90 degrees
-//            if (direction.equals(this.direction.getOpposite())) return;
-            // rotate
+          //according to the direction to adjust the rotation of the picture
             this.direction = direction;
             assam.setDirection(direction);
-            if (direction == Direction.NORTH) imageView.setRotate(0);
-            if (direction == Direction.EAST) imageView.setRotate(90);
-            if (direction == Direction.SOUTH) imageView.setRotate(180);
-            if (direction == Direction.WEST) imageView.setRotate(270);
+            if (direction == Direction.NORTH)
+                imageView.setRotate(0);
+            if (direction == Direction.EAST)
+                imageView.setRotate(90);
+            if (direction == Direction.SOUTH)
+                imageView.setRotate(180);
+            if (direction == Direction.WEST)
+                imageView.setRotate(270);
          }
          public void moveXStep(int step) {
              this.assam.moveXSteps(step);
+             //we call assam.moveXsteps in AssamEntity to move the AssamEntity
              this.setDirection(this.assam.getDirection());
              this.setX(assam.getxCoordinate());
              this.setY(assam.getyCoordinate());
