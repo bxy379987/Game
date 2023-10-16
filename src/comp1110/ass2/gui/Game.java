@@ -39,6 +39,7 @@ public class Game extends Application {
     private AssamEntity assamEntity;
     private DraggableRugEntity CurrentDraggableRug;
     public String gameState;
+    public Direction currentDirection;
     /**
      * Game Front-end entities
      */
@@ -366,6 +367,8 @@ public class Game extends Application {
                     timeline.setOnFinished(eventTimelineFin -> {
                         assamEntity.moveXStep(number);
                         System.out.println("[DiceEntity] assam " + assamEntity.assam);
+                        // update current direction
+                        currentDirection = assamEntity.getDirection();
                         // assam to top
                         assamEntity.imageView.toFront();
                         // set Rug Draggable
@@ -541,6 +544,9 @@ public class Game extends Application {
                     }
                     System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
                     stage.setScene(scene);
+                    // set initial assam direction
+                    currentDirection = assamEntity.direction;
+                    System.out.println("[StartEntity] current direction: " + currentDirection);
                 }
             });
         }
@@ -612,58 +618,27 @@ public class Game extends Application {
         // combine keyboard event
         scene.setOnKeyPressed(event -> {
 //            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
-            // TODO: BUG still exists // assam can rotate 180 degrees
             // AssamEntity case
             if (assamEntity.rotatable) {
                 //first we get the current direction
                 // then we can set direction excepts opposite of the current direction
-                if(assamEntity.getDirection()==Direction.NORTH){
+//                System.out.println("[SceneEvent] " + getCurrentGame());
                 switch (event.getCode()) {
                     case UP: assamEntity.setDirection(Direction.NORTH); break;
                     case RIGHT: assamEntity.setDirection(Direction.EAST); break;
-                    //case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                    case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
                     case LEFT: assamEntity.setDirection(Direction.WEST); break;
                     case ENTER:
-                        diceEntity.setClickable(true);
-                        assamEntity.setRotatable(false);
                         System.out.println("[rootEvent] Keyboard Entered");
-                        break;}
-                }
-                if(assamEntity.getDirection()==Direction.EAST){
-                    switch (event.getCode()) {
-                        case UP: assamEntity.setDirection(Direction.NORTH); break;
-                        case RIGHT: assamEntity.setDirection(Direction.EAST); break;
-                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
-                        //case LEFT: assamEntity.setDirection(Direction.WEST); break;
-                        case ENTER:
+                        if (currentDirection.getOpposite() != assamEntity.getDirection()) {
                             diceEntity.setClickable(true);
                             assamEntity.setRotatable(false);
-                            System.out.println("[rootEvent] Keyboard Entered");
-                            break;}
-                }
-                if(assamEntity.getDirection()==Direction.WEST){
-                    switch (event.getCode()) {
-                        case UP: assamEntity.setDirection(Direction.NORTH); break;
-                        //case RIGHT: assamEntity.setDirection(Direction.EAST); break;
-                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
-                        case LEFT: assamEntity.setDirection(Direction.WEST); break;
-                        case ENTER:
-                            diceEntity.setClickable(true);
-                            assamEntity.setRotatable(false);
-                            System.out.println("[rootEvent] Keyboard Entered");
-                            break;}
-                }
-                if(assamEntity.getDirection()==Direction.SOUTH){
-                    switch (event.getCode()) {
-                        //case UP: assamEntity.setDirection(Direction.NORTH); break;
-                        case RIGHT: assamEntity.setDirection(Direction.EAST); break;
-                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
-                        case LEFT: assamEntity.setDirection(Direction.WEST); break;
-                        case ENTER:
-                            diceEntity.setClickable(true);
-                            assamEntity.setRotatable(false);
-                            System.out.println("[rootEvent] Keyboard Entered");
-                            break;}
+                            // update current direction
+                            currentDirection = assamEntity.getDirection();
+                        } else {
+                            System.out.println("[rootEvent] ERROR: Opposite direction invalid");
+                        }
+                        break;
                 }
             }
 
