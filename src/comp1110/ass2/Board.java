@@ -178,6 +178,12 @@ public class Board {
      */
     public boolean placeRug(Rug rug, Assam assam) {
         // TODO: place rug into board
+        if ((rug.getFirstCoordinate()[0] < 0 || rug.getFirstCoordinate()[0] >= BOARD_WIDTH) ||
+                (rug.getFirstCoordinate()[1] < 0 || rug.getFirstCoordinate()[1] >= BOARD_HEIGHT) ||
+                (rug.getSecondCoordinate()[0] < 0 || rug.getSecondCoordinate()[0] >= BOARD_WIDTH) ||
+                (rug.getSecondCoordinate()[1] < 0 || rug.getSecondCoordinate()[1] >= BOARD_HEIGHT)) {
+            return false;
+        }
         pieceColor firstPartColor = getColorByCoordinate(rug.getFirstCoordinate()[0], rug.getFirstCoordinate()[1]);
         pieceColor secondPartColor = getColorByCoordinate(rug.getSecondCoordinate()[0], rug.getSecondCoordinate()[1]);
         // CASE: invalid

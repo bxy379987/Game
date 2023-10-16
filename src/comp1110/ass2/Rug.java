@@ -26,6 +26,12 @@ public class Rug {
         this.color = color;
         this.ID = id;
     }
+    public Rug(pieceColor color, int id, int[] firstCoordinate, int[] secondCoordinate) {
+        this.color = color;
+        this.ID = id;
+        this.firstCoordinate = firstCoordinate;
+        this.secondCoordinate = secondCoordinate;
+    }
 
     public boolean isCovered() {
         return isCovered;
@@ -78,6 +84,11 @@ public class Rug {
 
     @Override
     public String toString() {
-        return color.getSymbol() + String.format("%02d", ID) + firstCoordinate[0] + firstCoordinate[1] + secondCoordinate[0] + secondCoordinate[1];
+        if (firstCoordinate != null && secondCoordinate != null) {
+            return color.getSymbol() + String.format("%02d", ID) + firstCoordinate[0] + firstCoordinate[1] + secondCoordinate[0] + secondCoordinate[1];
+        } else {
+            return color.getSymbol() + String.format("%02d", ID) + "xxxx";
+        }
+
     }
 }
