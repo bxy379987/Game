@@ -25,6 +25,7 @@ import static comp1110.ass2.Marrakech.*;
 
 public class Game extends Application {
     public static final boolean DEBUG = false;
+    //show circles to debug
     public Stage stage;
     private static Group root = new Group();
     private static Group selectRoot = new Group();
@@ -37,7 +38,7 @@ public class Game extends Application {
     PlayerEntity[] playerEntities;
     private AssamEntity assamEntity;
     private DraggableRugEntity CurrentDraggableRug;
-    String gameState;
+    public String gameState;
     /**
      * Game Front-end entities
      */
@@ -612,17 +613,53 @@ public class Game extends Application {
 //            System.out.println("[rootEvent] " + event.getCode() + " Pressed");
             // AssamEntity case
             if (assamEntity.rotatable) {
+                if(assamEntity.getDirection()==Direction.NORTH){
                 switch (event.getCode()) {
                     case UP: assamEntity.setDirection(Direction.NORTH); break;
                     case RIGHT: assamEntity.setDirection(Direction.EAST); break;
-                    case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                    //case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
                     case LEFT: assamEntity.setDirection(Direction.WEST); break;
                     case ENTER:
-                        // TODO: [BUG] assam can not rotate 180 degrees
                         diceEntity.setClickable(true);
                         assamEntity.setRotatable(false);
                         System.out.println("[rootEvent] Keyboard Entered");
-                        break;
+                        break;}
+                }
+                if(assamEntity.getDirection()==Direction.EAST){
+                    switch (event.getCode()) {
+                        case UP: assamEntity.setDirection(Direction.NORTH); break;
+                        case RIGHT: assamEntity.setDirection(Direction.EAST); break;
+                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                        //case LEFT: assamEntity.setDirection(Direction.WEST); break;
+                        case ENTER:
+                            diceEntity.setClickable(true);
+                            assamEntity.setRotatable(false);
+                            System.out.println("[rootEvent] Keyboard Entered");
+                            break;}
+                }
+                if(assamEntity.getDirection()==Direction.WEST){
+                    switch (event.getCode()) {
+                        case UP: assamEntity.setDirection(Direction.NORTH); break;
+                        //case RIGHT: assamEntity.setDirection(Direction.EAST); break;
+                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                        case LEFT: assamEntity.setDirection(Direction.WEST); break;
+                        case ENTER:
+                            diceEntity.setClickable(true);
+                            assamEntity.setRotatable(false);
+                            System.out.println("[rootEvent] Keyboard Entered");
+                            break;}
+                }
+                if(assamEntity.getDirection()==Direction.SOUTH){
+                    switch (event.getCode()) {
+                        //case UP: assamEntity.setDirection(Direction.NORTH); break;
+                        case RIGHT: assamEntity.setDirection(Direction.EAST); break;
+                        case DOWN: assamEntity.setDirection(Direction.SOUTH); break;
+                        case LEFT: assamEntity.setDirection(Direction.WEST); break;
+                        case ENTER:
+                            diceEntity.setClickable(true);
+                            assamEntity.setRotatable(false);
+                            System.out.println("[rootEvent] Keyboard Entered");
+                            break;}
                 }
             }
 
@@ -747,12 +784,11 @@ public class Game extends Application {
             if (direction == Direction.SOUTH) imageView.setRotate(180);
             if (direction == Direction.WEST) imageView.setRotate(270);
          }
-
          public void moveXStep(int step) {
-            this.assam.moveXSteps(step);
-            this.setDirection(this.assam.getDirection());
-            this.setX(assam.getxCoordinate());
-            this.setY(assam.getyCoordinate());
+             this.assam.moveXSteps(step);
+             this.setDirection(this.assam.getDirection());
+             this.setX(assam.getxCoordinate());
+             this.setY(assam.getyCoordinate());
          }
 
          @Override
