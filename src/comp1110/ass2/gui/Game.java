@@ -848,7 +848,7 @@ public class Game extends Application {
             System.out.println("[placementFinish] Game is not Over");
             pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
             if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
-                int needToPayment = getPaymentAmount(gameState)*100;
+                int needToPayment = getPaymentAmount(gameState);
                 System.out.println("[placementFinish] Find pay: " + needToPayment);
                 if (needToPayment != 0) {
                     int playerToPayIdx = getIndexByColor(boardColor);
