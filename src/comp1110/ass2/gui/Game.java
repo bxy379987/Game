@@ -572,18 +572,19 @@ public class Game extends Application {
 //            invalid.setVisible(true);
         }
     }
+    File bgmfile = new File("src/comp1110/ass2/assets/ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
+
+    // 播放音频
+    Media sound = new Media(bgmfile.toURI().toString());
+
+    // Create a MediaPlayer to control playback
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
+
     public void playsound() throws URISyntaxException {
 //        String path=getClass().getResource(filename).getPath();
 //        Media media=new Media(new File(path).toURI().toString());
-        File bgmfile = new File("src/comp1110/ass2/assets/ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
-
-        // 播放音频
-        Media sound = new Media(bgmfile.toURI().toString());
-
-        // Create a MediaPlayer to control playback
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-
         // Start playing the audio
         mediaPlayer.play();
     }
@@ -954,6 +955,7 @@ public class Game extends Application {
             }
 
         } else {
+            mediaPlayer.stop();
             // TODO: Game Over
             Platform.runLater(() -> {
                 char winnerChar = getWinner(getCurrentGame());
