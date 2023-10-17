@@ -10,7 +10,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -22,14 +21,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
-import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import com.sun.glass.utils.NativeLibLoader;
 
 import static comp1110.ass2.Marrakech.*;
 
@@ -412,6 +409,7 @@ public class Game extends Application {
             timeline.setCycleCount(DICE_ANIME_FRAMES);
 
             timeline.setOnFinished(eventTimelineFin -> {
+
                 System.out.println("[DiceEntity] assam " + assamEntity.assam);
                 assamEntity.moveXStep(number);
                 System.out.println("[DiceEntity] assam " + assamEntity.assam);
@@ -575,10 +573,10 @@ public class Game extends Application {
     public void playsound(String filename) throws URISyntaxException {
 //        String path=getClass().getResource(filename).getPath();
 //        Media media=new Media(new File(path).toURI().toString());
-        File file = new File(getClass().getResource(filename).toURI());
-        String mediaUrl = file.toURI().toString();
+//        File file = new File(Assam.class.getResourceAsStream(filename));
+//        String mediaUrl = file.toURI().toString();
         // 播放音频
-        Media sound = new javafx.scene.media.Media(mediaUrl); // The error was here
+        Media sound = new Media("file://comp1110/ass2/gui/" + filename); // The error was here
 
         // Create a MediaPlayer to control playback
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
@@ -609,7 +607,7 @@ public class Game extends Application {
             });
             startEntity.setOnMousePressed(event -> {
                 try {
-                    playsound("ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
+                    playsound("BGM.mp3");
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -675,7 +673,7 @@ public class Game extends Application {
      * AI
      */
     public void AIselectDirectionRollDice() {
-        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0) {
+        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() > 0) {
             System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
             // select assam rotate
             // generate selection list
@@ -823,6 +821,12 @@ public class Game extends Application {
         // if next player is AI too
         if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
             AIselectDirectionRollDice();
+        }
+    }
+    
+    public void setButtonActive(boolean value) {
+        for (int idx = 0; idx < playerStatusButton.length; idx++) {
+            playerStatusButton[idx].imageView.setDisable(!value);
         }
     }
 
