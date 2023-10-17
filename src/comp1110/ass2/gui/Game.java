@@ -9,7 +9,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
@@ -26,8 +25,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
@@ -575,37 +572,21 @@ public class Game extends Application {
 //            invalid.setVisible(true);
         }
     }
-//    public void playsound(String filename) throws URISyntaxException {
-////        String path=getClass().getResource(filename).getPath();
-////        Media media=new Media(new File(path).toURI().toString());
-//        File file = new File(getClass().getResource(filename).toURI());
-//        String mediaUrl = file.toURI().toString();
-//        // 播放音频
-//        Media sound = new javafx.scene.media.Media(mediaUrl); // The error was here
-//
-//        // Create a MediaPlayer to control playback
-//        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-//
-//        // Start playing the audio
-//        mediaPlayer.play();
-//    }
-public void playsound() throws URISyntaxException, FileNotFoundException {
-    // Load resource as a URL
-//    String path = getClass().getResource(filename).getPath();
-//    System.out.println(path);
-//
-//    // Convert URL to URI for Media object
-    File bgmfile=new File("C:\\Users\\bxy37\\IdeaProjects\\comp1110-ass2\\src\\comp1110\\ass2\\assets\\ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
+    public void playsound() throws URISyntaxException {
+//        String path=getClass().getResource(filename).getPath();
+//        Media media=new Media(new File(path).toURI().toString());
+        File bgmfile = new File("src/comp1110/ass2/assets/ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
 
+        // 播放音频
+        Media sound = new Media(bgmfile.toURI().toString());
 
-    // Create Media object from URI
-    Media sound = new Media(bgmfile.toURI().toString());
+        // Create a MediaPlayer to control playback
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 
-    // Create MediaPlayer and play the sound
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-    mediaPlayer.play();
-}
+        // Start playing the audio
+        mediaPlayer.play();
+    }
 
     // ==================== START ENTITIES ====================
     class StartEntity {
@@ -628,13 +609,11 @@ public void playsound() throws URISyntaxException, FileNotFoundException {
                 startEntity.setImage(startImage.get());
             });
             startEntity.setOnMousePressed(event -> {
-//                try {
-//                    playsound();
-//                } catch (URISyntaxException e) {
-//                    throw new RuntimeException(e);
-//                } catch (FileNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                }
+                try {
+                    playsound();
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
                 System.out.println("=".repeat(40));
                 System.out.println("GAME START");
                 int count = 0;
@@ -686,18 +665,6 @@ public void playsound() throws URISyntaxException, FileNotFoundException {
         //  FIXME Task 7 and 15
         this.stage = stage;
         stage.setTitle("◀ Assam Game ▶");
-//        Button button=new Button("BGM");
-//        button.setLayoutX(100);
-//        button.setOnMousePressed(event -> {
-//            try {
-//                playsound();
-//            } catch (URISyntaxException e) {
-//                throw new RuntimeException(e);
-//            } catch (FileNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        root.getChildren().add(button);
 
         gameSelectStage();
         gamePrepareStage();
@@ -1039,20 +1006,6 @@ public void playsound() throws URISyntaxException, FileNotFoundException {
 
 
     private void initBackground(String stage) {
-        Button button=new Button("BGM");
-        button.setLayoutX(100);
-
-        button.setOnMousePressed(event -> {
-            try {
-                playsound();
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        root.getChildren().add(button);
-
         if (stage.equals("PREPARE")) {
             Image backgroundImage = new Image("comp1110/ass2/assets/Background.png",
                     WINDOW_WIDTH, WINDOW_HEIGHT, false, false);
@@ -1068,7 +1021,6 @@ public void playsound() throws URISyntaxException, FileNotFoundException {
 
             selectRoot.getChildren().add(background);
         }
-        button.toFront();
     }
 
     private void initBoard() {
