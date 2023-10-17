@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
@@ -841,6 +842,29 @@ public class Game extends Application {
         PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
         PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
         playerEntities = new PlayerEntity[] {playerC, playerY, playerR, playerP};
+
+        Button instructionButton = new Button("Instruction");
+        instructionButton.setOnAction(e -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Operation Guide:");
+            alert.setHeaderText(null);
+            alert.setContentText(
+                    "1. Control Assam's Direction:\n" +
+                    "       Use the arrow keys to change the direction of Assam.\n" +
+                    "       Once the direction is set, press the Enter key to confirm.\n" +
+                    "\n2. Move Assam:\n" +
+                    "       Click on the dice to move Assam according to the roll.\n" +
+                    "\n3. Place the Rug:\n" +
+                    "       Drag the rug and position it on the board.\n" +
+                    "\n4. Setting Computer Control for Players:\n" +
+                    "       Click the small square to toggle control modes:\n" +
+                    "       Click once for Standard AI mode.\n" +
+                    "       Click twice for Advanced AI mode.\n" +
+                    "       Clicking again will return control to manual player mode.\n");
+
+            alert.showAndWait();
+        });
+        selectRoot.getChildren().add(instructionButton);
         stage.setScene(selectScene);
     }
 
