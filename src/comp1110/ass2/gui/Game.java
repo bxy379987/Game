@@ -703,7 +703,7 @@ public class Game extends Application {
     public void AImakePlacement() {
         // check finish
         placementFinish();
-        if (playerEntities[CURRENT_PLAYER_IDX].isSelect){
+        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
             // make placement
             // find all valid placement
             // total case
