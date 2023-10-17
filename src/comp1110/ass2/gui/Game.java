@@ -589,8 +589,8 @@ public class Game extends Application {
     MediaPlayer[] catMusic = new MediaPlayer[] {
         new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catC.mp3").toURI().toString())),
         new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catY.mp3").toURI().toString())),
-        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catR.mp3").toURI().toString())),
-        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catP.mp3").toURI().toString()))
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catP.mp3").toURI().toString())),
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catR.mp3").toURI().toString()))
     };
 
     MediaPlayer bgmMusic = new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/BackgroundMusic.mp3").toURI().toString()));
@@ -863,7 +863,7 @@ public class Game extends Application {
         PlayerEntity playerY = new PlayerEntity(610, -100, pieceColor.YELLOW, false);
         PlayerEntity playerP = new PlayerEntity(640, 290, pieceColor.PURPLE, false);
         PlayerEntity playerR = new PlayerEntity(-20, 300, pieceColor.RED, false);
-        playerEntities = new PlayerEntity[] {playerC, playerY, playerR, playerP};
+        playerEntities = new PlayerEntity[] {playerC, playerY, playerP, playerR};
 
         Button instructionButton = new Button("Instruction");
         selectScene.getStylesheets().add(getClass().getResource("buttonStyle.css").toExternalForm());
@@ -1020,13 +1020,13 @@ public class Game extends Application {
                             playsound("cat", 1);
                             winner = "Yellow";
                         }
-                        case 'r' -> {
-                            playsound("cat", 2);
-                            winner = "Red";
-                        }
                         case 'p' -> {
-                            playsound("cat", 3);
+                            playsound("cat", 2);
                             winner = "Purple";
+                        }
+                        case 'r' -> {
+                            playsound("cat", 3);
+                            winner = "Red";
                         }
                     }
                 } catch (URISyntaxException e) {
@@ -1067,8 +1067,8 @@ public class Game extends Application {
         switch (color) {
             case CYAN -> { return 0;}
             case YELLOW -> { return 1;}
-            case RED -> { return 2;}
-            case PURPLE -> { return 3;}
+            case PURPLE -> { return 2;}
+            case RED -> { return 3;}
         }
         return -1;
     }

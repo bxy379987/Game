@@ -285,7 +285,7 @@ public class Marrakech {
         String boardString = gameState.split("B")[1];
         Board board = new Board(boardString);
         int[] numSquaresOnBoard = board.countColors();
-        System.out.println("C Y P R N on board: " + Arrays.toString(numSquaresOnBoard));
+        System.out.println("C Y R P N on board: " + Arrays.toString(numSquaresOnBoard));
         // from 1 to 4 NOT 0 to 3
         // Sequence c y p r
         String[] playerStrings = gameState.split("A")[0].split("P");
