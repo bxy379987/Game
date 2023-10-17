@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -402,6 +403,11 @@ public class Game extends Application {
             });
         }
         public void rollDiceAnime() {
+            try {
+                playsound("dice", -1);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
 //                    System.out.println("Click");
             KeyFrame keyFrame = new KeyFrame(Duration.seconds(DICE_ANIME_TIME / DICE_ANIME_FRAMES), eventAnime -> {
                 number = dice.rollDice();
@@ -423,7 +429,6 @@ public class Game extends Application {
                 // set Rug Draggable
                 System.out.println("[DiceEntity] Current player " + CURRENT_PLAYER_IDX);
 
-
                 if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
                     AImakePlacement();
                 } else {
@@ -431,6 +436,7 @@ public class Game extends Application {
                     playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].rugGroup.toFront();
                     placementFinish();
                 }
+
             });
             timeline.play();
             setClickable(false);
@@ -494,6 +500,11 @@ public class Game extends Application {
                 this.isSelect = currentSelect.get();
                 this.player.setIsplaying(this.isSelect);
                 System.out.println("[PlayerEntity] set is playing: " + this.player.isIsplaying());
+                try {
+                    playsound("cat", playerIdx);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
                 // set player button active
                 playerStatusButton[playerIdx].invalid.setDisable(this.isSelect);
                 playerStatusButton[playerIdx].invalid.setVisible(!this.isSelect);
@@ -573,21 +584,32 @@ public class Game extends Application {
 //            invalid.setVisible(true);
         }
     }
-    File bgmfile = new File("src/comp1110/ass2/assets/ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
-
-    // 播放音频
-    Media sound = new Media(bgmfile.toURI().toString());
 
     // Create a MediaPlayer to control playback
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    MediaPlayer[] catMusic = new MediaPlayer[] {
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catC.mp3").toURI().toString())),
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catY.mp3").toURI().toString())),
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catR.mp3").toURI().toString())),
+        new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catP.mp3").toURI().toString()))
+    };
 
+    MediaPlayer bgmMusic = new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/BackgroundMusic.mp3").toURI().toString()));
+    MediaPlayer diceMusic = new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/dice.mp3").toURI().toString()));
 
-    public void playsound() throws URISyntaxException {
-//        String path=getClass().getResource(filename).getPath();
-//        Media media=new Media(new File(path).toURI().toString());
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        // Start playing the audio
-        mediaPlayer.play();
+    public void playsound(String music, int playerIdx) throws URISyntaxException {
+
+        if (music.equals("BGM")) {bgmMusic.setCycleCount(MediaPlayer.INDEFINITE); bgmMusic.play();}
+        if (music.equals("dice")) {
+            diceMusic.setCycleCount(1);
+            diceMusic.play();
+            diceMusic.setOnEndOfMedia(() -> diceMusic.stop());
+        }
+        if (music.equals("cat")) {
+            catMusic[playerIdx].setCycleCount(1);
+            catMusic[playerIdx].play();
+            catMusic[playerIdx].setOnEndOfMedia(() -> catMusic[playerIdx].stop());
+        }
+
     }
 
     // ==================== START ENTITIES ====================
@@ -612,7 +634,7 @@ public class Game extends Application {
             });
             startEntity.setOnMousePressed(event -> {
                 try {
-                    playsound();
+                    playsound("BGM", -1);
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -844,6 +866,10 @@ public class Game extends Application {
         playerEntities = new PlayerEntity[] {playerC, playerY, playerR, playerP};
 
         Button instructionButton = new Button("Instruction");
+        selectScene.getStylesheets().add(getClass().getResource("buttonStyle.css").toExternalForm());
+        instructionButton.getStyleClass().add("button");
+        instructionButton.setLayoutX(10);
+        instructionButton.setLayoutY(10);
         instructionButton.setOnAction(e -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game Operation Guide:");
@@ -979,21 +1005,42 @@ public class Game extends Application {
             }
 
         } else {
-            mediaPlayer.stop();
+            bgmMusic.stop();
             // TODO: Game Over
             Platform.runLater(() -> {
                 char winnerChar = getWinner(getCurrentGame());
                 String winner = new String();
-                switch (winnerChar){
-                    case 'c' -> winner = "cyan.";
-                    case 'y' -> winner = "yellow.";
-                    case 'p' -> winner = "purple.";
-                    case 'r' -> winner = "red.";
+                try {
+                    switch (winnerChar){
+                        case 'c' -> {
+                            playsound("cat", 0);
+                            winner = "Cyan";
+                        }
+                        case 'y' -> {
+                            playsound("cat", 1);
+                            winner = "Yellow";
+                        }
+                        case 'r' -> {
+                            playsound("cat", 2);
+                            winner = "Red";
+                        }
+                        case 'p' -> {
+                            playsound("cat", 3);
+                            winner = "Purple";
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
                 }
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game Over");
                 alert.setHeaderText(null);
-                alert.setContentText("\tCongratulations !\n\n\tThe winner is player " + winner);
+                if (winnerChar == 't') {
+                    alert.setContentText("\tCongratulations !\n\n\t\tTie (～o￣3￣)～");
+                } else {
+                    alert.setContentText("\tCongratulations !\n\n\tThe winner is " + winner + " cat (o゜▽゜)o☆");
+                }
 
                 ButtonType buttonTypeRestart = new ButtonType("Restart");
                 ButtonType buttonTypeExit = new ButtonType("Exit");
