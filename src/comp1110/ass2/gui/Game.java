@@ -667,65 +667,66 @@ public class Game extends Application {
     public void AImakePlacement() {
         // check finish
         placementFinish();
-
-        // make placement
-        // find all valid placement
-        // total case
-        // O O X O O
-        // O X X X O
-        // X X A X X
-        // O X X X O
-        // O O X O O
-        pieceColor currentColor = playerEntities[CURRENT_PLAYER_IDX].color;
-        int currentX = assamEntity.assam.getxCoordinate();
-        int currentY = assamEntity.assam.getyCoordinate();
-        gameState = getCurrentGame();
-        List<Rug> rugSelections = new ArrayList<>();
-        List<Rug> rugValidSelections = new ArrayList<>();
-        // outer case
-        // O O X O O
-        // O O X O O
-        // X X A X X
-        // O O X O O
-        // O O X O O
-        rugSelections.add(new Rug(currentColor, 0, new int[]{currentX, currentY - 1}, new int[]{currentX, currentY - 2}));
-        rugSelections.add(new Rug(currentColor, 1, new int[]{currentX, currentY + 1}, new int[]{currentX, currentY + 2}));
-        rugSelections.add(new Rug(currentColor, 2, new int[]{currentX - 1, currentY}, new int[]{currentX - 2, currentY}));
-        rugSelections.add(new Rug(currentColor, 3, new int[]{currentX + 1, currentY}, new int[]{currentX + 2, currentY}));
-        // inner case
-        // O O O O O
-        // O X X X O
-        // O X A X O
-        // O X X X O
-        // O O O O O
-        rugSelections.add(new Rug(currentColor, 4, new int[]{currentX, currentY - 1}, new int[]{currentX + 1, currentY - 1}));
-        rugSelections.add(new Rug(currentColor, 5, new int[]{currentX + 1, currentY - 1}, new int[]{currentX + 1, currentY}));
-        rugSelections.add(new Rug(currentColor, 6, new int[]{currentX + 1, currentY}, new int[]{currentX + 1, currentY + 1}));
-        rugSelections.add(new Rug(currentColor, 7, new int[]{currentX + 1, currentY + 1}, new int[]{currentX, currentY + 1}));
-        rugSelections.add(new Rug(currentColor, 8, new int[]{currentX, currentY + 1}, new int[]{currentX - 1, currentY + 1}));
-        rugSelections.add(new Rug(currentColor, 9, new int[]{currentX - 1, currentY + 1}, new int[]{currentX - 1, currentY}));
-        rugSelections.add(new Rug(currentColor, 10, new int[]{currentX - 1, currentY}, new int[]{currentX - 1, currentY - 1}));
-        rugSelections.add(new Rug(currentColor, 11, new int[]{currentX - 1, currentY - 1}, new int[]{currentX, currentY - 1}));
-        // remove invalid
-        for (int rugIdx = 0; rugIdx < rugSelections.size(); rugIdx++) {
-            Rug currentRug = rugSelections.get(rugIdx);
-            if (isPlacementValid(gameState, currentRug.toString())) {
-                rugValidSelections.add(currentRug);
+        if (playerEntities[CURRENT_PLAYER_IDX].isSelect){
+            // make placement
+            // find all valid placement
+            // total case
+            // O O X O O
+            // O X X X O
+            // X X A X X
+            // O X X X O
+            // O O X O O
+            pieceColor currentColor = playerEntities[CURRENT_PLAYER_IDX].color;
+            int currentX = assamEntity.assam.getxCoordinate();
+            int currentY = assamEntity.assam.getyCoordinate();
+            gameState = getCurrentGame();
+            List<Rug> rugSelections = new ArrayList<>();
+            List<Rug> rugValidSelections = new ArrayList<>();
+            // outer case
+            // O O X O O
+            // O O X O O
+            // X X A X X
+            // O O X O O
+            // O O X O O
+            rugSelections.add(new Rug(currentColor, 0, new int[]{currentX, currentY - 1}, new int[]{currentX, currentY - 2}));
+            rugSelections.add(new Rug(currentColor, 1, new int[]{currentX, currentY + 1}, new int[]{currentX, currentY + 2}));
+            rugSelections.add(new Rug(currentColor, 2, new int[]{currentX - 1, currentY}, new int[]{currentX - 2, currentY}));
+            rugSelections.add(new Rug(currentColor, 3, new int[]{currentX + 1, currentY}, new int[]{currentX + 2, currentY}));
+            // inner case
+            // O O O O O
+            // O X X X O
+            // O X A X O
+            // O X X X O
+            // O O O O O
+            rugSelections.add(new Rug(currentColor, 4, new int[]{currentX, currentY - 1}, new int[]{currentX + 1, currentY - 1}));
+            rugSelections.add(new Rug(currentColor, 5, new int[]{currentX + 1, currentY - 1}, new int[]{currentX + 1, currentY}));
+            rugSelections.add(new Rug(currentColor, 6, new int[]{currentX + 1, currentY}, new int[]{currentX + 1, currentY + 1}));
+            rugSelections.add(new Rug(currentColor, 7, new int[]{currentX + 1, currentY + 1}, new int[]{currentX, currentY + 1}));
+            rugSelections.add(new Rug(currentColor, 8, new int[]{currentX, currentY + 1}, new int[]{currentX - 1, currentY + 1}));
+            rugSelections.add(new Rug(currentColor, 9, new int[]{currentX - 1, currentY + 1}, new int[]{currentX - 1, currentY}));
+            rugSelections.add(new Rug(currentColor, 10, new int[]{currentX - 1, currentY}, new int[]{currentX - 1, currentY - 1}));
+            rugSelections.add(new Rug(currentColor, 11, new int[]{currentX - 1, currentY - 1}, new int[]{currentX, currentY - 1}));
+            // remove invalid
+            for (int rugIdx = 0; rugIdx < rugSelections.size(); rugIdx++) {
+                Rug currentRug = rugSelections.get(rugIdx);
+                if (isPlacementValid(gameState, currentRug.toString())) {
+                    rugValidSelections.add(currentRug);
+                }
             }
+            System.out.println("[DiceEntity] find valid rug: " + rugValidSelections.size());
+            // place rug
+            Random random = new Random();
+            Rug toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
+            System.out.println("[DiceEntity] tend to place rug: " + toPlace);
+            playerEntities[CURRENT_PLAYER_IDX]
+                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
+                    .setPositionByRug(toPlace);
+            playerEntities[CURRENT_PLAYER_IDX]
+                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
+                    .rugGroup.toFront();
+            playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
+            board.placeRug(toPlace, assamEntity.assam);
         }
-        System.out.println("[DiceEntity] find valid rug: " + rugValidSelections.size());
-        // place rug
-        Random random = new Random();
-        Rug toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
-        System.out.println("[DiceEntity] tend to place rug: " + toPlace);
-        playerEntities[CURRENT_PLAYER_IDX]
-                .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
-                .setPositionByRug(toPlace);
-        playerEntities[CURRENT_PLAYER_IDX]
-                .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
-                .rugGroup.toFront();
-        playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
-        board.placeRug(toPlace, assamEntity.assam);
         // next player
         CURRENT_PLAYER_IDX = (CURRENT_PLAYER_IDX + 1) % 4;
         // find next valid player
@@ -842,15 +843,28 @@ public class Game extends Application {
             System.out.println("[placementFinish] Game is not Over");
             pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
             if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
-                int payment = getPaymentAmount(gameState);
-                System.out.println("[placementFinish] Find pay: " + payment);
-                if (payment != 0) {
+                int needToPayment = getPaymentAmount(gameState);
+                System.out.println("[placementFinish] Find pay: " + needToPayment);
+                if (needToPayment != 0) {
                     int playerToPayIdx = getIndexByColor(boardColor);
-                    System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + payment);
-                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + payment);
-                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerEntities[CURRENT_PLAYER_IDX].player.getDirhams() - payment);
+                    int playerDirhams = playerEntities[CURRENT_PLAYER_IDX].player.getDirhams();
+                    if (playerDirhams > needToPayment){
+                    System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + needToPayment);
+                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
+                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
+                    }
                     //
                     // TODO: Check after pay & do something // dirhams under 0
+                   else {System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + playerDirhams);
+                        playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + playerDirhams);
+                        playerEntities[CURRENT_PLAYER_IDX].setDirhams(0);
+                        for (int rugIdx = 0; rugIdx < RUG_AMOUNT; rugIdx++) {
+                            playerEntities[CURRENT_PLAYER_IDX].rugEntities[rugIdx].rugGroup.getChildren().clear();
+                        }
+                        playerEntities[CURRENT_PLAYER_IDX].player.setIsplaying(false);
+                        board.removeRugsOfColor(playerEntities[CURRENT_PLAYER_IDX].player.getColor());
+                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(1);
+                    }
                 }
             }
 

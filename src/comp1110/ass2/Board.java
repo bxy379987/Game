@@ -216,6 +216,21 @@ public class Board {
         return false;
     }
 
+    /**
+     * Remove all rugs of a given color from the board.
+     * @param color the color of the rugs to be removed.
+     */
+    public void removeRugsOfColor(pieceColor color) {
+        for (int row = 0; row < BOARD_HEIGHT; row++) {
+            for (int col = 0; col < BOARD_WIDTH; col++) {
+                if (boardColor[col][row] == color) {
+                    boardColor[col][row] = pieceColor.NONE;
+                    subID[col][row] = 0;
+                }
+            }
+        }
+    }
+
     public int[] countColors() {
         // represent the amount of [c y p r n]
         int[] colorsAmount = new int[5];
