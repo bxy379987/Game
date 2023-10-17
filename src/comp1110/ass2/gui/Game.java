@@ -14,13 +14,19 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -565,6 +571,20 @@ public class Game extends Application {
 //            invalid.setVisible(true);
         }
     }
+    public void playsound(String filename) throws URISyntaxException {
+//        String path=getClass().getResource(filename).getPath();
+//        Media media=new Media(new File(path).toURI().toString());
+        File file = new File(getClass().getResource(filename).toURI());
+        String mediaUrl = file.toURI().toString();
+        // 播放音频
+        Media sound = new javafx.scene.media.Media(mediaUrl); // The error was here
+
+        // Create a MediaPlayer to control playback
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
+        // Start playing the audio
+        mediaPlayer.play();
+    }
 
     // ==================== START ENTITIES ====================
     class StartEntity {
@@ -587,6 +607,11 @@ public class Game extends Application {
                 startEntity.setImage(startImage.get());
             });
             startEntity.setOnMousePressed(event -> {
+                try {
+                    playsound("/comp1110/ass2/sample/陈致逸 - 故人不散（陌上节白昼）.mp3");
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
                 System.out.println("=".repeat(40));
                 System.out.println("GAME START");
                 int count = 0;
