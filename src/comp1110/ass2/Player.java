@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Player {
     private boolean isPlaying;
-    private pieceColor color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
+    private pieceColor color;//"c" represents cyan ，"y" represents yellow，"p" represents purple，"r" represents red
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
     public static final int RUG_AMOUNT = 15;

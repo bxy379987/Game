@@ -1,7 +1,7 @@
 package comp1110.ass2;
 
 public enum pieceColor {
-    // Enum constants representing colors: CYAN, YELLOW, RED, PURPLE
+    // Enum constants representing colors: CYAN, YELLOW, PURPLE, RED
     CYAN("c", "Cyan" ),
     YELLOW("y","Yellow"),
     PURPLE("p","Purple"),

@@ -52,7 +52,7 @@ public class Marrakech {
         int[] coordinates = rug.substring(3).chars().map(Character::getNumericValue).toArray();
         if (Arrays.stream(coordinates).anyMatch(coordinate -> coordinate > 6)) return false;
         // CASE: is valid player
-        if (!"cyrp".contains(rug.substring(0,1))) return false;
+        if (!"cypr".contains(rug.substring(0,1))) return false;
 // 他居然不需要检测摆放的位置颜色相同，先注释了
 //    CASE: covered with two same color [not valid]
 //      System.out.println(boardString.toCharArray()[((coordinates[0])*7+coordinates[1]) * 3]);
@@ -285,7 +285,7 @@ public class Marrakech {
         String boardString = gameState.split("B")[1];
         Board board = new Board(boardString);
         int[] numSquaresOnBoard = board.countColors();
-        System.out.println("C Y R P N on board: " + Arrays.toString(numSquaresOnBoard));
+        System.out.println("C Y P R N on board: " + Arrays.toString(numSquaresOnBoard));
         // from 1 to 4 NOT 0 to 3
         // Sequence c y p r
         String[] playerStrings = gameState.split("A")[0].split("P");

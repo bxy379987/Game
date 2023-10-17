@@ -238,8 +238,8 @@ public class Board {
             for (int col = 0; col < BOARD_WIDTH; col++) {
                 pieceColor color = boardColor[col][row];
                 colorsAmount[color.ordinal()]++;
-                }
             }
+        }
         return colorsAmount;
     }
     @Override
