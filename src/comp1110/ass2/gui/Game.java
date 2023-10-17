@@ -284,7 +284,7 @@ public class Game extends Application {
                     board.showBoardColorInMatrix();
                     System.out.println();
                     isMousePressed = false;
-                    String rugString = getColor().getSymbol() + getID() + nearestIdx[0][0] + nearestIdx[0][1] + nearestIdx[1][0] + nearestIdx[1][1];
+                    String rugString = getColor().getSymbol() + String.format("%02d", ID) + nearestIdx[0][0] + nearestIdx[0][1] + nearestIdx[1][0] + nearestIdx[1][1];
                     System.out.println("[RugEntity] " + rugString);
 //                    System.out.println(getCurrentGame());
                     // if anchors valid
@@ -420,6 +420,7 @@ public class Game extends Application {
                     AImakePlacement();
                 } else {
                     playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].setDraggable(true);
+                    playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].rugGroup.toFront();
                     placementFinish();
                 }
             });
