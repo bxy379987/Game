@@ -649,26 +649,30 @@ public class Game extends Application {
      * AI
      */
     public void AIselectDirectionRollDice() {
-        System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
-        // select assam rotate
-        // generate selection list
-        List<Direction> directionSelections = new ArrayList<>();
-        directionSelections.add(Direction.NORTH);
-        directionSelections.add(Direction.EAST);
-        directionSelections.add(Direction.SOUTH);
-        directionSelections.add(Direction.WEST);
-        directionSelections.remove(assamEntity.direction.getOpposite());
-        // select
-        Random random = new Random();
-        assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
-        // roll dice
-        diceEntity.rollDiceAnime();
+        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
+            System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
+            // select assam rotate
+            // generate selection list
+            List<Direction> directionSelections = new ArrayList<>();
+            directionSelections.add(Direction.NORTH);
+            directionSelections.add(Direction.EAST);
+            directionSelections.add(Direction.SOUTH);
+            directionSelections.add(Direction.WEST);
+            directionSelections.remove(assamEntity.direction.getOpposite());
+            // select
+            Random random = new Random();
+            assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
+            // roll dice
+            diceEntity.rollDiceAnime();
+        } else {
+            placementFinish();
+        }
     }
 
     public void AImakePlacement() {
         // check finish
         placementFinish();
-        if (playerEntities[CURRENT_PLAYER_IDX].isSelect){
+        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
             // make placement
             // find all valid placement
             // total case
@@ -844,7 +848,7 @@ public class Game extends Application {
             System.out.println("[placementFinish] Game is not Over");
             pieceColor boardColor = board.getColorByCoordinate(assamEntity.x, assamEntity.y);
             if (boardColor != playerEntities[CURRENT_PLAYER_IDX].color) {
-                int needToPayment = getPaymentAmount(gameState);
+                int needToPayment = getPaymentAmount(gameState)*100;
                 System.out.println("[placementFinish] Find pay: " + needToPayment);
                 if (needToPayment != 0) {
                     int playerToPayIdx = getIndexByColor(boardColor);
@@ -864,7 +868,7 @@ public class Game extends Application {
                         }
                         playerEntities[CURRENT_PLAYER_IDX].player.setIsplaying(false);
                         board.removeRugsOfColor(playerEntities[CURRENT_PLAYER_IDX].player.getColor());
-                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(1);
+                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(0);
                     }
                 }
             }
