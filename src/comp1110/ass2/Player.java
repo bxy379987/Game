@@ -9,7 +9,7 @@ public class Player {
     private pieceColor color;//"c" represents cyan ，"y" represents yellow，"r" represents red，"p" represents purple
     private int dirhams; // the number of dirhams
     private int remainingRugs; // the number of remain rugs
-    public static final int RUG_AMOUNT = 15;
+    public static final int RUG_AMOUNT = 14;
     private HashMap<Integer, Rug> rugUsed = new HashMap<>();
     private HashMap<Integer, Rug> rugToBeUsed = new HashMap<>();
 
