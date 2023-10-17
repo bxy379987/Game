@@ -881,7 +881,7 @@ public class Game extends Application {
                 }
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Game Over");
-                alert.setHeaderText("Congratulations !\n The winner is player " + winner);
+                alert.setHeaderText("Congratulations !\nThe winner is player " + winner);
                 alert.setContentText("Choose your option.");
 
                 ButtonType buttonTypeRestart = new ButtonType("Restart");
