@@ -609,7 +609,7 @@ public class Game extends Application {
             });
             startEntity.setOnMousePressed(event -> {
                 try {
-                    playsound("/comp1110/ass2/sample/陈致逸 - 故人不散（陌上节白昼）.mp3");
+                    playsound("ytmp3free.cc_14-floor-music-danza-kudoru-youtubemp3free.org.mp3");
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
