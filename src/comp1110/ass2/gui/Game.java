@@ -419,7 +419,7 @@ public class Game extends Application {
                 if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
                     AImakePlacement();
                 } else {
-                    playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs()].setDraggable(true);
+                    playerEntities[CURRENT_PLAYER_IDX].rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1].setDraggable(true);
                     placementFinish();
                 }
             });
@@ -719,10 +719,10 @@ public class Game extends Application {
             Rug toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
             System.out.println("[DiceEntity] tend to place rug: " + toPlace);
             playerEntities[CURRENT_PLAYER_IDX]
-                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs()]
+                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
                     .setPositionByRug(toPlace);
             playerEntities[CURRENT_PLAYER_IDX]
-                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs()]
+                    .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
                     .rugGroup.toFront();
             playerEntities[CURRENT_PLAYER_IDX].player.deducedRemainingRugs();
             board.placeRug(toPlace, assamEntity.assam);
