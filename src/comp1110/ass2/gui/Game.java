@@ -44,6 +44,7 @@ public class Game extends Application {
     /**
      * Game Back-end class
      */
+    public Random random = new Random();
     private Board board;
     PlayerEntity[] playerEntities;
     private AssamEntity assamEntity;
@@ -674,7 +675,7 @@ public class Game extends Application {
      * AI
      */
     public void AIselectDirectionRollDice() {
-        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
+        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0) {
             System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
             // select assam rotate
             // generate selection list
@@ -685,19 +686,54 @@ public class Game extends Application {
             directionSelections.add(Direction.WEST);
             directionSelections.remove(assamEntity.direction.getOpposite());
             // select
-            Random random = new Random();
-            assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
+            // CASE: basic random AI
+            if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
+                assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
+            }
+            // CASE: Higher AI
+            if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 2) {
+                double minLoss = Double.POSITIVE_INFINITY;
+                int minLossIdx = -1;
+                int[] moveSteps = diceEntity.dice.getDiceScore();
+                for (int directionIdx = 0; directionIdx < directionSelections.size(); directionIdx++) {
+                    int score = 0;
+                    for (int stepIdx = 0; stepIdx < moveSteps.length; stepIdx++) {
+
+                        Assam tempAssam = new Assam(assamEntity.assam.toString());
+                        tempAssam.setDirection(directionSelections.get(directionIdx));
+                        tempAssam.moveXSteps(moveSteps[stepIdx]);
+                        // CASE: step on its own color or none
+                        pieceColor tempColor = board.getColorByCoordinate(tempAssam.getxCoordinate(), tempAssam.getyCoordinate());
+                        if (tempColor == pieceColor.NONE || tempColor == playerEntities[CURRENT_PLAYER_IDX].color) {
+                            continue;
+                        } else {
+                            // CASE: payment
+                            String tempGameString = String.valueOf(playerEntities[0].player) + playerEntities[1].player + playerEntities[2].player + playerEntities[3].player + tempAssam + "B" + board;
+                            score += getPaymentAmount(tempGameString);
+                        }
+                    }
+
+                    if (minLoss > score) {
+                        minLoss = score;
+                        minLossIdx = directionIdx;
+                    }
+                }
+                System.out.println("[AIselectDirectionRollDice] found min loss: " + minLoss + " index: " + minLossIdx);
+                assamEntity.setDirection(directionSelections.get(minLossIdx));
+            }
+
             // roll dice
             diceEntity.rollDiceAnime();
         } else {
             placementFinish();
         }
+
     }
 
     public void AImakePlacement() {
         // check finish
         placementFinish();
-        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
+        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
             // make placement
             // find all valid placement
             // total case
@@ -745,8 +781,26 @@ public class Game extends Application {
             }
             System.out.println("[DiceEntity] find valid rug: " + rugValidSelections.size());
             // place rug
-            Random random = new Random();
-            Rug toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
+            // CASE: basic random AI
+            Rug toPlace;
+            if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
+                toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
+            } else {
+                // CASE: Higher AI
+                int maxRugOnBoard = -1;
+                int maxRugOnBoardIdx = -1;
+                for (int rugIdx = 0; rugIdx < rugValidSelections.size(); rugIdx++) {
+                    Board tempBoard = new Board(board.toString());
+                    if (tempBoard.placeRug(rugValidSelections.get(rugIdx), assamEntity.assam)) {
+                        if (maxRugOnBoard < tempBoard.countColors()[CURRENT_PLAYER_IDX]) {
+                            maxRugOnBoard = tempBoard.countColors()[CURRENT_PLAYER_IDX];
+                            maxRugOnBoardIdx = rugIdx;
+                        }
+                    }
+                }
+                System.out.println("[AImakePlacement] found max rug: " + maxRugOnBoard + " index: " + maxRugOnBoardIdx);
+                toPlace = rugValidSelections.get(maxRugOnBoardIdx);
+            }
             System.out.println("[DiceEntity] tend to place rug: " + toPlace);
             playerEntities[CURRENT_PLAYER_IDX]
                     .rugEntities[playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() - 1]
@@ -893,7 +947,7 @@ public class Game extends Application {
                         }
                         playerEntities[CURRENT_PLAYER_IDX].player.setIsplaying(false);
                         board.removeRugsOfColor(playerEntities[CURRENT_PLAYER_IDX].player.getColor());
-                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(0);
+                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(1);
                     }
                 }
             }

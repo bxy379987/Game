@@ -14,4 +14,7 @@ public class Dice {
         return  diceScore[rand.nextInt(6)];
     }
 
+    public int[] getDiceScore() {
+        return diceScore;
+    }
 }
