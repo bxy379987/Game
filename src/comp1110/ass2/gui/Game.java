@@ -4,9 +4,13 @@ import comp1110.ass2.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -17,10 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -855,6 +856,34 @@ public class Game extends Application {
 
         } else {
             // TODO: Game Over
+            Platform.runLater(() -> {
+                char winnerChar = getWinner(getCurrentGame());
+                String winner = new String();
+                switch (winnerChar){
+                    case 'c' -> winner = "cyan.";
+                    case 'y' -> winner = "yellow.";
+                    case 'p' -> winner = "purple.";
+                    case 'r' -> winner = "red.";
+                }
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Game Over");
+                alert.setHeaderText("Congratulations !\n The winner is player " + winner);
+                alert.setContentText("Choose your option.");
+
+                ButtonType buttonTypeRestart = new ButtonType("Restart");
+                ButtonType buttonTypeExit = new ButtonType("Exit");
+                alert.getButtonTypes().setAll(buttonTypeRestart, buttonTypeExit);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == buttonTypeRestart) {
+                    root.getChildren().clear();
+                    selectRoot.getChildren().clear();
+                    gameSelectStage();
+                    gamePrepareStage();
+                } else if (result.get() == buttonTypeExit) {
+                    System.exit(0);
+                }
+            });
         }
     }
 
