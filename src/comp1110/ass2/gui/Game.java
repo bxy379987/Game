@@ -650,54 +650,59 @@ public class Game extends Application {
      * AI
      */
     public void AIselectDirectionRollDice() {
-        System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
-        // select assam rotate
-        // generate selection list
-        List<Direction> directionSelections = new ArrayList<>();
-        directionSelections.add(Direction.NORTH);
-        directionSelections.add(Direction.EAST);
-        directionSelections.add(Direction.SOUTH);
-        directionSelections.add(Direction.WEST);
-        directionSelections.remove(assamEntity.direction.getOpposite());
-        // select
-        // CASE: basic random AI
-        if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
-            assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
-        }
-        // CASE: Higher AI
-        if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 2) {
-            double minLoss = Double.POSITIVE_INFINITY;
-            int minLossIdx = -1;
-            int[] moveSteps = diceEntity.dice.getDiceScore();
-            for (int directionIdx = 0; directionIdx < directionSelections.size(); directionIdx++) {
-                int score = 0;
-                for (int stepIdx = 0; stepIdx < moveSteps.length; stepIdx++) {
+        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0) {
+            System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
+            // select assam rotate
+            // generate selection list
+            List<Direction> directionSelections = new ArrayList<>();
+            directionSelections.add(Direction.NORTH);
+            directionSelections.add(Direction.EAST);
+            directionSelections.add(Direction.SOUTH);
+            directionSelections.add(Direction.WEST);
+            directionSelections.remove(assamEntity.direction.getOpposite());
+            // select
+            // CASE: basic random AI
+            if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
+                assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
+            }
+            // CASE: Higher AI
+            if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 2) {
+                double minLoss = Double.POSITIVE_INFINITY;
+                int minLossIdx = -1;
+                int[] moveSteps = diceEntity.dice.getDiceScore();
+                for (int directionIdx = 0; directionIdx < directionSelections.size(); directionIdx++) {
+                    int score = 0;
+                    for (int stepIdx = 0; stepIdx < moveSteps.length; stepIdx++) {
 
-                    Assam tempAssam = new Assam(assamEntity.assam.toString());
-                    tempAssam.setDirection(directionSelections.get(directionIdx));
-                    tempAssam.moveXSteps(moveSteps[stepIdx]);
-                    // CASE: step on its own color or none
-                    pieceColor tempColor = board.getColorByCoordinate(tempAssam.getxCoordinate(), tempAssam.getyCoordinate());
-                    if (tempColor == pieceColor.NONE || tempColor == playerEntities[CURRENT_PLAYER_IDX].color) {
-                        continue;
-                    } else {
-                        // CASE: payment
-                        String tempGameString = String.valueOf(playerEntities[0].player) + playerEntities[1].player + playerEntities[2].player + playerEntities[3].player + tempAssam + "B" + board;
-                        score += getPaymentAmount(tempGameString);
+                        Assam tempAssam = new Assam(assamEntity.assam.toString());
+                        tempAssam.setDirection(directionSelections.get(directionIdx));
+                        tempAssam.moveXSteps(moveSteps[stepIdx]);
+                        // CASE: step on its own color or none
+                        pieceColor tempColor = board.getColorByCoordinate(tempAssam.getxCoordinate(), tempAssam.getyCoordinate());
+                        if (tempColor == pieceColor.NONE || tempColor == playerEntities[CURRENT_PLAYER_IDX].color) {
+                            continue;
+                        } else {
+                            // CASE: payment
+                            String tempGameString = String.valueOf(playerEntities[0].player) + playerEntities[1].player + playerEntities[2].player + playerEntities[3].player + tempAssam + "B" + board;
+                            score += getPaymentAmount(tempGameString);
+                        }
+                    }
+
+                    if (minLoss > score) {
+                        minLoss = score;
+                        minLossIdx = directionIdx;
                     }
                 }
-
-                if (minLoss > score) {
-                    minLoss = score;
-                    minLossIdx = directionIdx;
-                }
+                System.out.println("[AIselectDirectionRollDice] found min loss: " + minLoss + " index: " + minLossIdx);
+                assamEntity.setDirection(directionSelections.get(minLossIdx));
             }
-            System.out.println("[AIselectDirectionRollDice] found min loss: " + minLoss + " index: " + minLossIdx);
-            assamEntity.setDirection(directionSelections.get(minLossIdx));
+
+            // roll dice
+            diceEntity.rollDiceAnime();
+        } else {
+            placementFinish();
         }
 
-        // roll dice
-        diceEntity.rollDiceAnime();
     }
 
     public void AImakePlacement() {
