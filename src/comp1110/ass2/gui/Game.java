@@ -990,10 +990,10 @@ public class Game extends Application {
                     case 'p' -> winner = "purple.";
                     case 'r' -> winner = "red.";
                 }
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game Over");
-                alert.setHeaderText("Congratulations !\nThe winner is player " + winner);
-                alert.setContentText("Choose your option.");
+                alert.setHeaderText(null);
+                alert.setContentText("\tCongratulations !\n\n\tThe winner is player " + winner);
 
                 ButtonType buttonTypeRestart = new ButtonType("Restart");
                 ButtonType buttonTypeExit = new ButtonType("Exit");
