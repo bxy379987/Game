@@ -10,3 +10,8 @@ of our project implements the following features:
  - Option to play against an intelligent computer opponent (Task 17)
 
 additional features...
+ 
+ - Sound effects
+ - Player selection
+ - Instructions
+ - 
