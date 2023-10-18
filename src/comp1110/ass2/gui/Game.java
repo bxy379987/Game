@@ -78,12 +78,6 @@ public class Game extends Application {
      * |                     |          |
      * +---------------------+----------+
      */
-    // GAME STAGE
-    /**
-     * 0 : SELECT STAGE
-     * 1 :
-     */
-    public int GAME_STAGE = 0;
     public int CURRENT_PLAYER_IDX = 0;
     // BUTTON
     private static final int BUTTON_SIZE = 40;
@@ -455,6 +449,8 @@ public class Game extends Application {
         DraggableRugEntity[] rugEntities;
         Text dirhamsText;
         pieceColor color;
+        Image[] playerSelects;
+        ImageView playerEntity;
         int playerIdx;
         // Mode 0: Human
         // Mode 1: Random
@@ -486,18 +482,21 @@ public class Game extends Application {
 
 
             // init Entity
-            AtomicReference<Image> playerImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/player" + this.color.getSymbol().toUpperCase() + ".png",
-                    500, 500, false, false));
-            ImageView playerEntity = new ImageView(playerImage.get());
+            playerSelects = new Image[] {
+                    new Image("comp1110/ass2/assets/selection/player" + this.color.getSymbol().toUpperCase() + ".png",
+                            500, 500, false, false),
+                    new Image("comp1110/ass2/assets/selection/player" + this.color.getSymbol().toUpperCase() + "_select.png",
+                            500, 500, false, false)
+            };
+            playerEntity = new ImageView(playerSelects[0]);
             playerEntity.setX(x);
             playerEntity.setY(y);
             selectRoot.getChildren().add(playerEntity);
 
             // init Actions
-            AtomicBoolean currentSelect = new AtomicBoolean(isSelect);
+
             playerEntity.setOnMouseClicked(event -> {
-                currentSelect.getAndSet(!currentSelect.get());
-                this.isSelect = currentSelect.get();
+                this.isSelect = !this.isSelect;
                 this.player.setIsplaying(this.isSelect);
                 System.out.println("[PlayerEntity] set is playing: " + this.player.isIsplaying());
                 try {
@@ -509,14 +508,11 @@ public class Game extends Application {
                 playerStatusButton[playerIdx].invalid.setDisable(this.isSelect);
                 playerStatusButton[playerIdx].invalid.setVisible(!this.isSelect);
 //                System.out.println(currentSelect.get());
-                if (currentSelect.get()) {
-                    playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + "_select.png",
-                            500, 500, false, false));
+                if (this.isSelect) {
+                    playerEntity.setImage(playerSelects[1]);
                 } else {
-                    playerImage.set(new Image("comp1110/ass2/assets/selection/player" + color.getSymbol().toUpperCase() + ".png",
-                            500, 500, false, false));
+                    playerEntity.setImage(playerSelects[0]);
                 }
-                playerEntity.setImage(playerImage.get());
             });
         }
 
@@ -573,6 +569,7 @@ public class Game extends Application {
                 imageView.setImage(statesImage[this.state]);
                 playerEntities[this.playerIdx].setCharacterMode(this.state);
                 System.out.println("[ButtonEntity] Set player status: " + playerEntities[this.playerIdx].characterMode);
+
             });
 
             invalid = new ImageView(
@@ -614,23 +611,26 @@ public class Game extends Application {
 
     // ==================== START ENTITIES ====================
     class StartEntity {
+        Image[] imageStates;
+        ImageView startEntity;
         public StartEntity(double x, double y) {
-            AtomicReference<Image> startImage = new AtomicReference<>(new Image("comp1110/ass2/assets/selection/START.png",
-                    850, 420, false, false));
-            ImageView startEntity = new ImageView(startImage.get());
+            imageStates = new Image[] {
+                    new Image("comp1110/ass2/assets/selection/START.png",
+                            850, 420, false, false),
+                    new Image("comp1110/ass2/assets/selection/START_select.png",
+                            850, 420, false, false)
+            };
+
+            startEntity = new ImageView(imageStates[0]);
             startEntity.setX(x);
             startEntity.setY(y);
             selectRoot.getChildren().add(startEntity);
 
             startEntity.setOnMouseEntered(event -> {
-                startImage.set(new Image("comp1110/ass2/assets/selection/START_select.png",
-                        850, 420, false, false));
-                startEntity.setImage(startImage.get());
+                startEntity.setImage(imageStates[1]);
             });
             startEntity.setOnMouseExited(event -> {
-                startImage.set(new Image("comp1110/ass2/assets/selection/START.png",
-                        850, 420, false, false));
-                startEntity.setImage(startImage.get());
+                startEntity.setImage(imageStates[0]);
             });
             startEntity.setOnMousePressed(event -> {
                 try {
@@ -645,16 +645,19 @@ public class Game extends Application {
                     System.out.println("[startEntity] " + playerEntities[idx].player);
                     if (playerEntities[idx].player.isIsplaying()) {
                         count += 1;
-                    } else {
-                        // add block if player is not playing
-                        int playerX = PLAYER_START_X + PLAYER_RUG_START_X;
-                        int playerY = PLAYER_START_Y + PLAYER_RUG_START_Y + idx * (PLAYER_RUG_SPACE + NODE_SIZE);
-                        BlockEntity blockEntity = new BlockEntity(playerX, playerY);
                     }
-
                 }
                 // Player count must larger than 1
                 if (count > 1) {
+                    // add block if player is not playing
+                    for (int playerIdx = 0; playerIdx < playerEntities.length; playerIdx++) {
+                        if (!playerEntities[playerIdx].player.isIsplaying()) {
+                            int playerX = PLAYER_START_X + PLAYER_RUG_START_X;
+                            int playerY = PLAYER_START_Y + PLAYER_RUG_START_Y + playerIdx * (PLAYER_RUG_SPACE + NODE_SIZE);
+                            BlockEntity blockEntity = new BlockEntity(playerX, playerY);
+                        }
+                    }
+
                     // find first valid player
                     if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
                         AIselectDirectionRollDice();
