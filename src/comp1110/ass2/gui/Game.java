@@ -8,10 +8,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -608,6 +605,8 @@ public class Game extends Application {
         }
 
     }
+    // ==================== MUSIC CONTROLLER ENTITIES ====================
+
 
     // ==================== START ENTITIES ====================
     class StartEntity {
@@ -635,6 +634,7 @@ public class Game extends Application {
             startEntity.setOnMousePressed(event -> {
                 try {
                     playsound("BGM", -1);
+                    MusicControllerEntity bgmController = new MusicControllerEntity(30, 30, bgmMusic, root);
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
