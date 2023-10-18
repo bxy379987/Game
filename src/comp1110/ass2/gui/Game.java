@@ -45,7 +45,7 @@ public class Game extends Application {
      */
     public Random random = new Random();
     private Board board;
-    PlayerEntity[] playerEntities;
+    public PlayerEntity[] playerEntities;
     private AssamEntity assamEntity;
     private DraggableRugEntity CurrentDraggableRug;
     public String gameState;
@@ -70,9 +70,9 @@ public class Game extends Application {
     /**
      * Game GUI Parameters
      * +---------------------+----------+
-     * |                     |          |
+     * |[music]              |[AI]      |
      * |      BOARD          |  PLAYER  |
-     * |                     |          |
+     * |              [Dice] |[Rug]  [$]|
      * +---------------------+----------+
      */
     public int CURRENT_PLAYER_IDX = 0;
@@ -101,7 +101,13 @@ public class Game extends Application {
     private static final int DICE_ANIME_FRAMES = 30;
 
 
-
+    /**
+     * Find the nearest chessboard anchor point through two coordinate anchor points,
+     * and set the adsorption range of the anchor point by using the `MAX_ANCHOR_DISTANCE` threshold value.
+     * @Author Hongjun Xu
+     * @Time 2023/09/30
+     * @param group
+     */
      public void findNearest(Group group) {
 //         System.out.println("==============[ findNearest ]==============");
          // clear flags
@@ -153,6 +159,12 @@ public class Game extends Application {
      */
 
     // ==================== RUG ENTITIES ====================
+
+    /**
+     * Basic class for rug entity, implement with abstract Rug, ID, color and anchors mapping the board
+     * @Author Hongjun Xu
+     * @Time 2023/10/01
+     */
     static class RugEntity {
         Rug rug;
         private final int ID;
@@ -229,6 +241,14 @@ public class Game extends Application {
         }
     }
 
+    /**
+     * Made RugEntity draggable and added various states and event detections, including draggability, clickability, and rotation.
+     * @Author Hongjun Xu
+     * @Time 2023/09/30
+     * Collaborate With:
+     * @Collaborate Yusi Zhong
+     * @Collaborate Xiangyu Bao
+     */
     class DraggableRugEntity extends RugEntity {
         private double mouseX, mouseY;
         private double originX, originY;
@@ -352,6 +372,11 @@ public class Game extends Application {
 
     }
 
+    /**
+     * A simple element used as a barrier to prevent players from clicking and dragging the Rug.
+     * @Author Hongjun Xu
+     * @Time 2023/10/16
+     */
     static class BlockEntity {
         double x, y;
         ImageView imageView;
@@ -366,6 +391,16 @@ public class Game extends Application {
         }
     }
     // ==================== DICE ENTITIES ====================
+
+    /**
+     * Interfaced with the movement of Assam in the second stage of the game,
+     * built-in click-to-play animations, combined with the abstract class
+     * 'dice,' and included calls to AssamEntity.
+     * @Author Hongjun Xu
+     * @Time 2023/10/05
+     * Collaborate With:
+     * @Collaborate Yusi Zhong
+     */
     class DiceEntity {
         private boolean clickable = false;
         private int number;
@@ -393,6 +428,12 @@ public class Game extends Application {
                 }
             });
         }
+
+        /**
+         * Animation for rolling the dice, including monitoring the subsequent status of whether it is an AI player.
+         * @Author Hongjun Xu
+         * @Time 2023/10/16
+         */
         public void rollDiceAnime() {
             try {
                 playsound("dice", -1);
@@ -439,6 +480,14 @@ public class Game extends Application {
 
     // ==================== PLAYER ENTITIES ====================
 
+    /**
+     * The main logic of the game relies on it. It calls draggable Rugs within
+     * the game, accesses the abstract player to check the game state, examines
+     * the game logic, and interfaces with click interactions during the
+     * initial player selection phase.
+     * @Author Hongjun Xu
+     * @Time 2023/10/05
+     */
     class PlayerEntity {
         boolean isSelect;
         //judge select
@@ -452,7 +501,6 @@ public class Game extends Application {
         // Mode 0: Human
         // Mode 1: Random
         // Mode 2: AI
-        // TODO: implement AI / need to add a selective button to change mode
         int characterMode = 0;
         public PlayerEntity(double x, double y, pieceColor color, boolean isSelect) {
             this.color = color;
@@ -538,6 +586,16 @@ public class Game extends Application {
         }
     }
     // ==================== BUTTON ENTITIES ====================
+
+    /**
+     * A button used to change player modes. With multiple clicks, it can
+     * toggle between human player mode, AI low-level mode (random), and
+     * AI high-level mode (decision-based). It also uses an invalid block
+     * to prevent players who are not participating in the game from
+     * clicking to switch modes.
+     * @Author Hongjun Xu
+     * @Time 2023/10/16
+     */
     class ButtonEntity {
         int state;
         Image[] statesImage;
@@ -579,6 +637,14 @@ public class Game extends Application {
         }
     }
 
+    /**
+     * The central hub for calling in-game music and art resources,
+     * including the ability to directly play music by its name.
+     * @Author BaoXiang Yu
+     * @Time 2023/10/17
+     * Collaborate with:
+     * @Collaborate Hongjun Xu
+     */
     // Create a MediaPlayer to control playback
     MediaPlayer[] catMusic = new MediaPlayer[] {
         new MediaPlayer(new Media(new File("src/comp1110/ass2/assets/Audio/catC.mp3").toURI().toString())),
@@ -605,10 +671,18 @@ public class Game extends Application {
         }
 
     }
-    // ==================== MUSIC CONTROLLER ENTITIES ====================
-
 
     // ==================== START ENTITIES ====================
+
+    /**
+     * The instance of a button for transitioning during the game's player selection phase,
+     * which handles various data initialization operations, including music, AI players,
+     * and the initial orientation of AssamEntity.
+     * @Author Hongjun Xu
+     * @Time 2023/10/05
+     * Collaborate with:
+     * @Collaborate Baoxiang Yu
+     */
     class StartEntity {
         Image[] imageStates;
         ImageView startEntity;
@@ -701,10 +775,17 @@ public class Game extends Application {
         stage.show();
     }
     /**
-     * AI
+     * AI's main involvement in the game phases, random direction selection,
+     * and deterministic direction selection. The AI calculates the
+     * probability of losing points in each direction and prioritizes the
+     * direction with the lowest probability of point deduction for selection.
+     * @Author Hongjun Xu
+     * @Time 2023/10/16
+     * Collaborate with:
+     * @Collaborate Yusi Zhong
      */
     public void AISelectDirectionRollDice() {
-        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0) {
+        if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() > 0) {
             System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
             // select assam rotate
             // generate selection list
@@ -759,6 +840,14 @@ public class Game extends Application {
 
     }
 
+    /**
+     * AI's primary involvement in the game phases, random placement of rugs,
+     * and strategic placement of rugs. AI calculates the number of colors
+     * occupied on the board after placing a rug and prioritizes placement
+     * that occupies more colors.
+     * @Author Hongjun Xu
+     * @Time 2023/10/16
+     */
     public void AImakePlacement() {
         // check finish
         placementFinish();
@@ -861,6 +950,12 @@ public class Game extends Application {
     /**
      * ==================== GAME SELECT STAGE ====================
      */
+
+    /**
+     * Initialization of various elements in the game's starting phase, including player instances and instructions.
+     * @Author Yusi Zhong
+     * @Time 2023/10/01
+     */
     public void gameSelectStage() {
         System.out.println("==============[ gameSelectStage ]==============");
         // get options from gamer
@@ -906,6 +1001,11 @@ public class Game extends Application {
      * =================== GAME PREPARE STAGE ===================
      */
 
+    /**
+     * Initialization of elements in the game's preparation phase, including board, board anchors, AssamEntity, DiceEntity, and more.
+     * @Author Hongjun Xu
+     * @Time 2023/10/01
+     */
     private void gamePrepareStage() {
         System.out.println("=============[ gamePrepareStage ]=============");
         // INIT BACKGROUND ENTITY
@@ -975,7 +1075,13 @@ public class Game extends Application {
     }
 
     /**
-     *
+     * State detection after placement is complete, including the payment amount,
+     * handling players when Dirhams drop below 0, determining the winner when
+     * all players have used up their Rugs, and transitioning to the next scene.
+     * @Author Yusi Zhong
+     * @Time 2023/10/16
+     * Collaborate with:
+     * @Collaborate Hongjun Xu
      */
     public void placementFinish() {
 
@@ -996,8 +1102,7 @@ public class Game extends Application {
                     playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
                     playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
                     }
-                    //
-                    // TODO: Check after pay & do something // dirhams under 0
+
                    else {System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + playerDirhams);
                         playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + playerDirhams);
                         playerEntities[CURRENT_PLAYER_IDX].setDirhams(0);
@@ -1013,7 +1118,6 @@ public class Game extends Application {
 
         } else {
             bgmMusic.stop();
-            // TODO: Game Over
             Platform.runLater(() -> {
                 char winnerChar = getWinner(getCurrentGame());
                 String winner = new String();
@@ -1120,6 +1224,14 @@ public class Game extends Application {
 
     }
 
+    /**
+     * The instantiation of Assam within the game, including Assam's coordinates on the board,
+     * the connection with the abstract Assam, and the synchronization of Assam's direction changes.
+     * @Author Baoxiang Yu
+     * @Time 2023/10/16
+     * Collaborate with:
+     * @Collaborate Hongjun Xu
+     */
      public static class AssamEntity{
         int x;
         int y;
