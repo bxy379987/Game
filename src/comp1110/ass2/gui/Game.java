@@ -326,7 +326,7 @@ public class Game extends Application {
 
                         // =================== CASE: AI ===================
                         if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
-                            AIselectDirectionRollDice();
+                            AISelectDirectionRollDice();
                         }
 
                     } else {
@@ -660,7 +660,7 @@ public class Game extends Application {
 
                     // find first valid player
                     if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
-                        AIselectDirectionRollDice();
+                        AISelectDirectionRollDice();
                     } else {
                         if (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
                             while (!playerEntities[CURRENT_PLAYER_IDX].player.isIsplaying()) {
@@ -668,6 +668,7 @@ public class Game extends Application {
                             }
                         }
                         System.out.println("[StartEntity] find valid player: " + CURRENT_PLAYER_IDX);
+                        // change Scene
                         stage.setScene(scene);
                         // set initial assam direction
                         currentDirection = assamEntity.direction;
@@ -702,7 +703,7 @@ public class Game extends Application {
     /**
      * AI
      */
-    public void AIselectDirectionRollDice() {
+    public void AISelectDirectionRollDice() {
         if (playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0) {
             System.out.println("[RugEntity] Now is time for AI ヾ(≧▽≦*)o");
             // select assam rotate
@@ -746,7 +747,7 @@ public class Game extends Application {
                         minLossIdx = directionIdx;
                     }
                 }
-                System.out.println("[AIselectDirectionRollDice] found min loss: " + minLoss + " index: " + minLossIdx);
+                System.out.println("[AISelectDirectionRollDice] found min loss: " + minLoss + " index: " + minLossIdx);
                 assamEntity.setDirection(directionSelections.get(minLossIdx));
             }
 
@@ -761,7 +762,7 @@ public class Game extends Application {
     public void AImakePlacement() {
         // check finish
         placementFinish();
-        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() >0){
+        if (playerEntities[CURRENT_PLAYER_IDX].isSelect && playerEntities[CURRENT_PLAYER_IDX].player.getRemainingRugs() > 0){
             // make placement
             // find all valid placement
             // total case
@@ -850,7 +851,10 @@ public class Game extends Application {
         System.out.println("[DiceEntity] find valid player: " + CURRENT_PLAYER_IDX);
         // if next player is AI too
         if (playerEntities[CURRENT_PLAYER_IDX].characterMode != 0) {
-            AIselectDirectionRollDice();
+            AISelectDirectionRollDice();
+        } else {
+            // [DEBUG] human player cannot rotate when AI end
+            assamEntity.setRotatable(true);
         }
     }
 
