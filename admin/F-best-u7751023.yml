@@ -18,9 +18,9 @@ declaration: >-
 #
 # Add as many "name+comment" entries as necessary
 # (or remove it altogether if you haven't collaborated with anyone)
-collaboration: moveXstep method
+collaboration:
   - name: Hongjun Xu
-    comment: >-
+    comment: >- 
 
 # Use this to list any code that you used that you did not write,
 # aside from code provided by the lecturer.  Provide a comment
@@ -33,13 +33,14 @@ collaboration: moveXstep method
 
 # I wish to submit the following classes as entirely my own (remove this if
 # you want to just submit methods):
-class: Game.AssamEntity
-   - 
-   - 
+class:
+   - Game.AssamEntity
+#   -
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
-
+method:
+  - moveXstep method
 
 # sign *your* name and uid here
 name: Xiangyu Bao
