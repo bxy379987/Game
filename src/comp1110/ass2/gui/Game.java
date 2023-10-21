@@ -798,10 +798,12 @@ public class Game extends Application {
             // select
             // CASE: basic random AI
             if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
+                System.out.println("[AISelectDirectionRollDice] Using Lower AI");
                 assamEntity.setDirection(directionSelections.get(random.nextInt(directionSelections.size())));
             }
             // CASE: Higher AI
             if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 2) {
+                System.out.println("[AISelectDirectionRollDice] Using Higher AI");
                 double minLoss = Double.POSITIVE_INFINITY;
                 int minLossIdx = -1;
                 int[] moveSteps = diceEntity.dice.getDiceScore();
@@ -902,9 +904,11 @@ public class Game extends Application {
             // CASE: basic random AI
             Rug toPlace;
             if (playerEntities[CURRENT_PLAYER_IDX].characterMode == 1) {
+                System.out.println("[AImakePlacement] Using Lower AI");
                 toPlace = rugValidSelections.get(random.nextInt(rugValidSelections.size()));
             } else {
                 // CASE: Higher AI
+                System.out.println("[AImakePlacement] Using Higher AI");
                 int maxRugOnBoard = -1;
                 int maxRugOnBoardIdx = -1;
                 for (int rugIdx = 0; rugIdx < rugValidSelections.size(); rugIdx++) {
@@ -1098,9 +1102,9 @@ public class Game extends Application {
                     int playerToPayIdx = getIndexByColor(boardColor);
                     int playerDirhams = playerEntities[CURRENT_PLAYER_IDX].player.getDirhams();
                     if (playerDirhams > needToPayment){
-                    System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + needToPayment);
-                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
-                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
+                        System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + needToPayment);
+                        playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
+                        playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
                     }
 
                    else {System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + playerDirhams);
@@ -1111,7 +1115,7 @@ public class Game extends Application {
                         }
                         playerEntities[CURRENT_PLAYER_IDX].player.setIsplaying(false);
                         board.removeRugsOfColor(playerEntities[CURRENT_PLAYER_IDX].player.getColor());
-                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(1);
+                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(0);
                     }
                 }
             }
