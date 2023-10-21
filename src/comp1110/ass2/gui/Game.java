@@ -1102,9 +1102,9 @@ public class Game extends Application {
                     int playerToPayIdx = getIndexByColor(boardColor);
                     int playerDirhams = playerEntities[CURRENT_PLAYER_IDX].player.getDirhams();
                     if (playerDirhams > needToPayment){
-                    System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + needToPayment);
-                    playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
-                    playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
+                        System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + needToPayment);
+                        playerEntities[playerToPayIdx].setDirhams(playerEntities[playerToPayIdx].player.getDirhams() + needToPayment);
+                        playerEntities[CURRENT_PLAYER_IDX].setDirhams(playerDirhams - needToPayment);
                     }
 
                    else {System.out.println("[placementFinish] " + CURRENT_PLAYER_IDX + " pay " + playerToPayIdx + ": " + playerDirhams);
