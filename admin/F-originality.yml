@@ -42,9 +42,9 @@ declaration: >-
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external assets)
 assets:
-  - comment: some sound effects from Pixabay
+  - comment: "some sound effects from Pixabay."
     url: https://pixabay.com/sound-effects/search/cat/
-    licence: [Pixabay - Content License Summary] https://pixabay.com/service/license-summary/
+    licence: [Pixabay - Content License Summary] "https://pixabay.com/service/license-summary/" .
 
 
 # Sign *your* name and uids here. (Remove entries if you have fewer
