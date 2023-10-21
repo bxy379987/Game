@@ -1115,7 +1115,7 @@ public class Game extends Application {
                         }
                         playerEntities[CURRENT_PLAYER_IDX].player.setIsplaying(false);
                         board.removeRugsOfColor(playerEntities[CURRENT_PLAYER_IDX].player.getColor());
-                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(1);
+                        playerEntities[CURRENT_PLAYER_IDX].player.setRemainingRugs(0);
                     }
                 }
             }
